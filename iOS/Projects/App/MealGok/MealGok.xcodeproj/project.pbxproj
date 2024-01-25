@@ -1,0 +1,334 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8130C7AD724F4BF8A183FBF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6136F9ECA3458D9473D8D8FF /* AppDelegate.swift */; };
+		F10F0C55BD059B454588F255 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FA49A04D5E2F58A8344F28 /* SceneDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		82F4097E5614211E672D4447 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		19FA49A04D5E2F58A8344F28 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		3FB5E8ED8A2B221069B8200B /* MealGok.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MealGok.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		516C758A5445D4CE3861A639 /* MealGok-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "MealGok-Info.plist"; sourceTree = "<group>"; };
+		6136F9ECA3458D9473D8D8FF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		135A9FB4AC40EC2816EE0C20 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		366F787FDA47D108E378FFE1 /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				516C758A5445D4CE3861A639 /* MealGok-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		4DB8DA23C70D1AC977F96642 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				AC6EB43D47F4A8265FF1BE67 /* Derived */,
+				E26C38CA7F4C998873929DD7 /* Sources */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		815CFE70603B62479FCAB1FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		823DD71070994B2F3C908B18 = {
+			isa = PBXGroup;
+			children = (
+				4DB8DA23C70D1AC977F96642 /* Project */,
+				815CFE70603B62479FCAB1FB /* Frameworks */,
+				D8DC3A9A57FA950BE361A78F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AC6EB43D47F4A8265FF1BE67 /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				366F787FDA47D108E378FFE1 /* InfoPlists */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+		D8DC3A9A57FA950BE361A78F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3FB5E8ED8A2B221069B8200B /* MealGok.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E26C38CA7F4C998873929DD7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FEBC9212960A4FCB1E1CF447 /* Application */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		FEBC9212960A4FCB1E1CF447 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				6136F9ECA3458D9473D8D8FF /* AppDelegate.swift */,
+				19FA49A04D5E2F58A8344F28 /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		86B1697E23DA5DDEB1F8ECED /* MealGok */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B66C5FE83FC5715D9B075013 /* Build configuration list for PBXNativeTarget "MealGok" */;
+			buildPhases = (
+				8014F2C671BE46739BB9AC42 /* SwiftFormat Run Script */,
+				8E98423F79BA2B7712477E5B /* Sources */,
+				6498CCDC26DE02CB150313B4 /* Resources */,
+				82F4097E5614211E672D4447 /* Embed Frameworks */,
+				135A9FB4AC40EC2816EE0C20 /* Frameworks */,
+				F81B2B3639122D9684A8A2F9 /* SwiftLint Run Script */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MealGok;
+			productName = MealGok;
+			productReference = 3FB5E8ED8A2B221069B8200B /* MealGok.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6CC60FC1EC56E9660038FED0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				ORGANIZATIONNAME = com.maramincho;
+			};
+			buildConfigurationList = 7179BD9DD4D10D7E9E2427E7 /* Build configuration list for PBXProject "MealGok" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 823DD71070994B2F3C908B18;
+			productRefGroup = D8DC3A9A57FA950BE361A78F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				86B1697E23DA5DDEB1F8ECED /* MealGok */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6498CCDC26DE02CB150313B4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8014F2C671BE46739BB9AC42 /* SwiftFormat Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftFormat Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n  if which swiftformat > /dev/null; then\n      if [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n          echo \"Not running Swift Format for Xcode Previews\"\n          exit 0;\n      fi\n      swiftformat . --config /Users/jeongdaham/Documents/GitHub/MealGok/iOS/.swiftformat\n  else\n      echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\n  fi";
+		};
+		F81B2B3639122D9684A8A2F9 /* SwiftLint Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "SwiftLint Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n  if which swiftlint > /dev/null; then\n      swiftlint --config /Users/jeongdaham/Documents/GitHub/MealGok/iOS/.swiftlint.yml\n  else\n      echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\n  fi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8E98423F79BA2B7712477E5B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8130C7AD724F4BF8A183FBF5 /* AppDelegate.swift in Sources */,
+				F10F0C55BD059B454588F255 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3DF6FDB73D59337990C4BF3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E14175994226DE42EDCA7AC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2G5Z92682P;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/MealGok-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.maramincho.mealgok;
+				PRODUCT_NAME = MealGok;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7179BD9DD4D10D7E9E2427E7 /* Build configuration list for PBXProject "MealGok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DF6FDB73D59337990C4BF3C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B66C5FE83FC5715D9B075013 /* Build configuration list for PBXNativeTarget "MealGok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E14175994226DE42EDCA7AC9 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6CC60FC1EC56E9660038FED0 /* Project object */;
+}
