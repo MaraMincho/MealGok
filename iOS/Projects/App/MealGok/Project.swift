@@ -10,5 +10,6 @@ let project = Project.makeModule(
     entitlements: nil,
     dependencies: [],
     infoPlist: [:]
-  )
+  ),
+  packages: []
 )

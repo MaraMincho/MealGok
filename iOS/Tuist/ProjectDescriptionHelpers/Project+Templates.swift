@@ -1,6 +1,9 @@
 import ProjectDescription
-import DependencyPlugin
 import EnvironmentPlugin
+import Foundation
+
+private let isCI = ProcessInfo.processInfo.environment["TUIST_CI"] != nil
+private let isDebug = ProcessInfo.processInfo.environment["TUIST_SCHEME"] == "DEBUG"
 
 public extension Project {
   
@@ -9,13 +12,19 @@ public extension Project {
     targets: [Target],
     packages: [Package] = []
   ) -> Project {
-    //TODO: CI 나 Debug Relase일 때 Configuration을 다르게 설정해야 함
-    let settingConfigurations: [Configuration] = [.debug(name: .debug)]
+    
+    print("is Debug = \(isDebug)")
+    
+    let settingConfiguration: Configuration =
+    if isCI { .debug(name: .debug) }
+    else if isDebug { .debug(name: .debug, xcconfig: Path.relativeToRoot("XCConfig/server/Debug.xcconfig")) }
+    else { .debug(name: .release, xcconfig: Path.relativeToXCConfig("Server/Relase")) }
+    
     let settings: Settings = .settings(
       base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
-      configurations: settingConfigurations)
+      configurations: [settingConfiguration])
     
-    let configurationName: ConfigurationName = .debug
+    let configurationName: ConfigurationName = isDebug || isCI ? .debug : .release
     let schemes: [Scheme] = [.makeScheme(configuration: configurationName, name: name)]
     
     return Project(
@@ -47,5 +56,15 @@ extension Scheme {
       profileAction: .profileAction(configuration: configuration),
       analyzeAction: .analyzeAction(configuration: configuration)
     )
+  }
+}
+
+public extension Path {
+  static func relativeToXCConfig(_ path: String = "Shared") -> Path {
+    print("XCConfig/\(path).xcconfig")
+    return .relativeToRoot("XCConfig/\(path).xcconfig")
+  }
+  static func relativeToXCConfigString(_ path: String = "Shared") -> String {
+    return "XCConfig/\(path).xcconfig"
   }
 }

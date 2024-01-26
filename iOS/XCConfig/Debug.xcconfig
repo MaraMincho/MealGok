@@ -1,0 +1,4 @@
+#include "../Shared.xcconfig"
+
+BASE_URL = https:/$()/api.wonho.site
+SOCKET_URL = wss:/$()/api.wonho.site/ws
