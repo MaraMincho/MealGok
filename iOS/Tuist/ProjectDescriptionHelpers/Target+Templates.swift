@@ -180,4 +180,76 @@ public extension [Target] {
     
     return targets
   }
+  
+  // Target을 사용자화하여 생성합니다.
+  /// - Parameters:
+  ///   - name: Target 이름
+  ///   - product: Target Product
+  ///   - testingOptions: Target에서 추가할 테스트 옵션들
+  ///   - dependencies: Target의 의존성
+  ///   - testDependencies: Target의 테스트 모듈의 의존성. `testingOptions`파라미터가 nil이 아닐 때 유효합니다.
+  ///   - infoPlist: Target에서 설정할 infoPlist
+  ///   - resources: 리소스 사용 경로, 기본값은 nil입니다. 만약 사용하고 싶다면 경로를 지정해주세요.
+  ///   - settings: Target settings configuration
+  static func custom(
+    name: String,
+    product: Product,
+    testingOptions: Set<TestingOption> = [],
+    dependencies: [TargetDependency] = [],
+    testDependencies: [TargetDependency] = [],
+    infoPlist: [String: Plist.Value] = [:],
+    resources: ResourceFileElements? = nil,
+    settings: Settings? = nil
+  ) -> [Target] {
+    
+    let mergedInfoPlist: [String: Plist.Value] = ["BaseURL": "$(BASE_URL)", "SocketURL": "$(SOCKET_URL)"].merging(infoPlist) { _, new in
+      new
+    }
+
+    var targets: [Target] = [
+      Target(
+        name: "\(name)",
+        platform: .iOS,
+        product: product,
+        bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)",
+        deploymentTarget: ProjectEnvironment.default.deploymentTarget,
+        infoPlist: .extendingDefault(with: mergedInfoPlist),
+        sources: "Sources/**",
+        resources: resources,
+        scripts: [.swiftFormat, .swiftLint],
+        dependencies: dependencies,
+        settings: settings
+      ),
+    ]
+
+    if testingOptions.contains(.unitTest) {
+      targets.append(
+        Target(
+          name: "\(name)Tests",
+          platform: .iOS,
+          product: .unitTests,
+          bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureTests",
+          sources: "Tests/**",
+          scripts: [.swiftLint, .swiftFormat],
+          dependencies: testDependencies + [.target(name: name)]
+        )
+      )
+    }
+
+    if testingOptions.contains(.uiTest) {
+      targets.append(
+        Target(
+          name: "\(name)UITests",
+          platform: .iOS,
+          product: .unitTests,
+          bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureUITests",
+          sources: "UITests/**",
+          scripts: [.swiftLint, .swiftFormat],
+          dependencies: testDependencies + [.target(name: name)]
+        )
+      )
+    }
+
+    return targets
+  }
 }
