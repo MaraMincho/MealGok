@@ -1,0 +1,4 @@
+#include "../Shared.xcconfig"
+
+BASE_URL = https:/$()/www.wetriathlon.site
+SOCKET_URL = wss:/$()/www.wetriathlon.site/ws
