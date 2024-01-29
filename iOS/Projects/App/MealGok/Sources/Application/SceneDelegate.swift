@@ -6,6 +6,7 @@
 //  Copyright © 2023 kr.codesquad.boostcamp8. All rights reserved.
 //
 
+import DesignSystem
 import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -15,7 +16,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let windowScene = scene as? UIWindowScene else { return }
     window = UIWindow(windowScene: windowScene)
     let vc = UIViewController()
-    vc.view.backgroundColor = .red
+    vc.view.backgroundColor = DesignSystemColor.main03
     window?.rootViewController = vc
     window?.makeKeyAndVisible()
   }
