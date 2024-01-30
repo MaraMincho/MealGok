@@ -10,7 +10,8 @@ let project = Project.makeModule(
     product: .framework,
     testingOptions: [.unitTest],
     dependencies: [
-      .designSystem
+      .designSystem,
+      .routerFactory,
     ],
     testDependencies: []
   )
