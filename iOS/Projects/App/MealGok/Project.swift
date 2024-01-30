@@ -8,7 +8,11 @@ let project = Project.makeModule(
   targets: .app(
     name: ProjectEnvironment.default.appName,
     entitlements: nil,
-    dependencies: [.designSystem, .routerFactory],
+    dependencies: [
+      .designSystem,
+      .routerFactory,
+      .feature(.mealTimer)
+    ],
     infoPlist: [:]
   ),
   packages: []

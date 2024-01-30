@@ -114,11 +114,12 @@ public extension [Target] {
   /// - Returns: Feature 모듈의 Target 리스트
   static func feature(
     _ feature: Feature,
+    product: Product = .framework,
     testingOptions: Set<TestingOption> = [],
     dependencies: [TargetDependency] = [],
     testDependencies: [TargetDependency] = [],
     infoPlist: [String: Plist.Value] = [:],
-    resources: ResourceFileElements? = "Resources/**"
+    resources: ResourceFileElements? = nil
   ) -> [Target] {
     
     let mergedInfoPlist: [String: Plist.Value] = ["BaseURL": "$(BASE_URL)", "SocketURL": "$(SOCKET_URL)"].merging(infoPlist) { _, new in
@@ -138,7 +139,7 @@ public extension [Target] {
       Target(
         name: "\(feature.targetName)Feature",
         platform: .iOS,
-        product: .framework,
+        product: product,
         bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(feature.targetName)Feature",
         deploymentTarget: ProjectEnvironment.default.deploymentTarget,
         infoPlist: .extendingDefault(with: mergedInfoPlist),

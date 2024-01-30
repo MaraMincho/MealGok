@@ -11,6 +11,7 @@ import ProjectDescription
 
 public enum Feature: String {
   case writeBoard
+  case mealTimer
   public var targetName: String {
     return rawValue.prefix(1).capitalized + rawValue.dropFirst()
   }
