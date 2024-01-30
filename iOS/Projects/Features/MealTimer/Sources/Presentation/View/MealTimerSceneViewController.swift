@@ -27,7 +27,6 @@ final class MealTimerSceneViewController: UIViewController {
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
     label.text = Constants.titleLabelText
     label.accessibilityLabel = label.text
-    label.backgroundColor = .black
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -49,6 +48,29 @@ final class MealTimerSceneViewController: UIViewController {
 
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
+  }()
+
+  private let cameraButton: UIButton = {
+    var configure: UIButton.Configuration = .plain()
+    let imageConfigure: UIImage.SymbolConfiguration = .init(pointSize: 35)
+    configure.image = UIImage(systemName: Constants.cameraButtonTitleText, withConfiguration: imageConfigure)
+    configure.titleAlignment = .leading
+    configure.baseForegroundColor = DesignSystemColor.gray03
+    let button = UIButton(configuration: configure)
+
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
+  }()
+
+  private let timerDescriptionLabel: UILabel = {
+    let label = UILabel()
+    label.textColor = DesignSystemColor.primaryText
+    label.font = .preferredFont(forTextStyle: .body)
+    label.text = Constants.timerDescriptionLabelText
+    label.textAlignment = .center
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
   }()
 
   // MARK: Initializations
@@ -97,6 +119,17 @@ private extension MealTimerSceneViewController {
     view.addSubview(timerView)
     timerView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: 137).isActive = true
     timerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor).isActive = true
+
+    view.addSubview(cameraButton)
+    cameraButton.topAnchor.constraint(equalTo: timerView.topAnchor).isActive = true
+    cameraButton.leadingAnchor
+      .constraint(equalTo: timerView.leadingAnchor).isActive = true
+
+    view.addSubview(timerDescriptionLabel)
+    timerDescriptionLabel.topAnchor
+      .constraint(equalTo: timerView.bottomAnchor, constant: Metrics.timerDescriptionLabelTopSpacing).isActive = true
+    timerDescriptionLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    timerDescriptionLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
   }
 
   func setupStyles() {
@@ -120,6 +153,12 @@ private extension MealTimerSceneViewController {
     static let leadingAndTrailingGuide: CGFloat = 24
 
     static let descriptionTitleLabelTopSpacing: CGFloat = 13
+
+    static let timerTopSpacing: CGFloat = 137
+
+    static let cameraButtonAndTimerViewTrailingSpacing: CGFloat = 8
+
+    static let timerDescriptionLabelTopSpacing: CGFloat = 27
   }
 
   enum Constants {
@@ -127,5 +166,9 @@ private extension MealTimerSceneViewController {
     static let descriptionTitleText: String = "천천히 먹기: 가장 쉽고 빠른 다이어트"
 
     static let timerDescriptionText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
+
+    static let cameraButtonTitleText: String = "camera.viewfinder"
+
+    static let timerDescriptionLabelText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
   }
 }
