@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import RouterFactory
 import UIKit
 
 // MARK: - TabBarRouteFactory
