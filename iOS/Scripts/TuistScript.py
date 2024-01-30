@@ -175,7 +175,7 @@ let project = Project.makeModule(
         print(f"Error creating the Project.swift file: {e}")
 
 def create_test_dir(feature_name) :
-    test_content="""
+    test_content = f"""
 import XCTest
 
 final class {feature_name}Tests: XCTestCase {
