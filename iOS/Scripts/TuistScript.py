@@ -180,6 +180,27 @@ let project = Project.makeModule(
     except Exception as e:
         print(f"Error creating the Project.swift file: {e}")
 
+def create_test_dir(feature_name) :
+    test_content="""
+import XCTest
+
+final class SignupTests: XCTestCase {
+  override func setUp() {}
+}
+
+"""
+    feature_path = f'Projects/Features/{feature_name}/Tests'
+    os.makedirs(feature_path)
+    
+    
+    test_file_name = "{feature_name}Test"
+    
+    keep_resources_path = os.path.join(resources_path, test_file_name)
+    with open(keep_resources_path, 'w') as keep_resources_file:
+        keep_resources_file.write(test_content)
+
+  
+
 def create_project_feature_file(feature_name):
 
     create_feature(feature_name)
@@ -224,6 +245,8 @@ if __name__ == "__main__":
 
         # Create the Project.swift file
         create_project_feature_file(feature_name)
+        
+        create_test_dir(feature_name)
 
         print(f"{feature_name} 폴더와 파일이 생성되었습니다.")
     elif sys.argv[1] == "shared":
