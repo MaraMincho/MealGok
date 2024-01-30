@@ -117,13 +117,13 @@ private extension MealTimerSceneViewController {
       .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
 
     view.addSubview(timerView)
-    timerView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: 137).isActive = true
+    timerView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: Metrics.timerTopSpacing).isActive = true
     timerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor).isActive = true
 
     view.addSubview(cameraButton)
     cameraButton.topAnchor.constraint(equalTo: timerView.topAnchor).isActive = true
     cameraButton.leadingAnchor
-      .constraint(equalTo: timerView.leadingAnchor).isActive = true
+      .constraint(equalTo: timerView.trailingAnchor, constant: Metrics.cameraButtonAndTimerViewTrailingSpacing).isActive = true
 
     view.addSubview(timerDescriptionLabel)
     timerDescriptionLabel.topAnchor
@@ -156,7 +156,7 @@ private extension MealTimerSceneViewController {
 
     static let timerTopSpacing: CGFloat = 137
 
-    static let cameraButtonAndTimerViewTrailingSpacing: CGFloat = 8
+    static let cameraButtonAndTimerViewTrailingSpacing: CGFloat = -24
 
     static let timerDescriptionLabelTopSpacing: CGFloat = 27
   }
