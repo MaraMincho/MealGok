@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import DesignSystem
 import RouterFactory
 import UIKit
 
@@ -30,6 +31,7 @@ public final class TabBarRouteFactory: RouteFactoriable {
   public func build() -> UIViewController {
     let tabBarController = UITabBarController()
     tabBarController.setViewControllers(buildTabBarComponent(), animated: false)
+    tabBarController.tabBar.tintColor = DesignSystemColor.main01
 
     return tabBarController
   }
@@ -74,11 +76,11 @@ enum TabBarScreenType: CaseIterable {
     switch self {
     case .timer:
       let vc = UIViewController()
-      vc.view.backgroundColor = .blue
+      vc.view.backgroundColor = DesignSystemColor.primaryBackground
       return vc
     case .profile:
       let vc = UIViewController()
-      vc.view.backgroundColor = .cyan
+      vc.view.backgroundColor = DesignSystemColor.primaryBackground
       return vc
     }
   }
