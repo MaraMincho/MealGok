@@ -1,6 +1,6 @@
 import UIKit
 
-protocol Routing: AnyObject {
+public protocol Routing: AnyObject {
   
   /// ParentRouter: it is ParentRouter,
   ///
@@ -12,10 +12,10 @@ protocol Routing: AnyObject {
   
   var childRouters: [Routing] { get set }
   
-  func start()
+  func start(build: UIViewController)
 }
 
-extension Routing {
+public extension Routing {
   
   /// Default PopRouter Method
   func popRouter() {

@@ -3,9 +3,9 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-  name: "RoutingFactory",
+  name: "RouterFactory",
   targets: .custom(
-    name: "RoutingFactory",
+    name: "RouterFactory",
     product: .staticFramework
   )
 )

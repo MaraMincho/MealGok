@@ -18,7 +18,7 @@ public enum Feature: String {
 
 public extension TargetDependency {
   static let designSystem: TargetDependency = .project(target: "DesignSystem", path: .relativeToShared("DesignSystem"))
-  static let routingFactory: TargetDependency = .project(target: "RoutingFactory", path: .relativeToCore("RoutingFactory"))
+  static let routerFactory: TargetDependency = .project(target: "RouterFactory", path: .relativeToCore("RouterFactory"))
   static func feature(_ feature: Feature) -> TargetDependency {
     return .project(
       target: "\(feature.targetName)Feature",
