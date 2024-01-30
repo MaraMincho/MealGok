@@ -195,7 +195,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-  name: "{feature_name}Feature",
+  name: "{feature_name}",
   targets: .feature(
     .{feature_name.lower()},
     testingOptions: [.unitTest],
