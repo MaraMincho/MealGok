@@ -11,13 +11,11 @@ import UIKit
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
+  let routerFactory = MealGokRouterFactory()
 
   func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
     guard let windowScene = scene as? UIWindowScene else { return }
     window = UIWindow(windowScene: windowScene)
-    let vc = UIViewController()
-    vc.view.backgroundColor = DesignSystemColor.main03
-    window?.rootViewController = vc
-    window?.makeKeyAndVisible()
+    routerFactory.start(window: window)
   }
 }
