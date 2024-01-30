@@ -158,7 +158,7 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-  name: "{to_lower_camel_case(feature_name)}",
+  name: "{feature_name}",
   targets: .custom(
     name: "{feature_name}",
     product: .framework
@@ -210,7 +210,7 @@ import ProjectDescriptionHelpers
 let project = Project.makeModule(
   name: "{feature_name}Feature",
   targets: .feature(
-    .{feature_name},
+    .{to_lower_camel_case(feature_name)},
     testingOptions: [.unitTest],
     dependencies: [],
     testDependencies: []
