@@ -35,7 +35,7 @@ final class MealTimerSceneViewController: UIViewController {
 
   private let descriptionTitleLabel: UILabel = {
     let label = UILabel()
-    label.textColor = DesignSystemColor.main01
+    label.textColor = DesignSystemColor.primaryText
     label.font = .preferredFont(forTextStyle: .title3, weight: .medium)
     label.text = Constants.descriptionTitleText
     label.accessibilityLabel = label.text
@@ -79,9 +79,9 @@ private extension MealTimerSceneViewController {
 
     view.addSubview(descriptionTitleLabel)
     descriptionTitleLabel.topAnchor
-      .constraint(equalTo: titleLabel.bottomAnchor, constant: -Metrics.descriptionTitleLabelTopSpacing).isActive = true
+      .constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.descriptionTitleLabelTopSpacing).isActive = true
     descriptionTitleLabel.leadingAnchor
-      .constraint(equalTo: safeArea.leadingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
+      .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
   }
 
   func setupStyles() {
