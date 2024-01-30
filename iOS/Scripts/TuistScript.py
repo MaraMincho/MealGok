@@ -195,7 +195,7 @@ final class SignupTests: XCTestCase {
     
     test_file_name = "{feature_name}Test"
     
-    keep_resources_path = os.path.join(resources_path, test_file_name)
+    keep_resources_path = os.path.join(feature_path, test_file_name)
     with open(keep_resources_path, 'w') as keep_resources_file:
         keep_resources_file.write(test_content)
 
