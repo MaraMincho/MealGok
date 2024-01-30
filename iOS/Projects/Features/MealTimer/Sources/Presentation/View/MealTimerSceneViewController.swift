@@ -44,6 +44,13 @@ final class MealTimerSceneViewController: UIViewController {
     return label
   }()
 
+  private lazy var timerView: TimerView = {
+    let view = TimerView(contentSize: .init(width: 240, height: 240))
+
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
+  }()
+
   // MARK: Initializations
 
   init(viewModel: MealTimerSceneViewModelRepresentable) {
@@ -62,12 +69,16 @@ final class MealTimerSceneViewController: UIViewController {
     super.viewDidLoad()
     setup()
   }
+
+  override func viewIsAppearing(_ animated: Bool) {
+    super.viewIsAppearing(animated)
+    setupHierarchyAndConstraints()
+  }
 }
 
 private extension MealTimerSceneViewController {
   func setup() {
     setupStyles()
-    setupHierarchyAndConstraints()
     bind()
   }
 
@@ -82,6 +93,10 @@ private extension MealTimerSceneViewController {
       .constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.descriptionTitleLabelTopSpacing).isActive = true
     descriptionTitleLabel.leadingAnchor
       .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
+
+    view.addSubview(timerView)
+    timerView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: 137).isActive = true
+    timerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor).isActive = true
   }
 
   func setupStyles() {
