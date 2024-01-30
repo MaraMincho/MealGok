@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import MealTimerFeature
 import RouterFactory
 import UIKit
 
@@ -38,9 +39,10 @@ public final class TabBarRouteFactory: RouteFactoriable {
 
   private func buildTabBarComponent() -> [UIViewController] {
     let contents = TabBarScreenType.allCases.map { type in
-      let nav = UINavigationController(rootViewController: type.viewController)
+      let nav = UINavigationController()
       nav.title = type.title
       nav.tabBarItem.image = type.image
+      type.startTabBarContentViewController(self, navigationController: nav)
 
       return nav
     }
@@ -72,16 +74,14 @@ enum TabBarScreenType: CaseIterable {
     }
   }
 
-  var viewController: UIViewController {
+  func startTabBarContentViewController(_ router: Routing, navigationController: UINavigationController) {
     switch self {
     case .timer:
-      let vc = UIViewController()
-      vc.view.backgroundColor = DesignSystemColor.primaryBackground
-      return vc
+      let mealTimerRouterFactory = MealTimerSceneRouterFactory(router, navigationController: navigationController)
+      mealTimerRouterFactory.start(build: mealTimerRouterFactory.build())
     case .profile:
       let vc = UIViewController()
-      vc.view.backgroundColor = DesignSystemColor.primaryBackground
-      return vc
+      navigationController.setViewControllers([vc], animated: true)
     }
   }
 }
