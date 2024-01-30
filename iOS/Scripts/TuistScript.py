@@ -132,7 +132,6 @@ def create_project_core_file(feature_name):
     try:
         # Create the Project.swift file content
         project_content = f"""
-
 import ProjectDescription
 import ProjectDescriptionHelpers
 
@@ -161,7 +160,6 @@ def create_project_shared_file(feature_name):
     try:
         # Create the Project.swift file content
         project_content = f"""
-
 import ProjectDescription
 import ProjectDescriptionHelpers
 
