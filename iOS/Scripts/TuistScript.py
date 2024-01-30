@@ -178,7 +178,7 @@ def create_test_dir(feature_name) :
     test_content="""
 import XCTest
 
-final class SignupTests: XCTestCase {
+final class {feature_name}Tests: XCTestCase {
   override func setUp() {}
 }
 
@@ -210,7 +210,7 @@ import ProjectDescriptionHelpers
 let project = Project.makeModule(
   name: "{feature_name}Feature",
   targets: .feature(
-    .{feature_name.lower()},
+    .{feature_name},
     testingOptions: [.unitTest],
     dependencies: [],
     testDependencies: []
