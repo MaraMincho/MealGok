@@ -178,11 +178,11 @@ def create_test_dir(feature_name) :
     test_content = f"""
 import XCTest
 
-final class {feature_name}Tests: XCTestCase {
-  override func setUp() {}
-}
-
+final class {feature_name}Tests: XCTestCase {{
+  override func setUp() {{}}
+}}
 """
+
     feature_path = f'Projects/Features/{feature_name}/Tests'
     os.makedirs(feature_path)
     
