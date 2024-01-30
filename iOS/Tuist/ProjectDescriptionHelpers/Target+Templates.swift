@@ -118,7 +118,7 @@ public extension [Target] {
     dependencies: [TargetDependency] = [],
     testDependencies: [TargetDependency] = [],
     infoPlist: [String: Plist.Value] = [:],
-    resources: ResourceFileElements? = nil
+    resources: ResourceFileElements? = "Resources/**"
   ) -> [Target] {
     
     let mergedInfoPlist: [String: Plist.Value] = ["BaseURL": "$(BASE_URL)", "SocketURL": "$(SOCKET_URL)"].merging(infoPlist) { _, new in
