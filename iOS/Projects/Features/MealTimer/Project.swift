@@ -12,6 +12,7 @@ let project = Project.makeModule(
     dependencies: [
       .designSystem,
       .routerFactory,
+      .combineCocoa,
     ],
     testDependencies: []
   )
