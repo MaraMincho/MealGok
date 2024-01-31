@@ -6,4 +6,4 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
-public typealias RouteFactoriable = Building & Routing
+public typealias RouterFactoriable = Building & Routing

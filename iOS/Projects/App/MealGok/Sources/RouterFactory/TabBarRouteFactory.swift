@@ -13,7 +13,7 @@ import UIKit
 
 // MARK: - TabBarRouteFactory
 
-public final class TabBarRouteFactory: RouteFactoriable {
+public final class TabBarRouteFactory: RouterFactoriable {
   public init(parentRouter: Routing, navigationController: UINavigationController) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
@@ -78,6 +78,7 @@ enum TabBarScreenType: CaseIterable {
     switch self {
     case .timer:
       let mealTimerRouterFactory = MealTimerSceneRouterFactory(router, navigationController: navigationController)
+      router.childRouters.append(mealTimerRouterFactory)
       mealTimerRouterFactory.start(build: mealTimerRouterFactory.build())
     case .profile:
       let vc = UIViewController()

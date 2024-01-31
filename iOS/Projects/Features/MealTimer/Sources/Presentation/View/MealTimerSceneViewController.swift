@@ -7,6 +7,7 @@
 //
 
 import Combine
+import CombineCocoa
 import DesignSystem
 import UIKit
 
@@ -138,7 +139,13 @@ private extension MealTimerSceneViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
+    subscriptions.removeAll()
+
+    let output = viewModel.transform(input: .init(
+      didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
+    ))
+
     output.sink { state in
       switch state {
       case .idle:

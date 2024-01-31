@@ -9,7 +9,7 @@
 import RouterFactory
 import UIKit
 
-final class MealGokRouterFactory: RouteFactoriable {
+final class MealGokRouterFactory: RouterFactoriable {
   var parentRouter: Routing?
 
   var navigationController: UINavigationController?
@@ -33,10 +33,13 @@ final class MealGokRouterFactory: RouteFactoriable {
     navigationController = build
 
     let tabBarRouterFactory = TabBarRouteFactory(parentRouter: self, navigationController: build)
+    childRouters.append(tabBarRouterFactory)
     tabBarRouterFactory.start(build: tabBarRouterFactory.build())
   }
 
   func build() -> UIViewController {
-    return UINavigationController()
+    let navigationController = UINavigationController()
+    navigationController.navigationBar.isHidden = true
+    return navigationController
   }
 }
