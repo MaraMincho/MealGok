@@ -23,6 +23,7 @@ public typealias MealTimerSceneViewModelOutput = AnyPublisher<MealTimerSceneStat
 
 public enum MealTimerSceneState {
   case idle
+  case presentCamera
 }
 
 // MARK: - MealTimerSceneViewModelRepresentable
@@ -52,8 +53,12 @@ extension MealTimerSceneViewModel: MealTimerSceneViewModelRepresentable {
       }
       .store(in: &subscriptions)
 
+    let presentCameraPicker = input.didCameraButtonTouchPublisher
+      .map { _ in return MealTimerSceneState.presentCamera }
+      .eraseToAnyPublisher()
+
     let initialState: MealTimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState
+    return initialState.merge(with: presentCameraPicker).eraseToAnyPublisher()
   }
 }

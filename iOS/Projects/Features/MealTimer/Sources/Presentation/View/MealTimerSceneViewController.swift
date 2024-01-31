@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import AVFoundation
 import Combine
 import CombineCocoa
 import DesignSystem
@@ -146,13 +147,19 @@ private extension MealTimerSceneViewController {
       didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
     ))
 
-    output.sink { state in
+    output.sink { [weak self] state in
       switch state {
+      case .presentCamera:
+        self?.presentCameraPicker()
       case .idle:
         break
       }
     }
     .store(in: &subscriptions)
+  }
+
+  func presentCameraPicker() {
+    print("카메라 피커")
   }
 
   enum Metrics {
@@ -177,5 +184,17 @@ private extension MealTimerSceneViewController {
     static let cameraButtonTitleText: String = "camera.viewfinder"
 
     static let timerDescriptionLabelText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
+  }
+}
+
+// MARK: UIImagePickerControllerDelegate
+
+extension MealTimerSceneViewController: UIImagePickerControllerDelegate {
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+    guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+      picker.dismiss(animated: true)
+      return
+    }
+    picker.dismiss(animated: true, completion: nil)
   }
 }
