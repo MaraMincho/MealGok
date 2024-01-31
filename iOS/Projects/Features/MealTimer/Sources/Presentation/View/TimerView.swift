@@ -15,7 +15,7 @@ final class TimerView: UIView {
   let contentSize: CGSize
 
   var lineCircleViewSize: CGSize {
-    return .init(width: contentSize.width - 10, height: contentSize.height - 10)
+    return .init(width: contentSize.width, height: contentSize.height)
   }
 
   var dashCircleViewSize: CGSize {
@@ -74,7 +74,7 @@ final class TimerView: UIView {
 
   private func setupViewHierarchyAndConstraints() {
     addSubview(lineCircleView)
-    lineCircleView.frame.origin = .init(x: 5, y: 5)
+    lineCircleView.frame.origin = .init(x: 0, y: 0)
     lineCircleView.frame.size = lineCircleViewSize
 
     lineCircleView.addSubview(dashCircleView)
