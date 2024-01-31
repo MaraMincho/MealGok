@@ -13,7 +13,9 @@ let project = Project.makeModule(
       .routerFactory,
       .feature(.mealTimer),
     ],
-    infoPlist: [:]
+    infoPlist: [
+      "NSCameraUsageDescription": "카메라에 접근합니다",
+    ]
   ),
   packages: []
 )

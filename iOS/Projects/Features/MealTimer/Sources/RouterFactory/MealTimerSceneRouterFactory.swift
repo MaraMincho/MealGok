@@ -9,7 +9,15 @@
 import RouterFactory
 import UIKit
 
-public final class MealTimerSceneRouterFactory: RouteFactoriable {
+// MARK: - MealTimerSceneRouterFactoriable
+
+protocol MealTimerSceneRouterFactoriable: RouterFactoriable {
+  func startMealTimerScene()
+}
+
+// MARK: - MealTimerSceneRouterFactory
+
+public final class MealTimerSceneRouterFactory: RouterFactoriable {
   public var parentRouter: Routing?
 
   public var navigationController: UINavigationController?
@@ -22,11 +30,22 @@ public final class MealTimerSceneRouterFactory: RouteFactoriable {
 
   public func build() -> UIViewController {
     let viewModel = MealTimerSceneViewModel()
+    viewModel.router = self
     return MealTimerSceneViewController(viewModel: viewModel)
   }
 
   public init(_ parentRouter: Routing, navigationController: UINavigationController?) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
+  }
+}
+
+// MARK: MealTimerSceneRouterFactoriable
+
+extension MealTimerSceneRouterFactory: MealTimerSceneRouterFactoriable {
+  func startMealTimerScene() {
+    let router = StartMealTimerSceneRouterFactory(navigationController: navigationController?.navigationController)
+    childRouters.append(router)
+    router.start(build: router.build())
   }
 }

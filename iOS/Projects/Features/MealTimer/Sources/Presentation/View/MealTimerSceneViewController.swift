@@ -6,7 +6,9 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import AVFoundation
 import Combine
+import CombineCocoa
 import DesignSystem
 import UIKit
 
@@ -18,6 +20,8 @@ final class MealTimerSceneViewController: UIViewController {
   private let viewModel: MealTimerSceneViewModelRepresentable
 
   private var subscriptions: Set<AnyCancellable> = []
+
+  private let generator = UINotificationFeedbackGenerator()
 
   // MARK: UI Components
 
@@ -138,14 +142,32 @@ private extension MealTimerSceneViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
-    output.sink { state in
+    subscriptions.removeAll()
+
+    let output = viewModel.transform(input: .init(
+      didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
+    ))
+
+    output.sink { [weak self] state in
       switch state {
+      case .presentCamera:
+        self?.generator.notificationOccurred(.success)
+        self?.presentCameraPicker()
       case .idle:
         break
       }
     }
     .store(in: &subscriptions)
+  }
+
+  func presentCameraPicker() {
+    let pickerController = UIImagePickerController()
+    pickerController.delegate = self
+    pickerController.setEditing(true, animated: true)
+    pickerController.mediaTypes = ["public.image"]
+    pickerController.sourceType = .camera
+    present(pickerController, animated: true)
   }
 
   enum Metrics {
@@ -170,5 +192,17 @@ private extension MealTimerSceneViewController {
     static let cameraButtonTitleText: String = "camera.viewfinder"
 
     static let timerDescriptionLabelText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
+  }
+}
+
+// MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
+
+extension MealTimerSceneViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+    guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+      picker.dismiss(animated: true)
+      return
+    }
+    picker.dismiss(animated: true, completion: nil)
   }
 }

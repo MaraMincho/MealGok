@@ -8,10 +8,14 @@
 
 import Combine
 import Foundation
+import RouterFactory
 
 // MARK: - MealTimerSceneViewModelInput
 
-public struct MealTimerSceneViewModelInput {}
+public struct MealTimerSceneViewModelInput {
+  let didCameraButtonTouchPublisher: AnyPublisher<Void, Never>
+  let didTimerStartButtonTouchPublisher: AnyPublisher<Void, Never>
+}
 
 public typealias MealTimerSceneViewModelOutput = AnyPublisher<MealTimerSceneState, Never>
 
@@ -19,6 +23,7 @@ public typealias MealTimerSceneViewModelOutput = AnyPublisher<MealTimerSceneStat
 
 public enum MealTimerSceneState {
   case idle
+  case presentCamera
 }
 
 // MARK: - MealTimerSceneViewModelRepresentable
@@ -33,16 +38,27 @@ final class MealTimerSceneViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
+  weak var router: MealTimerSceneRouterFactoriable?
 }
 
 // MARK: MealTimerSceneViewModelRepresentable
 
 extension MealTimerSceneViewModel: MealTimerSceneViewModelRepresentable {
-  public func transform(input _: MealTimerSceneViewModelInput) -> MealTimerSceneViewModelOutput {
+  public func transform(input: MealTimerSceneViewModelInput) -> MealTimerSceneViewModelOutput {
     subscriptions.removeAll()
+
+    input.didTimerStartButtonTouchPublisher
+      .sink { [router] _ in
+        router?.startMealTimerScene()
+      }
+      .store(in: &subscriptions)
+
+    let presentCameraPicker = input.didCameraButtonTouchPublisher
+      .map { _ in return MealTimerSceneState.presentCamera }
+      .eraseToAnyPublisher()
 
     let initialState: MealTimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState
+    return initialState.merge(with: presentCameraPicker).eraseToAnyPublisher()
   }
 }
