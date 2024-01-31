@@ -21,6 +21,8 @@ final class MealTimerSceneViewController: UIViewController {
 
   private var subscriptions: Set<AnyCancellable> = []
 
+  private let generator = UINotificationFeedbackGenerator()
+
   // MARK: UI Components
 
   private let titleLabel: UILabel = {
@@ -150,6 +152,7 @@ private extension MealTimerSceneViewController {
     output.sink { [weak self] state in
       switch state {
       case .presentCamera:
+        self?.generator.notificationOccurred(.success)
         self?.presentCameraPicker()
       case .idle:
         break
@@ -159,7 +162,12 @@ private extension MealTimerSceneViewController {
   }
 
   func presentCameraPicker() {
-    print("카메라 피커")
+    let pickerController = UIImagePickerController()
+    pickerController.delegate = self
+    pickerController.setEditing(true, animated: true)
+    pickerController.mediaTypes = ["public.image"]
+    pickerController.sourceType = .camera
+    present(pickerController, animated: true)
   }
 
   enum Metrics {
@@ -187,9 +195,9 @@ private extension MealTimerSceneViewController {
   }
 }
 
-// MARK: UIImagePickerControllerDelegate
+// MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
-extension MealTimerSceneViewController: UIImagePickerControllerDelegate {
+extension MealTimerSceneViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
     guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
       picker.dismiss(animated: true)
