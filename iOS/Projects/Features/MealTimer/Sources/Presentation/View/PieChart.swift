@@ -35,13 +35,14 @@ class PieChartView: UIView {
 
   var progress: CGFloat = 0
   func updatePieChart() {
-    temp -= Double.pi / 4
+    temp -= Double.pi / 8
 
+    let center = CGPoint(x: bounds.midX, y: bounds.midY)
     let newPath = UIBezierPath()
     newPath.move(to: center)
     newPath.addArc(
       withCenter: center,
-      radius: frame.size.width / 2,
+      radius: contentSize.width / 2,
       startAngle: startPoint,
       endAngle: temp,
       clockwise: false
@@ -54,8 +55,6 @@ class PieChartView: UIView {
     pathAnimation.duration = 0.1
     pathAnimation.fillMode = .both
     pathAnimation.isRemovedOnCompletion = false
-
-    // shapeLayer.add(pathAnimation, forKey: "pathAnimation")
 
     shapeLayer.path = newPath.cgPath
     shapeLayer.fillColor = DesignSystemColor.main03.cgColor
