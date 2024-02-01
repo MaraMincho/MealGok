@@ -44,8 +44,11 @@ public final class MealTimerSceneRouterFactory: RouterFactoriable {
 
 extension MealTimerSceneRouterFactory: MealTimerSceneRouterFactoriable {
   func startMealTimerScene() {
-    let router = StartMealTimerSceneRouterFactory(navigationController: navigationController?.navigationController)
+    let router = MealGokSuccessSceneRouterFactory(router: self, navigationController: navigationController?.navigationController)
     childRouters.append(router)
     router.start(build: router.build())
+//    let router = StartMealTimerSceneRouterFactory(navigationController: navigationController?.navigationController)
+//    childRouters.append(router)
+//    router.start(build: router.build())
   }
 }

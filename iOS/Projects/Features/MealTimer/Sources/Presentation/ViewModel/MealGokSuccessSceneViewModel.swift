@@ -1,4 +1,4 @@
-// 
+//
 //  MealGokSuccessSceneViewModel.swift
 //  MealTimerFeature
 //
@@ -27,17 +27,19 @@ protocol MealGokSuccessSceneViewModelRepresentable {
   func transform(input: MealGokSuccessSceneViewModelInput) -> MealGokSuccessSceneViewModelOutput
 }
 
-final class MealGokSuccessSceneViewModel {
+// MARK: - MealGokSuccessSceneViewModel
 
+final class MealGokSuccessSceneViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
 }
 
-extension MealGokSuccessSceneViewModel: MealGokSuccessSceneViewModelRepresentable {
-  public func transform(input: MealGokSuccessSceneViewModelInput) -> MealGokSuccessSceneViewModelOutput {
-    subscriptions.removeAll()
+// MARK: MealGokSuccessSceneViewModelRepresentable
 
+extension MealGokSuccessSceneViewModel: MealGokSuccessSceneViewModelRepresentable {
+  public func transform(input _: MealGokSuccessSceneViewModelInput) -> MealGokSuccessSceneViewModelOutput {
+    subscriptions.removeAll()
 
     let initialState: MealGokSuccessSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

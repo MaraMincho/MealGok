@@ -6,115 +6,109 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
-import UIKit
 import DesignSystem
+import OSLog
+import UIKit
 
-final class MealGokSuccessContentView: UIView {
-  
+// MARK: - MealGokSuccessContentView
+
+final class MealGokSuccessContentView: UIStackView {
   private let property: MealGokSuccessContentViewProperty
-  
-  override var intrinsicContentSize: CGSize {
-    return .init(width: Metrics.imageWidth + Metrics.contentInset * 2, height: descriptionLabel.bounds.maxY)
-  }
-  
+
   private lazy var dateLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
     label.text = property.date
     label.font = .preferredFont(forTextStyle: .body, weight: .semibold)
-    
+    label.textAlignment = .left
+
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
-  
+
   private lazy var descriptionImageView: UIImageView = {
     let imageView = UIImageView(image: UIImage(systemName: "figure.run"))
-    imageView.contentMode = .scaleAspectFill
-    
+    imageView.contentMode = .scaleAspectFit
+
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
   }()
-  
+
   private lazy var descriptionTitleLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
-    label.text = property.date
+    label.text = "즐거운 식사 하셨나요?"
     label.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
     label.textAlignment = .center
-    
+
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
-  
+
   private lazy var descriptionLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
-    label.text = property.date
+    label.text = "건강한식사 ㅇㅇㅇ"
     label.font = .preferredFont(forTextStyle: .body, weight: .semibold)
-    
+
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
-  
+
   func setupLayout() {
-    addSubview(dateLabel)
-    dateLabel.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.contentInset).isActive = true
-    dateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.contentInset).isActive = true
-    dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.contentInset).isActive = true
-    
-    addSubview(descriptionImageView)
-    descriptionImageView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: Metrics.dateAndImageSpacing).isActive = true
-    descriptionImageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    addArrangedSubview(dateLabel)
+    addArrangedSubview(descriptionImageView)
+    addArrangedSubview(descriptionTitleLabel)
+    addArrangedSubview(descriptionLabel)
+
+    let inset = Metrics.contentInset
+
+    layoutMargins = .init(top: inset, left: inset, bottom: inset, right: inset)
+    spacing = Metrics.contentInset
+    isLayoutMarginsRelativeArrangement = true
+    axis = .vertical
+    alignment = .center
+
     descriptionImageView.widthAnchor.constraint(equalToConstant: Metrics.imageWidth).isActive = true
     descriptionImageView.heightAnchor.constraint(equalToConstant: Metrics.imageHeight).isActive = true
-    
-    addSubview(descriptionTitleLabel)
-    descriptionTitleLabel.topAnchor
-      .constraint(equalTo: descriptionImageView.bottomAnchor, constant: Metrics.imageAndDescriptionLabelSpacing).isActive = true
-    descriptionTitleLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor).isActive = true
-    descriptionTitleLabel.trailingAnchor.constraint(equalTo: dateLabel.trailingAnchor).isActive = true
-    
-    addSubview(descriptionLabel)
-    descriptionLabel.topAnchor
-      .constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: Metrics.descriptionLabelsSpacing).isActive = true
-    descriptionLabel.leadingAnchor.constraint(equalTo: dateLabel.leadingAnchor).isActive = true
-    descriptionLabel.trailingAnchor.constraint(equalTo: dateLabel.trailingAnchor).isActive = true
+
+    dateLabel.widthAnchor.constraint(equalToConstant: Metrics.imageWidth).isActive = true
   }
-  
+
   init(frame: CGRect, mealGokContentProperty: MealGokSuccessContentViewProperty) {
-    self.property = mealGokContentProperty
+    property = mealGokContentProperty
     super.init(frame: frame)
     setupLayout()
   }
-  
+
   @available(*, unavailable)
-  required init?(coder: NSCoder) {
-    fatalError("Cant use this method")
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
-  
+
   private enum Metrics {
     static let contentInset: CGFloat = 12
-    
+
     static let imageHeight: CGFloat = 240
     static let imageWidth: CGFloat = 320
-    
+
     static let dateAndImageSpacing: CGFloat = 12
-    
+
     static let imageAndDescriptionLabelSpacing: CGFloat = 12
-    
+
     static let descriptionLabelsSpacing: CGFloat = 12
   }
-  
-  private enum Constants {
-    
-  }
+
+  private enum Constants {}
 }
+
+// MARK: - MealGokSuccessContentViewProperty
 
 struct MealGokSuccessContentViewProperty {
   /// yyyy. mm. dd 형식의 날짜 String
   let date: String
-  
+
   let pictureURL: URL?
-  
+
   let description: String
 }
