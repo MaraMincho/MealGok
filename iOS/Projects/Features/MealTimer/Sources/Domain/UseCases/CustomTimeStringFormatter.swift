@@ -22,14 +22,22 @@ final class CustomTimeStringFormatter {
     return formatter
   }()
 
-  func subtract(from: Double) -> TimerUseCasePropertyEntity {
+  func subtract(from: Double) -> TimerUseCasePropertyEntity? {
     let target = Int(from)
     let leftSeconds = totalSeconds - target
+
+    if leftSeconds < 0 {
+      return nil
+    }
+
     let secondsString = leftSeconds % 60
     let minutesString = leftSeconds / 60
     let fanRadian: Double?
-    if (Double(target) / Double(totalSeconds)) * Double.pi * 2 >= prevPortionRadian {
-      prevPortionRadian += updateIntervalRadian
+    let currentRadian = (Double(target) / Double(totalSeconds)) * Double.pi * 2
+    if currentRadian >= prevPortionRadian {
+      while currentRadian >= prevPortionRadian {
+        prevPortionRadian += updateIntervalRadian
+      }
       fanRadian = prevPortionRadian
     } else {
       fanRadian = nil

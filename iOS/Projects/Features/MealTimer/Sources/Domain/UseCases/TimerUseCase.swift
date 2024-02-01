@@ -14,6 +14,7 @@ import Foundation
 protocol TimerUseCasesRepresentable {
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never>
   func start()
+  func timerFinished() -> AnyPublisher<Bool, Never>
 }
 
 // MARK: - TimerUseCase
@@ -22,6 +23,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private var oneSecondsTimer = Timer.publish(every: 1, on: .main, in: .common)
 
   private var startTime: Date? = nil
+  private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
 
@@ -34,16 +36,26 @@ final class TimerUseCase: TimerUseCasesRepresentable {
       .compactMap { [weak self] val -> TimerUseCasePropertyEntity? in
         guard
           let self,
-          let startTime
+          let startTime,
+          isFinishPublisher.value == false
         else {
           return nil
         }
         let from = val.timeIntervalSince(startTime)
-        return customStringFormatter.subtract(from: from)
+
+        let entity = customStringFormatter.subtract(from: from)
+        if entity == nil {
+          isFinishPublisher.send(true)
+        }
+        return entity
       }.eraseToAnyPublisher()
   }
 
   func start() {
     startTime = Date.now
+  }
+
+  func timerFinished() -> AnyPublisher<Bool, Never> {
+    isFinishPublisher.eraseToAnyPublisher()
   }
 }
