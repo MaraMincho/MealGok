@@ -48,6 +48,10 @@ public final class TabBarRouteFactory: RouterFactoriable {
     }
     return contents
   }
+
+  deinit {
+    print("깨꼬닥")
+  }
 }
 
 // MARK: - TabBarScreenType

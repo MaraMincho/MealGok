@@ -41,9 +41,9 @@ final class MealGokSuccessSceneViewController: UIViewController {
   private let shareButton: UIButton = {
     let button = UIButton()
     var configure: UIButton.Configuration = .filled()
-    configure.title = Constants.shareButtonText
     configure.baseForegroundColor = DesignSystemColor.secondaryBackground
-    configure.attributedTitle?.font = UIFont.preferredFont(forTextStyle: .title3, weight: .semibold)
+    configure.attributedTitle = .init(Constants.shareButtonText)
+    configure.attributedTitle?.font = UIFont.preferredFont(forTextStyle: .title3, weight: .bold)
     configure.baseBackgroundColor = DesignSystemColor.main01
     configure.contentInsets = .init(top: 10, leading: 0, bottom: 10, trailing: 0)
     button.configuration = configure
@@ -52,7 +52,7 @@ final class MealGokSuccessSceneViewController: UIViewController {
     return button
   }()
 
-  private let mealGokTimerSceneButton: UIButton = {
+  private let goHomeButton: UIButton = {
     let button = UIButton(type: .custom)
     var configure: UIButton.Configuration = .filled()
     configure.title = Constants.mealGokTimerSceneButtonText
@@ -69,7 +69,7 @@ final class MealGokSuccessSceneViewController: UIViewController {
   private lazy var buttonStackView: UIStackView = {
     let stackView = UIStackView(arrangedSubviews: [
       shareButton,
-      mealGokTimerSceneButton,
+      goHomeButton,
     ])
     stackView.axis = .vertical
     stackView.alignment = .fill
@@ -133,7 +133,10 @@ private extension MealGokSuccessSceneViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
+    let output = viewModel.transform(input: .init(
+      shareButtonDidTap: shareButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      goHomeButtonDidTap: goHomeButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+    ))
     output.sink { state in
       switch state {
       case .idle:

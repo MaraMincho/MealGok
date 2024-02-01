@@ -9,6 +9,8 @@
 import RouterFactory
 import UIKit
 
+// MARK: - MealGokRouterFactory
+
 final class MealGokRouterFactory: RouterFactoriable {
   var parentRouter: Routing?
 
@@ -16,8 +18,11 @@ final class MealGokRouterFactory: RouterFactoriable {
 
   var childRouters: [Routing] = []
 
+  private var window: UIWindow?
+
   func start(window: UIWindow?) {
     let build = build()
+    self.window = window
     window?.rootViewController = build
     start(build: build)
     window?.makeKeyAndVisible()
@@ -41,5 +46,21 @@ final class MealGokRouterFactory: RouterFactoriable {
     let navigationController = UINavigationController()
     navigationController.navigationBar.isHidden = true
     return navigationController
+  }
+
+  init() {
+    GoHomeRouterDelegate.shared.delegate = self
+  }
+}
+
+// MARK: GoHomeRouting
+
+extension MealGokRouterFactory: GoHomeRouting {
+  func goHome() {
+    popRouter()
+    guard let navigationController else {
+      return
+    }
+    start(build: navigationController)
   }
 }

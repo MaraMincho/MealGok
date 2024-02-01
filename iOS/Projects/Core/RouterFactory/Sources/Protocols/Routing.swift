@@ -23,7 +23,7 @@ public extension Routing {
       router.popRouter()
     }
     childRouters.removeAll()
-
-    navigationController?.popViewController(animated: false)
+    let child = parentRouter?.childRouters.filter { self !== $0 } ?? []
+    parentRouter?.childRouters = child
   }
 }

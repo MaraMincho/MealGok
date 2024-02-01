@@ -8,10 +8,14 @@
 
 import Combine
 import Foundation
+import RouterFactory
 
 // MARK: - MealGokSuccessSceneViewModelInput
 
-public struct MealGokSuccessSceneViewModelInput {}
+public struct MealGokSuccessSceneViewModelInput {
+  let shareButtonDidTap: AnyPublisher<Void, Never>
+  let goHomeButtonDidTap: AnyPublisher<Void, Never>
+}
 
 public typealias MealGokSuccessSceneViewModelOutput = AnyPublisher<MealGokSuccessSceneState, Never>
 
@@ -32,14 +36,20 @@ protocol MealGokSuccessSceneViewModelRepresentable {
 final class MealGokSuccessSceneViewModel {
   // MARK: - Properties
 
+  weak var router: MealGokSuccessSceneRouter?
   private var subscriptions: Set<AnyCancellable> = []
 }
 
 // MARK: MealGokSuccessSceneViewModelRepresentable
 
 extension MealGokSuccessSceneViewModel: MealGokSuccessSceneViewModelRepresentable {
-  public func transform(input _: MealGokSuccessSceneViewModelInput) -> MealGokSuccessSceneViewModelOutput {
+  public func transform(input: MealGokSuccessSceneViewModelInput) -> MealGokSuccessSceneViewModelOutput {
     subscriptions.removeAll()
+
+    input.goHomeButtonDidTap
+      .sink { [router] _ in
+        router?.goHome()
+      }.store(in: &subscriptions)
 
     let initialState: MealGokSuccessSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

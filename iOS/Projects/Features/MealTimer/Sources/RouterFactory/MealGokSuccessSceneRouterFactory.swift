@@ -9,6 +9,14 @@
 import RouterFactory
 import UIKit
 
+// MARK: - MealGokSuccessSceneRouter
+
+protocol MealGokSuccessSceneRouter: Routing {
+  func goHome()
+}
+
+// MARK: - MealGokSuccessSceneRouterFactory
+
 final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
   weak var parentRouter: Routing?
 
@@ -27,7 +35,17 @@ final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
 
   func build() -> UIViewController {
     let viewModel = MealGokSuccessSceneViewModel()
+    viewModel.router = self
+
     let viewController = MealGokSuccessSceneViewController(viewModel: viewModel)
     return viewController
+  }
+}
+
+// MARK: MealGokSuccessSceneRouter
+
+extension MealGokSuccessSceneRouterFactory: MealGokSuccessSceneRouter {
+  func goHome() {
+    GoHomeRouterDelegate.shared.goHome()
   }
 }
