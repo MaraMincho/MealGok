@@ -157,4 +157,8 @@ extension TimerView {
     guard let radian else { return }
     pieChartView.updatePieChart(radian: radian)
   }
+
+  func didFinish() {
+    timerMinuteLabel.text = "끝났음"
+  }
 }

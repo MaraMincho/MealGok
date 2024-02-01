@@ -80,6 +80,8 @@ private extension TimerSceneViewController {
       case let .updateTimerView(property):
         self?.timerView.updateTimerLabel(minutes: property.minute, seconds: property.seconds)
         self?.timerView.updateFan(to: property.fanRadian)
+      case .timerDidFinish:
+        self?.timerView.didFinish()
       case .idle:
         break
       }
