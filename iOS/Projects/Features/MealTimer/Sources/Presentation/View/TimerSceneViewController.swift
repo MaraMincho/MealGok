@@ -77,8 +77,9 @@ private extension TimerSceneViewController {
     ))
     output.sink { [weak self] state in
       switch state {
-      case let .updateTimerLabelText(text):
-        self?.timerView.updateTimerLabel(text: text)
+      case let .updateTimerView(property):
+        self?.timerView.updateTimerLabel(minutes: property.minute, seconds: property.seconds)
+        self?.timerView.updateFan(to: property.fanRadian)
       case .idle:
         break
       }

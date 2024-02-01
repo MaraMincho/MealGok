@@ -19,6 +19,8 @@ class PieChartView: UIView {
   init(contentSize: CGSize) {
     self.contentSize = contentSize
     super.init(frame: .zero)
+    shapeLayer.fillColor = DesignSystemColor.main03.cgColor
+    layer.addSublayer(shapeLayer)
   }
 
   override var intrinsicContentSize: CGSize {
@@ -31,12 +33,8 @@ class PieChartView: UIView {
   }
 
   let shapeLayer = CAShapeLayer()
-  var temp = CGFloat(-Double.pi / 2)
 
-  var progress: CGFloat = 0
-  func updatePieChart() {
-    temp -= Double.pi / 8
-
+  func updatePieChart(radian: Double) {
     let center = CGPoint(x: bounds.midX, y: bounds.midY)
     let newPath = UIBezierPath()
     newPath.move(to: center)
@@ -44,22 +42,12 @@ class PieChartView: UIView {
       withCenter: center,
       radius: contentSize.width / 2,
       startAngle: startPoint,
-      endAngle: temp,
+      endAngle: startPoint - radian,
       clockwise: false
     )
     newPath.close()
 
-    let pathAnimation = CABasicAnimation(keyPath: "path")
-    pathAnimation.fromValue = shapeLayer.path
-    pathAnimation.toValue = newPath.cgPath
-    pathAnimation.duration = 0.1
-    pathAnimation.fillMode = .both
-    pathAnimation.isRemovedOnCompletion = false
-
     shapeLayer.path = newPath.cgPath
-    shapeLayer.fillColor = DesignSystemColor.main03.cgColor
     shapeLayer.lineWidth = 3
-
-    layer.addSublayer(shapeLayer)
   }
 }

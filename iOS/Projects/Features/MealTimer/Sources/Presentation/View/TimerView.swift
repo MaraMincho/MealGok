@@ -62,20 +62,42 @@ final class TimerView: UIView {
 
   private lazy var pieChartView = PieChartView(contentSize: pieChartViewSize)
 
-  private lazy var timerLabel: UILabel = {
+  private let timerMinuteLabel: UILabel = {
     let label = UILabel()
-    label.text = "20:00"
-    label.textAlignment = .center
     label.textColor = DesignSystemColor.gray03
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.text = "20"
+    label.textAlignment = .left
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
 
-  private let timerTitleLabel: UILabel = {
+  private let timerColonLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.textAlignment = .center
+    label.text = ":"
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let timerSecondsLabel: UILabel = {
+    let label = UILabel()
+    label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.textAlignment = .right
+    label.text = "00"
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let successLabel: UILabel = {
+    let label = UILabel()
+    label.text = "성공!"
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -94,9 +116,17 @@ final class TimerView: UIView {
     pieChartView.frame.origin = .init(x: 7.5, y: 7.5)
     pieChartView.frame.size = pieChartViewSize
 
-    addSubview(timerLabel)
-    timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-    timerLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    addSubview(timerColonLabel)
+    timerColonLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    timerColonLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+
+    addSubview(timerMinuteLabel)
+    timerMinuteLabel.topAnchor.constraint(equalTo: timerColonLabel.topAnchor).isActive = true
+    timerMinuteLabel.trailingAnchor.constraint(equalTo: timerColonLabel.leadingAnchor).isActive = true
+
+    addSubview(timerSecondsLabel)
+    timerSecondsLabel.leadingAnchor.constraint(equalTo: timerColonLabel.trailingAnchor).isActive = true
+    timerSecondsLabel.topAnchor.constraint(equalTo: timerColonLabel.topAnchor).isActive = true
   }
 
   override var intrinsicContentSize: CGSize {
@@ -118,8 +148,13 @@ final class TimerView: UIView {
 }
 
 extension TimerView {
-  func updateTimerLabel(text: String?) {
-    timerLabel.text = text
-    pieChartView.updatePieChart()
+  func updateTimerLabel(minutes: String?, seconds: String?) {
+    timerMinuteLabel.text = minutes
+    timerSecondsLabel.text = seconds
+  }
+
+  func updateFan(to radian: Double?) {
+    guard let radian else { return }
+    pieChartView.updatePieChart(radian: radian)
   }
 }

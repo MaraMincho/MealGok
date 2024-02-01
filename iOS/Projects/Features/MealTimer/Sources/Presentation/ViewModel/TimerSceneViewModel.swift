@@ -21,7 +21,7 @@ public typealias TimerSceneViewModelOutput = AnyPublisher<TimerSceneState, Never
 
 public enum TimerSceneState {
   case idle
-  case updateTimerLabelText(String)
+  case updateTimerView(TimerUseCasePropertyEntity)
 }
 
 // MARK: - TimerSceneViewModelRepresentable
@@ -57,8 +57,8 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
 
     let updateTimerLabelText: TimerSceneViewModelOutput = timerUseCase
       .timerLabelText()
-      .map { text in
-        return TimerSceneState.updateTimerLabelText(text)
+      .map { entity in
+        return TimerSceneState.updateTimerView(entity)
       }.eraseToAnyPublisher()
 
     let initialState: TimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
