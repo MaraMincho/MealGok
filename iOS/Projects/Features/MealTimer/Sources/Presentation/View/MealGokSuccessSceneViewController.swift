@@ -20,6 +20,17 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   // MARK: UI Components
 
+  private let titleLabel: UILabel = {
+    let label = UILabel()
+    label.textColor = DesignSystemColor.primaryText
+    label.font = .boldSystemFont(ofSize: 34)
+    label.text = Constants.titleLabelText
+    
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+  
+  
   // MARK: Initializations
 
   init(viewModel: MealGokSuccessSceneViewModelRepresentable) {
@@ -71,5 +82,9 @@ private extension MealGokSuccessSceneViewController {
   
   enum Metrics {
     
+  }
+  
+  enum Constants {
+    static let titleLabelText = "고생하셨습니다."
   }
 }
