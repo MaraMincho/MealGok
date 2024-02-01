@@ -27,7 +27,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let customStringFormatter = CustomTimeStringFormatter(minutes: 1, totalUpdateCount: 120)
+    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 5, totalUpdateCount: 5)
     let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter)
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)

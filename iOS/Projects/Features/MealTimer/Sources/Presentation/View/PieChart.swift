@@ -33,6 +33,25 @@ class PieChartView: UIView {
   }
 
   let shapeLayer = CAShapeLayer()
+  let pulseLayer = CAShapeLayer()
+
+  func heartBeatAnimation() {
+    let scaleAnimation = CABasicAnimation(keyPath: "transform.scale.xy")
+    scaleAnimation.fromValue = 1
+    scaleAnimation.toValue = 1.2
+
+    let opacityAnimation = CAKeyframeAnimation(keyPath: "opacity")
+    opacityAnimation.values = [0.3, 0.7, 0]
+    opacityAnimation.keyTimes = [0, 0.3, 1]
+
+    let animationGroup = CAAnimationGroup()
+    animationGroup.duration = 1.5
+    animationGroup.repeatCount = .infinity
+    animationGroup.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.default)
+    animationGroup.animations = [scaleAnimation, opacityAnimation]
+
+    layer.add(animationGroup, forKey: "pulse")
+  }
 
   func updatePieChart(radian: Double) {
     let center = CGPoint(x: bounds.midX, y: bounds.midY)

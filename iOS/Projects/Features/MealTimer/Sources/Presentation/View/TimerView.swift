@@ -95,9 +95,12 @@ final class TimerView: UIView {
     return label
   }()
 
-  private let successLabel: UILabel = {
+  private let finishLabel: UILabel = {
     let label = UILabel()
     label.text = "성공!"
+    label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.isHidden = true
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -127,6 +130,10 @@ final class TimerView: UIView {
     addSubview(timerSecondsLabel)
     timerSecondsLabel.leadingAnchor.constraint(equalTo: timerColonLabel.trailingAnchor).isActive = true
     timerSecondsLabel.topAnchor.constraint(equalTo: timerColonLabel.topAnchor).isActive = true
+
+    addSubview(finishLabel)
+    finishLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    finishLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
   }
 
   override var intrinsicContentSize: CGSize {
@@ -159,6 +166,18 @@ extension TimerView {
   }
 
   func didFinish() {
-    timerMinuteLabel.text = "끝났음"
+    setView(finishLabel, hidden: false)
+
+    setView(timerMinuteLabel, hidden: true)
+    setView(timerColonLabel, hidden: true)
+    setView(timerSecondsLabel, hidden: true)
+
+    pieChartView.heartBeatAnimation()
+  }
+
+  func setView(_ view: UIView, hidden: Bool) {
+    UIView.transition(with: view, duration: 1.5, options: .transitionCrossDissolve, animations: {
+      view.isHidden = hidden
+    })
   }
 }
