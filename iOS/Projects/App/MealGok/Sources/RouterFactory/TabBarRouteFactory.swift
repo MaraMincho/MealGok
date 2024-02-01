@@ -8,6 +8,7 @@
 
 import DesignSystem
 import MealTimerFeature
+import OSLog
 import RouterFactory
 import UIKit
 
@@ -47,10 +48,6 @@ public final class TabBarRouteFactory: RouterFactoriable {
       return nav
     }
     return contents
-  }
-
-  deinit {
-    print("깨꼬닥")
   }
 }
 

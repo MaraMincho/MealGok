@@ -18,11 +18,8 @@ final class MealGokRouterFactory: RouterFactoriable {
 
   var childRouters: [Routing] = []
 
-  private var window: UIWindow?
-
   func start(window: UIWindow?) {
     let build = build()
-    self.window = window
     window?.rootViewController = build
     start(build: build)
     window?.makeKeyAndVisible()

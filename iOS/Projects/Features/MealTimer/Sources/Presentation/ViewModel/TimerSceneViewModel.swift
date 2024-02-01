@@ -8,11 +8,13 @@
 
 import Combine
 import Foundation
+import RouterFactory
 
 // MARK: - TimerSceneViewModelInput
 
 public struct TimerSceneViewModelInput {
-  var viewDidAppear: AnyPublisher<Void, Never>
+  let viewDidAppear: AnyPublisher<Void, Never>
+  let didTapCompleteButton: AnyPublisher<Void, Never>
 }
 
 public typealias TimerSceneViewModelOutput = AnyPublisher<TimerSceneState, Never>
@@ -38,6 +40,7 @@ final class TimerSceneViewModel {
 
   private var timerUseCase: TimerUseCasesRepresentable
   private var subscriptions: Set<AnyCancellable> = []
+  weak var router: StartMealTimerSceneRouterFactoriable?
 
   init(timerUseCase: TimerUseCasesRepresentable) {
     self.timerUseCase = timerUseCase
@@ -66,6 +69,12 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
       .timerFinished()
       .map { bool in return bool ? TimerSceneState.timerDidFinish : TimerSceneState.idle }
       .eraseToAnyPublisher()
+
+    input.didTapCompleteButton
+      .sink { [router] _ in
+        router?.pushSuccessScene()
+      }
+      .store(in: &subscriptions)
 
     let initialState: TimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

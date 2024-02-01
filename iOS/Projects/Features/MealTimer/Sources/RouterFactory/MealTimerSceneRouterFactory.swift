@@ -20,12 +20,12 @@ protocol MealTimerSceneRouterFactoriable: RouterFactoriable {
 public final class MealTimerSceneRouterFactory: RouterFactoriable {
   public weak var parentRouter: Routing?
 
-  public var navigationController: UINavigationController?
+  public weak var navigationController: UINavigationController?
 
   public var childRouters: [Routing] = []
 
   public func start(build: UIViewController) {
-    navigationController?.setViewControllers([build], animated: true)
+    navigationController?.pushViewController(build, animated: true)
   }
 
   public func build() -> UIViewController {
@@ -44,7 +44,10 @@ public final class MealTimerSceneRouterFactory: RouterFactoriable {
 
 extension MealTimerSceneRouterFactory: MealTimerSceneRouterFactoriable {
   func startMealTimerScene() {
-    let router = StartMealTimerSceneRouterFactory(navigationController: navigationController?.navigationController)
+    let router = StartMealTimerSceneRouterFactory(
+      parentRouter: self,
+      navigationController: navigationController?.tabBarController?.navigationController
+    )
     childRouters.append(router)
     router.start(build: router.build())
   }

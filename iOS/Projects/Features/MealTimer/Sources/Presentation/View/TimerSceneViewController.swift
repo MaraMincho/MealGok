@@ -62,6 +62,7 @@ private extension TimerSceneViewController {
 
   func setupHierarchyAndConstraints() {
     view.addSubview(timerView)
+    timerView.isUserInteractionEnabled = false
     timerView.translatesAutoresizingMaskIntoConstraints = false
     timerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     timerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
@@ -73,7 +74,8 @@ private extension TimerSceneViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      viewDidAppear: viewDidAppearPublisher.eraseToAnyPublisher()
+      viewDidAppear: viewDidAppearPublisher.eraseToAnyPublisher(),
+      didTapCompleteButton: timerView.publisher(gesture: .tap).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher()
     ))
     output.sink { [weak self] state in
       switch state {
@@ -81,6 +83,7 @@ private extension TimerSceneViewController {
         self?.timerView.updateTimerLabel(minutes: property.minute, seconds: property.seconds)
         self?.timerView.updateFan(to: property.fanRadian)
       case .timerDidFinish:
+        self?.timerView.isUserInteractionEnabled = true
         self?.timerView.didFinish()
       case .idle:
         break

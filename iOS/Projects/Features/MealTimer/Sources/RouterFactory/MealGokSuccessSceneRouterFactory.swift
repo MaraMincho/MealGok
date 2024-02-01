@@ -20,7 +20,7 @@ protocol MealGokSuccessSceneRouter: Routing {
 final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
   weak var parentRouter: Routing?
 
-  var navigationController: UINavigationController?
+  weak var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
 

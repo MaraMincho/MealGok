@@ -19,11 +19,12 @@ public protocol Routing: AnyObject {
 public extension Routing {
   /// Default PopRouter Method
   func popRouter() {
+    let child = parentRouter?.childRouters.filter { self !== $0 }
+    parentRouter?.childRouters = child ?? []
+
     childRouters.forEach { router in
       router.popRouter()
     }
     childRouters.removeAll()
-    let child = parentRouter?.childRouters.filter { self !== $0 } ?? []
-    parentRouter?.childRouters = child
   }
 }
