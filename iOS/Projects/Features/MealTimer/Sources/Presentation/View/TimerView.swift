@@ -9,6 +9,8 @@
 import DesignSystem
 import UIKit
 
+// MARK: - TimerView
+
 final class TimerView: UIView {
   // MARK: - Property
 
@@ -21,6 +23,11 @@ final class TimerView: UIView {
   var dashCircleViewSize: CGSize {
     let contentSize = lineCircleViewSize
     return .init(width: contentSize.width - 20, height: contentSize.height - 20)
+  }
+
+  var pieChartViewSize: CGSize {
+    let contentSize = lineCircleViewSize
+    return .init(width: contentSize.width - 15, height: contentSize.height - 15)
   }
 
   // MARK: - UIComponent
@@ -53,6 +60,8 @@ final class TimerView: UIView {
     return view
   }()
 
+  private lazy var pieChartView = PieChartView(contentSize: pieChartViewSize)
+
   private lazy var timerLabel: UILabel = {
     let label = UILabel()
     label.text = "20:00"
@@ -81,6 +90,10 @@ final class TimerView: UIView {
     dashCircleView.frame.origin = .init(x: 10, y: 10)
     dashCircleView.frame.size = dashCircleViewSize
 
+    addSubview(pieChartView)
+    pieChartView.frame.origin = .init(x: 7.5, y: 7.5)
+    pieChartView.frame.size = pieChartViewSize
+
     addSubview(timerLabel)
     timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     timerLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
@@ -101,5 +114,12 @@ final class TimerView: UIView {
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("Cant use this method")
+  }
+}
+
+extension TimerView {
+  func updateTimerLabel(text: String?) {
+    timerLabel.text = text
+    pieChartView.updatePieChart()
   }
 }

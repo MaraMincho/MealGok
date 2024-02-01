@@ -27,8 +27,12 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let viewController = UIViewController()
-    viewController.view.backgroundColor = .red
+    let customStringFormatter = CustomTimeStringFormatter(totalMinutes: 20)
+    let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter)
+
+    let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)
+
+    let viewController = TimerSceneViewController(viewModel: viewModel)
     return viewController
   }
 
