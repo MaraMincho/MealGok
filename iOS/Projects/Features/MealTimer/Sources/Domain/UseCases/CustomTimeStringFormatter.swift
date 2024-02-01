@@ -11,11 +11,11 @@ import Foundation
 // MARK: - CustomTimeStringFormatter
 
 final class CustomTimeStringFormatter {
-  let totalSeconds: Int
-  let updateIntervalRadian: Double
-  var prevPortionRadian: Double
+  private let totalSeconds: Int
+  private let updateIntervalRadian: Double
+  private var prevPortionRadian: Double
 
-  let numberFormatter: NumberFormatter = {
+  private let numberFormatter: NumberFormatter = {
     let formatter = NumberFormatter()
     formatter.minimumIntegerDigits = 2
 
@@ -32,22 +32,20 @@ final class CustomTimeStringFormatter {
 
     let secondsString = leftSeconds % 60
     let minutesString = leftSeconds / 60
-    let fanRadian: Double?
+
     let currentRadian = (Double(target) / Double(totalSeconds)) * Double.pi * 2
-    if currentRadian >= prevPortionRadian {
-      while currentRadian >= prevPortionRadian {
-        prevPortionRadian += updateIntervalRadian
-      }
-      fanRadian = prevPortionRadian
-    } else {
-      fanRadian = nil
-    }
 
     return .init(
       minute: numberFormatter.string(for: minutesString) ?? "",
       seconds: numberFormatter.string(for: secondsString) ?? "",
-      fanRadian: fanRadian
+      fanRadian: currentRadian
     )
+  }
+
+  func start() -> TimerUseCasePropertyEntity {
+    let secondsString = numberFormatter.string(for: totalSeconds % 60) ?? ""
+    let minutesString = numberFormatter.string(for: totalSeconds / 60) ?? ""
+    return .init(minute: minutesString, seconds: secondsString, fanRadian: nil)
   }
 
   init(minutes: Int, seconds: Int = 0, totalUpdateCount: Int = 120) {

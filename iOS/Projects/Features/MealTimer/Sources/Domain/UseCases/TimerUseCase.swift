@@ -32,7 +32,9 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never> {
-    return oneSecondsTimer.autoconnect()
+    let initValuePublisher = Just(customStringFormatter.start()).eraseToAnyPublisher()
+
+    let secondsPublisher = oneSecondsTimer.autoconnect()
       .compactMap { [weak self] val -> TimerUseCasePropertyEntity? in
         guard
           let self,
@@ -49,6 +51,8 @@ final class TimerUseCase: TimerUseCasesRepresentable {
         }
         return entity
       }.eraseToAnyPublisher()
+
+    return initValuePublisher.merge(with: secondsPublisher).eraseToAnyPublisher()
   }
 
   func start() {
