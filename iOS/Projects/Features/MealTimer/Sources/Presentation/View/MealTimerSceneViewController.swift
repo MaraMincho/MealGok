@@ -171,7 +171,7 @@ private extension MealTimerSceneViewController {
   }
 
   enum Metrics {
-    static let topSpacing: CGFloat = 0
+    static let topSpacing: CGFloat = 36
     static let leadingAndTrailingGuide: CGFloat = 24
 
     static let descriptionTitleLabelTopSpacing: CGFloat = 13

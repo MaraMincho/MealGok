@@ -9,6 +9,8 @@
 import DesignSystem
 import UIKit
 
+// MARK: - TimerView
+
 final class TimerView: UIView {
   // MARK: - Property
 
@@ -21,6 +23,11 @@ final class TimerView: UIView {
   var dashCircleViewSize: CGSize {
     let contentSize = lineCircleViewSize
     return .init(width: contentSize.width - 20, height: contentSize.height - 20)
+  }
+
+  var pieChartViewSize: CGSize {
+    let contentSize = lineCircleViewSize
+    return .init(width: contentSize.width - 15, height: contentSize.height - 15)
   }
 
   // MARK: - UIComponent
@@ -53,20 +60,47 @@ final class TimerView: UIView {
     return view
   }()
 
-  private lazy var timerLabel: UILabel = {
+  private lazy var pieChartView = PieChartView(contentSize: pieChartViewSize)
+
+  private let timerMinuteLabel: UILabel = {
     let label = UILabel()
-    label.text = "20:00"
-    label.textAlignment = .center
     label.textColor = DesignSystemColor.gray03
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.text = "20"
+    label.textAlignment = .left
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
 
-  private let timerTitleLabel: UILabel = {
+  private let timerColonLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.textAlignment = .center
+    label.text = ":"
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let timerSecondsLabel: UILabel = {
+    let label = UILabel()
+    label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.textAlignment = .right
+    label.text = "00"
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let finishLabel: UILabel = {
+    let label = UILabel()
+    label.text = "성공!"
+    label.textColor = DesignSystemColor.gray03
+    label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
+    label.isHidden = true
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -81,9 +115,25 @@ final class TimerView: UIView {
     dashCircleView.frame.origin = .init(x: 10, y: 10)
     dashCircleView.frame.size = dashCircleViewSize
 
-    addSubview(timerLabel)
-    timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-    timerLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    addSubview(pieChartView)
+    pieChartView.frame.origin = .init(x: 7.5, y: 7.5)
+    pieChartView.frame.size = pieChartViewSize
+
+    addSubview(timerColonLabel)
+    timerColonLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    timerColonLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+
+    addSubview(timerMinuteLabel)
+    timerMinuteLabel.topAnchor.constraint(equalTo: timerColonLabel.topAnchor).isActive = true
+    timerMinuteLabel.trailingAnchor.constraint(equalTo: timerColonLabel.leadingAnchor).isActive = true
+
+    addSubview(timerSecondsLabel)
+    timerSecondsLabel.leadingAnchor.constraint(equalTo: timerColonLabel.trailingAnchor).isActive = true
+    timerSecondsLabel.topAnchor.constraint(equalTo: timerColonLabel.topAnchor).isActive = true
+
+    addSubview(finishLabel)
+    finishLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    finishLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
   }
 
   override var intrinsicContentSize: CGSize {
@@ -101,5 +151,33 @@ final class TimerView: UIView {
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("Cant use this method")
+  }
+}
+
+extension TimerView {
+  func updateTimerLabel(minutes: String?, seconds: String?) {
+    timerMinuteLabel.text = minutes
+    timerSecondsLabel.text = seconds
+  }
+
+  func updateFan(to radian: Double?) {
+    guard let radian else { return }
+    pieChartView.updatePieChart(radian: radian)
+  }
+
+  func didFinish() {
+    setView(finishLabel, hidden: false)
+
+    setView(timerMinuteLabel, hidden: true)
+    setView(timerColonLabel, hidden: true)
+    setView(timerSecondsLabel, hidden: true)
+
+    pieChartView.heartBeatAnimation()
+  }
+
+  func setView(_ view: UIView, hidden: Bool) {
+    UIView.transition(with: view, duration: 1.5, options: .transitionCrossDissolve, animations: {
+      view.isHidden = hidden
+    })
   }
 }
