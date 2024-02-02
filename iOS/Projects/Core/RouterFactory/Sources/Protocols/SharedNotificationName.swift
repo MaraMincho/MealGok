@@ -18,12 +18,12 @@ public extension Notification.Name {
 
 // MARK: - SharedRouterNotificationCenter
 
-final class SharedRouterNotificationCenter {
-  func goHome() {
+public enum SharedRouterNotificationCenter {
+  public static func goHome() {
     NotificationCenter.default.post(name: .goHome, object: nil)
   }
 
-  func goHomeAndReBuild() {
+  public static func goHomeAndReBuild() {
     NotificationCenter.default.post(name: .goHomeAndReBuild, object: nil)
   }
 }

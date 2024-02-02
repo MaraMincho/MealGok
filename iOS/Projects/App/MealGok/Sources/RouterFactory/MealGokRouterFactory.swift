@@ -56,10 +56,10 @@ extension MealGokRouterFactory {
   func goHome() {}
 
   func observeNotification() {
-    NotificationCenter.default.addObserver(forName: .goHomeAndReBuild, object: nil, queue: .main) { [weak self] _ in
+    NotificationCenter.default.addObserver(forName: .goHome, object: nil, queue: .main) { [weak self] _ in
       guard let self else { return }
       let tapBarRouter = childRouters[0]
-      tapBarRouter.popRouter()
+      tapBarRouter.childRouters.forEach { $0.childRouters = [] }
       navigationController?.popToRootViewController(animated: true)
     }
 
