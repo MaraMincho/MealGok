@@ -27,7 +27,7 @@ final class MealGokSuccessContentView: UIStackView {
   }()
 
   private lazy var descriptionImageView: UIImageView = {
-    let imageView = UIImageView(image: UIImage(systemName: "figure.run"))
+    let imageView = UIImageView(image: SharedImages.successSceneDefaultImage)
     imageView.contentMode = .scaleAspectFit
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +37,7 @@ final class MealGokSuccessContentView: UIStackView {
   private lazy var descriptionTitleLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
-    label.text = "즐거운 식사 하셨나요?"
+    label.text = property.title
     label.font = .preferredFont(forTextStyle: .title2, weight: .semibold)
     label.textAlignment = .center
 
@@ -48,8 +48,9 @@ final class MealGokSuccessContentView: UIStackView {
   private lazy var descriptionLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
-    label.text = "건강한식사 ㅇㅇㅇ"
-    label.font = .preferredFont(forTextStyle: .body, weight: .semibold)
+    label.text = property.description
+    label.font = .preferredFont(forTextStyle: .body, weight: .regular)
+    label.numberOfLines = 0
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -61,14 +62,6 @@ final class MealGokSuccessContentView: UIStackView {
     addArrangedSubview(descriptionTitleLabel)
     addArrangedSubview(descriptionLabel)
 
-    let inset = Metrics.contentInset
-
-    layoutMargins = .init(top: inset, left: inset, bottom: inset, right: inset)
-    spacing = Metrics.contentInset
-    isLayoutMarginsRelativeArrangement = true
-    axis = .vertical
-    alignment = .center
-
     descriptionImageView.widthAnchor.constraint(equalToConstant: Metrics.imageWidth).isActive = true
     descriptionImageView.heightAnchor.constraint(equalToConstant: Metrics.imageHeight).isActive = true
 
@@ -78,7 +71,28 @@ final class MealGokSuccessContentView: UIStackView {
   init(frame: CGRect, mealGokContentProperty: MealGokSuccessContentViewProperty) {
     property = mealGokContentProperty
     super.init(frame: frame)
+
+    setupStyle()
     setupLayout()
+  }
+
+  func setupStyle() {
+    let inset = Metrics.contentInset
+
+    layoutMargins = .init(top: inset, left: inset, bottom: Metrics.bottomContentInse, right: inset)
+    spacing = Metrics.contentInset
+    isLayoutMarginsRelativeArrangement = true
+    axis = .vertical
+    alignment = .center
+
+    layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+    layer.shadowOpacity = 1
+    layer.shadowRadius = 2
+    layer.shadowOffset = CGSize(width: 0, height: 2)
+
+    layer.cornerRadius = 8
+    layer.backgroundColor = DesignSystemColor.secondaryBackground.cgColor
+    layer.cornerCurve = .continuous
   }
 
   @available(*, unavailable)
@@ -88,6 +102,7 @@ final class MealGokSuccessContentView: UIStackView {
 
   private enum Metrics {
     static let contentInset: CGFloat = 12
+    static let bottomContentInse: CGFloat = 30
 
     static let imageHeight: CGFloat = 240
     static let imageWidth: CGFloat = 320
@@ -108,7 +123,12 @@ struct MealGokSuccessContentViewProperty {
   /// yyyy. mm. dd 형식의 날짜 String
   let date: String
 
+  /// 결과 화면의 이미지 입니다.
   let pictureURL: URL?
 
+  /// 설명의 타이틀 입니다.
+  let title: String
+
+  /// 설명 문구 입니다.
   let description: String
 }

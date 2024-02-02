@@ -17,6 +17,8 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   private let viewModel: MealGokSuccessSceneViewModelRepresentable
 
+  private let mealGokContentProperty: MealGokSuccessContentViewProperty
+
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: UI Components
@@ -31,8 +33,8 @@ final class MealGokSuccessSceneViewController: UIViewController {
     return label
   }()
 
-  private let mealGokSuccessContentView: MealGokSuccessContentView = {
-    let view = MealGokSuccessContentView(frame: .zero, mealGokContentProperty: .init(date: "00", pictureURL: nil, description: "하이용"))
+  private lazy var mealGokSuccessContentView: MealGokSuccessContentView = {
+    let view = MealGokSuccessContentView(frame: .zero, mealGokContentProperty: mealGokContentProperty)
 
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
@@ -82,8 +84,9 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   // MARK: Initializations
 
-  init(viewModel: MealGokSuccessSceneViewModelRepresentable) {
+  init(viewModel: MealGokSuccessSceneViewModelRepresentable, mealGokContentProperty: MealGokSuccessContentViewProperty) {
     self.viewModel = viewModel
+    self.mealGokContentProperty = mealGokContentProperty
     super.init(nibName: nil, bundle: nil)
   }
 
