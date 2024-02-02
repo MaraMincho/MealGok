@@ -46,7 +46,7 @@ extension MealTimerSceneRouterFactory: MealTimerSceneRouterFactoriable {
   func startMealTimerScene() {
     let router = StartMealTimerSceneRouterFactory(
       parentRouter: self,
-      navigationController: navigationController?.tabBarController?.navigationController
+      navigationController: navigationController
     )
     childRouters.append(router)
     router.start(build: router.build())

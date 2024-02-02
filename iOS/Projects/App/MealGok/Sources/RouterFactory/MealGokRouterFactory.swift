@@ -46,18 +46,30 @@ final class MealGokRouterFactory: RouterFactoriable {
   }
 
   init() {
-    GoHomeRouterDelegate.shared.delegate = self
+    observeNotification()
   }
 }
 
 // MARK: GoHomeRouting
 
-extension MealGokRouterFactory: GoHomeRouting {
-  func goHome() {
-    popRouter()
-    guard let navigationController else {
-      return
+extension MealGokRouterFactory {
+  func goHome() {}
+
+  func observeNotification() {
+    NotificationCenter.default.addObserver(forName: .goHomeAndReBuild, object: nil, queue: .main) { [weak self] _ in
+      guard let self else { return }
+      let tapBarRouter = childRouters[0]
+      tapBarRouter.popRouter()
+      navigationController?.popToRootViewController(animated: true)
     }
-    start(build: navigationController)
+
+    NotificationCenter.default.addObserver(forName: .goHomeAndReBuild, object: nil, queue: .main) { [weak self] _ in
+      guard let self else { return }
+      popRouter()
+      guard let navigationController else {
+        return
+      }
+      start(build: navigationController)
+    }
   }
 }
