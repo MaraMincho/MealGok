@@ -11,14 +11,16 @@ import UIKit
 
 // MARK: - StartMealTimerSceneRouterFactoriable
 
-protocol StartMealTimerSceneRouterFactoriable: RouterFactoriable {}
+protocol StartMealTimerSceneRouterFactoriable: RouterFactoriable {
+  func pushSuccessScene()
+}
 
 // MARK: - StartMealTimerSceneRouterFactory
 
 final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   weak var parentRouter: Routing?
 
-  var navigationController: UINavigationController?
+  weak var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
 
@@ -27,17 +29,28 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let customStringFormatter = CustomTimeStringFormatter(minutes: 10, seconds: 0, totalUpdateCount: 480)
+    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 5, totalUpdateCount: 480)
     let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter)
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)
+    viewModel.router = self
 
     let viewController = TimerSceneViewController(viewModel: viewModel)
     return viewController
   }
 
-  init(parentRouter: Routing? = nil, navigationController: UINavigationController?) {
+  init(parentRouter: Routing?, navigationController: UINavigationController?) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
+  }
+}
+
+// MARK: StartMealTimerSceneRouterFactoriable
+
+extension StartMealTimerSceneRouterFactory: StartMealTimerSceneRouterFactoriable {
+  func pushSuccessScene() {
+    let router = MealGokSuccessSceneRouterFactory(router: self, navigationController: navigationController)
+    childRouters.append(router)
+    router.start(build: router.build())
   }
 }

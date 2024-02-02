@@ -8,6 +8,7 @@
 
 import DesignSystem
 import MealTimerFeature
+import OSLog
 import RouterFactory
 import UIKit
 
@@ -38,51 +39,40 @@ public final class TabBarRouteFactory: RouterFactoriable {
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
-    let contents = TabBarScreenType.allCases.map { type in
-      let nav = UINavigationController()
-      nav.title = type.title
-      nav.tabBarItem.image = type.image
-      type.startTabBarContentViewController(self, navigationController: nav)
-
-      return nav
+    let contents = TabBarScreenType.allCases.compactMap { [weak self] type -> UIViewController? in
+      guard let self else { return nil }
+      let mealTimerRouterFactory = MealTimerSceneRouterFactory(self, navigationController: navigationController)
+      childRouters.append(mealTimerRouterFactory)
+      let vc = mealTimerRouterFactory.build()
+      vc.title = type.title
+      vc.tabBarItem.image = type.image
+      return vc
     }
     return contents
   }
-}
 
-// MARK: - TabBarScreenType
+  // MARK: - TabBarScreenType
 
-enum TabBarScreenType: CaseIterable {
-  case timer
-  case profile
+  private enum TabBarScreenType: CaseIterable {
+    case timer
+    case profile
 
-  var image: UIImage? {
-    switch self {
-    case .timer:
-      return UIImage(systemName: "fork.knife.circle")
-    case .profile:
-      return UIImage(systemName: "person.crop.circle")
+    var image: UIImage? {
+      switch self {
+      case .timer:
+        return UIImage(systemName: "fork.knife.circle")
+      case .profile:
+        return UIImage(systemName: "person.crop.circle")
+      }
     }
-  }
 
-  var title: String {
-    switch self {
-    case .timer:
-      return "타이머"
-    case .profile:
-      return "프로필"
-    }
-  }
-
-  func startTabBarContentViewController(_ router: Routing, navigationController: UINavigationController) {
-    switch self {
-    case .timer:
-      let mealTimerRouterFactory = MealTimerSceneRouterFactory(router, navigationController: navigationController)
-      router.childRouters.append(mealTimerRouterFactory)
-      mealTimerRouterFactory.start(build: mealTimerRouterFactory.build())
-    case .profile:
-      let vc = UIViewController()
-      navigationController.setViewControllers([vc], animated: true)
+    var title: String {
+      switch self {
+      case .timer:
+        return "타이머"
+      case .profile:
+        return "프로필"
+      }
     }
   }
 }

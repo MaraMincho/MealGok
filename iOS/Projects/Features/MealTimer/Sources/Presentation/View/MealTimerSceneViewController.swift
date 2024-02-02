@@ -94,10 +94,6 @@ final class MealTimerSceneViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
-  }
-
-  override func viewIsAppearing(_ animated: Bool) {
-    super.viewIsAppearing(animated)
     setupHierarchyAndConstraints()
   }
 }
