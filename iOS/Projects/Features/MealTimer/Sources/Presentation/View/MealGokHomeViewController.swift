@@ -1,5 +1,5 @@
 //
-//  MealTimerSceneViewController.swift
+//  MealGokHomeViewController.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 1/30/24.
@@ -12,9 +12,9 @@ import CombineCocoa
 import DesignSystem
 import UIKit
 
-// MARK: - MealTimerSceneViewController
+// MARK: - MealGokHomeViewController
 
-final class MealTimerSceneViewController: UIViewController {
+final class MealGokHomeViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: MealTimerSceneViewModelRepresentable
@@ -98,7 +98,7 @@ final class MealTimerSceneViewController: UIViewController {
   }
 }
 
-private extension MealTimerSceneViewController {
+private extension MealGokHomeViewController {
   func setup() {
     setupStyles()
     bind()
@@ -193,7 +193,7 @@ private extension MealTimerSceneViewController {
 
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
-extension MealTimerSceneViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+extension MealGokHomeViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
     guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
       picker.dismiss(animated: true)

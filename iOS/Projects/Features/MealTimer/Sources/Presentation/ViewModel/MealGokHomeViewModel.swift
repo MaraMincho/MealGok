@@ -1,5 +1,5 @@
 //
-//  MealTimerSceneViewModel.swift
+//  MealGokHomeViewModel.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 1/30/24.
@@ -10,18 +10,18 @@ import Combine
 import Foundation
 import RouterFactory
 
-// MARK: - MealTimerSceneViewModelInput
+// MARK: - MealGokHomeViewModelInput
 
-public struct MealTimerSceneViewModelInput {
+public struct MealGokHomeViewModelInput {
   let didCameraButtonTouchPublisher: AnyPublisher<Void, Never>
   let didTimerStartButtonTouchPublisher: AnyPublisher<Void, Never>
 }
 
-public typealias MealTimerSceneViewModelOutput = AnyPublisher<MealTimerSceneState, Never>
+public typealias MealGokHomeViewModelOutput = AnyPublisher<MealGokHomeState, Never>
 
-// MARK: - MealTimerSceneState
+// MARK: - MealGokHomeState
 
-public enum MealTimerSceneState {
+public enum MealGokHomeState {
   case idle
   case presentCamera
 }
@@ -29,22 +29,22 @@ public enum MealTimerSceneState {
 // MARK: - MealTimerSceneViewModelRepresentable
 
 protocol MealTimerSceneViewModelRepresentable {
-  func transform(input: MealTimerSceneViewModelInput) -> MealTimerSceneViewModelOutput
+  func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput
 }
 
-// MARK: - MealTimerSceneViewModel
+// MARK: - MealGokHomeViewModel
 
-final class MealTimerSceneViewModel {
+final class MealGokHomeViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
-  weak var router: MealTimerSceneRouterFactoriable?
+  weak var router: MealGokHomeFactoriable?
 }
 
 // MARK: MealTimerSceneViewModelRepresentable
 
-extension MealTimerSceneViewModel: MealTimerSceneViewModelRepresentable {
-  public func transform(input: MealTimerSceneViewModelInput) -> MealTimerSceneViewModelOutput {
+extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
+  public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
 
     input.didTimerStartButtonTouchPublisher
@@ -54,10 +54,10 @@ extension MealTimerSceneViewModel: MealTimerSceneViewModelRepresentable {
       .store(in: &subscriptions)
 
     let presentCameraPicker = input.didCameraButtonTouchPublisher
-      .map { _ in return MealTimerSceneState.presentCamera }
+      .map { _ in return MealGokHomeState.presentCamera }
       .eraseToAnyPublisher()
 
-    let initialState: MealTimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
+    let initialState: MealGokHomeViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
     return initialState.merge(with: presentCameraPicker).eraseToAnyPublisher()
   }

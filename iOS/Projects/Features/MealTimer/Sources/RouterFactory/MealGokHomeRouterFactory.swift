@@ -1,5 +1,5 @@
 //
-//  MealTimerSceneRouterFactory.swift
+//  MealGokHomeRouterFactory.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 1/30/24.
@@ -9,15 +9,15 @@
 import RouterFactory
 import UIKit
 
-// MARK: - MealTimerSceneRouterFactoriable
+// MARK: - MealGokHomeFactoriable
 
-protocol MealTimerSceneRouterFactoriable: RouterFactoriable {
+protocol MealGokHomeFactoriable: RouterFactoriable {
   func startMealTimerScene()
 }
 
-// MARK: - MealTimerSceneRouterFactory
+// MARK: - MealGokHomeRouterFactory
 
-public final class MealTimerSceneRouterFactory: RouterFactoriable {
+public final class MealGokHomeRouterFactory: RouterFactoriable {
   public weak var parentRouter: Routing?
 
   public weak var navigationController: UINavigationController?
@@ -29,9 +29,9 @@ public final class MealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   public func build() -> UIViewController {
-    let viewModel = MealTimerSceneViewModel()
+    let viewModel = MealGokHomeViewModel()
     viewModel.router = self
-    return MealTimerSceneViewController(viewModel: viewModel)
+    return MealGokHomeViewController(viewModel: viewModel)
   }
 
   public init(_ parentRouter: Routing, navigationController: UINavigationController?) {
@@ -40,9 +40,9 @@ public final class MealTimerSceneRouterFactory: RouterFactoriable {
   }
 }
 
-// MARK: MealTimerSceneRouterFactoriable
+// MARK: MealGokHomeFactoriable
 
-extension MealTimerSceneRouterFactory: MealTimerSceneRouterFactoriable {
+extension MealGokHomeRouterFactory: MealGokHomeFactoriable {
   func startMealTimerScene() {
     let router = StartMealTimerSceneRouterFactory(
       parentRouter: self,

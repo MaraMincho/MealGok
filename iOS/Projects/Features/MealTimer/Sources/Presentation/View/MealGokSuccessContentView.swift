@@ -84,6 +84,7 @@ final class MealGokSuccessContentView: UIStackView {
     isLayoutMarginsRelativeArrangement = true
     axis = .vertical
     alignment = .center
+    distribution = .equalSpacing
 
     layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
     layer.shadowOpacity = 1
