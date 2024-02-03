@@ -1,4 +1,4 @@
-// 
+//
 //  ProfileViewController.swift
 //  ProfileFeature
 //
@@ -10,8 +10,9 @@ import Combine
 import DesignSystem
 import UIKit
 
-final class ProfileViewController: UIViewController {
+// MARK: - ProfileViewController
 
+final class ProfileViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: ProfileViewModelRepresentable
@@ -38,8 +39,6 @@ final class ProfileViewController: UIViewController {
     super.viewDidLoad()
     setup()
   }
-
-
 }
 
 private extension ProfileViewController {
@@ -48,16 +47,15 @@ private extension ProfileViewController {
     setupHierarchyAndConstraints()
     bind()
   }
-  
+
   func setupHierarchyAndConstraints() {
     let safeArea = view.safeAreaLayoutGuide
-    
   }
-  
+
   func setupStyles() {
     view.backgroundColor = DesignSystemColor.primaryBackground
   }
-  
+
   func bind() {
     let output = viewModel.transform(input: .init())
     output.sink { state in
@@ -68,8 +66,6 @@ private extension ProfileViewController {
     }
     .store(in: &subscriptions)
   }
-  
-  enum Metrics {
-    
-  }
+
+  enum Metrics {}
 }

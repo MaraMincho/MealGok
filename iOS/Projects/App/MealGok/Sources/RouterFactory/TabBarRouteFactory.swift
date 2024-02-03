@@ -9,9 +9,9 @@
 import DesignSystem
 import MealTimerFeature
 import OSLog
+import ProfileFeature
 import RouterFactory
 import UIKit
-import ProfileFeature
 
 // MARK: - TabBarRouteFactory
 
@@ -40,12 +40,12 @@ public final class TabBarRouteFactory: RouterFactoriable {
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
-    let contents = TabBarScreenType.allCases.compactMap {type -> UIViewController? in
+    let contents = TabBarScreenType.allCases.compactMap { type -> UIViewController? in
       return makeRouter(type: type)
     }
     return contents
   }
-  
+
   private func makeRouter(type: TabBarScreenType) -> UIViewController {
     switch type {
     case .timer:

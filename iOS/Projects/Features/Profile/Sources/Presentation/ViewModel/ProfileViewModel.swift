@@ -1,4 +1,4 @@
-// 
+//
 //  ProfileViewModel.swift
 //  ProfileFeature
 //
@@ -27,17 +27,19 @@ protocol ProfileViewModelRepresentable {
   func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput
 }
 
-final class ProfileViewModel {
+// MARK: - ProfileViewModel
 
+final class ProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
 }
 
-extension ProfileViewModel: ProfileViewModelRepresentable {
-  public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
-    subscriptions.removeAll()
+// MARK: ProfileViewModelRepresentable
 
+extension ProfileViewModel: ProfileViewModelRepresentable {
+  public func transform(input _: ProfileViewModelInput) -> ProfileViewModelOutput {
+    subscriptions.removeAll()
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
