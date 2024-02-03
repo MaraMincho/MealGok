@@ -9,22 +9,22 @@
 import UIKit
 import RouterFactory
 
-final class ProfileSceneRouterFactory: RouterFactoriable {
-  weak var parentRouter: Routing?
+public final class ProfileSceneRouterFactory: RouterFactoriable {
+  public weak var parentRouter: Routing?
   
-  weak var navigationController: UINavigationController?
+  public weak var navigationController: UINavigationController?
   
-  var childRouters: [Routing] = []
+  public var childRouters: [Routing] = []
   
-  func start(build: UIViewController) {
+  public func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: true)
   }
-  func build() -> UIViewController {
+  public func build() -> UIViewController {
     let viewModel = ProfileViewModel()
     return ProfileViewController(viewModel: viewModel)
   }
   
-  init(parentRouter: Routing?, navigationController: UINavigationController? ) {
+  public init(parentRouter: Routing?, navigationController: UINavigationController? ) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
   }

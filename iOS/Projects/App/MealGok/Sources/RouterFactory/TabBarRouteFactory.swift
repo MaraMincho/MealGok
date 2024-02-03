@@ -11,6 +11,7 @@ import MealTimerFeature
 import OSLog
 import RouterFactory
 import UIKit
+import ProfileFeature
 
 // MARK: - TabBarRouteFactory
 
@@ -39,16 +40,29 @@ public final class TabBarRouteFactory: RouterFactoriable {
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
-    let contents = TabBarScreenType.allCases.compactMap { [weak self] type -> UIViewController? in
-      guard let self else { return nil }
+    let contents = TabBarScreenType.allCases.compactMap {type -> UIViewController? in
+      return makeRouter(type: type)
+    }
+    return contents
+  }
+  
+  private func makeRouter(type: TabBarScreenType) -> UIViewController {
+    switch type {
+    case .timer:
       let mealTimerRouterFactory = MealGokHomeRouterFactory(self, navigationController: navigationController)
       childRouters.append(mealTimerRouterFactory)
       let vc = mealTimerRouterFactory.build()
       vc.title = type.title
       vc.tabBarItem.image = type.image
       return vc
+    case .profile:
+      let profileRouterFactory = ProfileSceneRouterFactory(parentRouter: self, navigationController: navigationController)
+      childRouters.append(profileRouterFactory)
+      let vc = profileRouterFactory.build()
+      vc.title = type.title
+      vc.tabBarItem.image = type.image
+      return vc
     }
-    return contents
   }
 
   // MARK: - TabBarScreenType
