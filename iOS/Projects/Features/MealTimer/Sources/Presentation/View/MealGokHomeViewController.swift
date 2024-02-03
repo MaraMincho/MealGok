@@ -49,6 +49,10 @@ final class MealGokHomeViewController: UIViewController {
 
   private lazy var timerView: TimerView = {
     let view = TimerView(contentSize: .init(width: 240, height: 240))
+    view.layer.shadowColor = UIColor.black.cgColor
+    view.layer.shadowOffset = .init(width: -2, height: 2)
+    view.layer.shadowRadius = 3.0
+    view.layer.shadowOpacity = 0.4
 
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
@@ -94,7 +98,6 @@ final class MealGokHomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
-    setupHierarchyAndConstraints()
   }
 }
 
@@ -102,6 +105,7 @@ private extension MealGokHomeViewController {
   func setup() {
     setupStyles()
     bind()
+    setupHierarchyAndConstraints()
   }
 
   func setupHierarchyAndConstraints() {
