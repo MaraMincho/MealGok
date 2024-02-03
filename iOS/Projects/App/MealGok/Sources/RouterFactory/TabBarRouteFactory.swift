@@ -41,7 +41,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
   private func buildTabBarComponent() -> [UIViewController] {
     let contents = TabBarScreenType.allCases.compactMap { [weak self] type -> UIViewController? in
       guard let self else { return nil }
-      let mealTimerRouterFactory = MealTimerSceneRouterFactory(self, navigationController: navigationController)
+      let mealTimerRouterFactory = MealGokHomeRouterFactory(self, navigationController: navigationController)
       childRouters.append(mealTimerRouterFactory)
       let vc = mealTimerRouterFactory.build()
       vc.title = type.title

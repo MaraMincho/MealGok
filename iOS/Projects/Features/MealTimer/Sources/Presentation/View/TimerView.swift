@@ -14,25 +14,25 @@ import UIKit
 final class TimerView: UIView {
   // MARK: - Property
 
-  let contentSize: CGSize
+  private let contentSize: CGSize
 
-  var lineCircleViewSize: CGSize {
+  private var lineCircleViewSize: CGSize {
     return .init(width: contentSize.width, height: contentSize.height)
   }
 
-  var dashCircleViewSize: CGSize {
+  private var dashCircleViewSize: CGSize {
     let contentSize = lineCircleViewSize
     return .init(width: contentSize.width - 20, height: contentSize.height - 20)
   }
 
-  var pieChartViewSize: CGSize {
+  private var pieChartViewSize: CGSize {
     let contentSize = lineCircleViewSize
     return .init(width: contentSize.width - 15, height: contentSize.height - 15)
   }
 
   // MARK: - UIComponent
 
-  private lazy var lineCircleView: UIView = {
+  lazy var lineCircleView: UIView = {
     let view = UIView()
     view.layer.borderWidth = 1
     view.layer.borderColor = DesignSystemColor.gray03.cgColor

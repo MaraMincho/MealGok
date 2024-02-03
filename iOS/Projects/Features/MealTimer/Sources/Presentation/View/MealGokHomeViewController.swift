@@ -1,5 +1,5 @@
 //
-//  MealTimerSceneViewController.swift
+//  MealGokHomeViewController.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 1/30/24.
@@ -12,9 +12,9 @@ import CombineCocoa
 import DesignSystem
 import UIKit
 
-// MARK: - MealTimerSceneViewController
+// MARK: - MealGokHomeViewController
 
-final class MealTimerSceneViewController: UIViewController {
+final class MealGokHomeViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: MealTimerSceneViewModelRepresentable
@@ -49,6 +49,10 @@ final class MealTimerSceneViewController: UIViewController {
 
   private lazy var timerView: TimerView = {
     let view = TimerView(contentSize: .init(width: 240, height: 240))
+    view.layer.shadowColor = UIColor.black.cgColor
+    view.layer.shadowOffset = .init(width: -2, height: 2)
+    view.layer.shadowRadius = 3.0
+    view.layer.shadowOpacity = 0.4
 
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
@@ -94,14 +98,14 @@ final class MealTimerSceneViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
-    setupHierarchyAndConstraints()
   }
 }
 
-private extension MealTimerSceneViewController {
+private extension MealGokHomeViewController {
   func setup() {
     setupStyles()
     bind()
+    setupHierarchyAndConstraints()
   }
 
   func setupHierarchyAndConstraints() {
@@ -193,7 +197,7 @@ private extension MealTimerSceneViewController {
 
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
-extension MealTimerSceneViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+extension MealGokHomeViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
     guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
       picker.dismiss(animated: true)
