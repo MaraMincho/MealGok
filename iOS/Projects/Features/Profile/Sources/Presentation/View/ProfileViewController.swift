@@ -30,6 +30,8 @@ final class ProfileViewController: UIViewController {
 
   var decorations = Set<Date?>()
 
+  var dataSource: ProfileViewMealGokDataSource?
+
   // MARK: UI Components
 
   private let settingButton: UIButton = {
@@ -137,6 +139,16 @@ final class ProfileViewController: UIViewController {
     return behavior
   }()
 
+  private lazy var mealGokChallengeTableView: UITableView = {
+    let tableView = UITableView(frame: .zero, style: .plain)
+    tableView.dataSource = dataSource
+    tableView.delegate = self
+    tableView.register(ProfileViewMealGokTableViewCell.self, forCellReuseIdentifier: ProfileViewMealGokTableViewCell.identifier)
+
+    tableView.translatesAutoresizingMaskIntoConstraints = false
+    return tableView
+  }()
+
   // MARK: Initializations
 
   init(viewModel: ProfileViewModelRepresentable, property: ProfileViewControllerProperty) {
@@ -164,6 +176,31 @@ private extension ProfileViewController {
     setupHierarchyAndConstraints()
     bind()
     addCalendarDecoration()
+    setupTableViewDataSource()
+  }
+
+  func setupTableViewDataSource() {
+    dataSource = .init(tableView: mealGokChallengeTableView) { tableView, indexPath, _ in
+      let tableViewCell = tableView.dequeueReusableCell(withIdentifier: ProfileViewMealGokTableViewCell.identifier, for: indexPath)
+      guard let cell = tableViewCell as? ProfileViewMealGokTableViewCell else {
+        return nil
+      }
+      cell.configure()
+      return cell
+    }
+
+    if var snapshot = dataSource?.snapshot() {
+      snapshot.appendSections([.init(calendar: .init(identifier: .gregorian), year: 2024, month: 2, day: 4)])
+      dataSource?.apply(snapshot)
+      setFakeDataSource()
+    }
+  }
+
+  func setFakeDataSource() {
+    if var snapshot = dataSource?.snapshot() {
+      snapshot.appendItems([.init(), .init(), .init()])
+      dataSource?.apply(snapshot)
+    }
   }
 
   func setupHierarchyAndConstraints() {
@@ -189,6 +226,12 @@ private extension ProfileViewController {
     calendarView.trailingAnchor
       .constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingSpace).isActive = true
     calendarView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: Metrics.calendarViewTopSpacing).isActive = true
+
+    view.addSubview(mealGokChallengeTableView)
+    mealGokChallengeTableView.topAnchor.constraint(equalTo: calendarView.bottomAnchor, constant: 12).isActive = true
+    mealGokChallengeTableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    mealGokChallengeTableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    mealGokChallengeTableView.heightAnchor.constraint(equalToConstant: 300).isActive = true
   }
 
   func setupStyles() {
