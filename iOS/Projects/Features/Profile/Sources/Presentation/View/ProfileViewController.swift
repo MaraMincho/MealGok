@@ -113,7 +113,7 @@ final class ProfileViewController: UIViewController {
     return stackView
   }()
 
-  private lazy var calendarView: UICalendarView = {
+  lazy var calendarView: UICalendarView = {
     let calendarView = UICalendarView()
 
     // Create an instance of the Gregorian calendar.
@@ -121,14 +121,20 @@ final class ProfileViewController: UIViewController {
     // Set the calendar displayed by the view.
     calendarView.calendar = gregorianCalendar
     calendarView.locale = Locale(identifier: Constants.localIdentifier)
-    calendarView.fontDesign = .monospaced
+    calendarView.fontDesign = .default
     calendarView.delegate = self
     calendarView.tintColor = DesignSystemColor.main01
     calendarView.availableDateRange = .init(start: profileViewControllerProperty.startDate, end: profileViewControllerProperty.endDate)
     calendarView.wantsDateDecorations = true
+    calendarView.selectionBehavior = calendarBehavior
 
     calendarView.translatesAutoresizingMaskIntoConstraints = false
     return calendarView
+  }()
+
+  lazy var calendarBehavior: UICalendarSelectionSingleDate = {
+    let behavior = UICalendarSelectionSingleDate(delegate: self)
+    return behavior
   }()
 
   // MARK: Initializations

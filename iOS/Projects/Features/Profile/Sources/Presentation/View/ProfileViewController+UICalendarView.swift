@@ -9,6 +9,8 @@
 import DesignSystem
 import UIKit
 
+// MARK: - ProfileViewController + UICalendarViewDelegate
+
 extension ProfileViewController: UICalendarViewDelegate {
   func addCalendarDecoration() {
     addTodayDecoration()
@@ -20,8 +22,10 @@ extension ProfileViewController: UICalendarViewDelegate {
       year: 2024,
       month: 2,
       day: 4
-    ).date
-    decorations.insert(today)
+    )
+    decorations.insert(today.date)
+
+    calendarBehavior.setSelected(today, animated: true)
   }
 
   func calendarView(_: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
@@ -45,4 +49,10 @@ extension ProfileViewController: UICalendarViewDelegate {
       return view
     }
   }
+}
+
+// MARK: - ProfileViewController + UICalendarSelectionSingleDateDelegate
+
+extension ProfileViewController: UICalendarSelectionSingleDateDelegate {
+  func dateSelection(_: UICalendarSelectionSingleDate, didSelectDate _: DateComponents?) {}
 }
