@@ -11,6 +11,7 @@ let project = Project.makeModule(
     dependencies: [
       .designSystem,
       .routerFactory,
+      .feature(.profile),
       .feature(.mealTimer),
     ],
     infoPlist: [
@@ -18,6 +19,7 @@ let project = Project.makeModule(
       "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",
       "CFBundleShortVersionString": "0.0.1",
       "CFBundleVersion": "0.0.1",
+      "UIUserInterfaceStyle": "Light",
     ]
   ),
   packages: []
