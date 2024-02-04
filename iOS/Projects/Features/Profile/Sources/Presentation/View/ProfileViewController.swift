@@ -42,8 +42,30 @@ final class ProfileViewController: UIViewController {
     configure.baseForegroundColor = DesignSystemColor.main01
     button.configuration = configure
 
+    button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     button.translatesAutoresizingMaskIntoConstraints = false
     return button
+  }()
+
+  private let spacer: UILabel = {
+    let label = UILabel()
+    label.text = " "
+
+    label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private lazy var settingButtonWithSpacer: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [
+      spacer,
+      settingButton,
+    ])
+    stackView.axis = .horizontal
+    stackView.distribution = .fill
+
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    return stackView
   }()
 
   private let profileImageView: UIImageView = {
@@ -57,6 +79,7 @@ final class ProfileViewController: UIViewController {
 
     imageView.clipsToBounds = true
 
+    imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
   }()
@@ -103,13 +126,15 @@ final class ProfileViewController: UIViewController {
     stackView.axis = .vertical
     stackView.alignment = .fill
     stackView.spacing = Metrics.profileAndDescriptionLabelSpacing
+    let leftAndRightMargin = Metrics.headerStackViewLeftAndRightMargin
     stackView.layoutMargins = .init(
-      top: 0,
-      left: Metrics.leadingAndTrailingSpace,
-      bottom: 0,
-      right: Metrics.leadingAndTrailingSpace
+      top: Metrics.headerStackViewTopMargin,
+      left: leftAndRightMargin,
+      bottom: Metrics.headerStackViewBottomMargin,
+      right: leftAndRightMargin
     )
     stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.backgroundColor = DesignSystemColor.secondaryBackground
 
     stackView.translatesAutoresizingMaskIntoConstraints = false
     return stackView
@@ -129,6 +154,9 @@ final class ProfileViewController: UIViewController {
     calendarView.availableDateRange = .init(start: profileViewControllerProperty.startDate, end: profileViewControllerProperty.endDate)
     calendarView.wantsDateDecorations = true
     calendarView.selectionBehavior = calendarBehavior
+    calendarView.backgroundColor = DesignSystemColor.secondaryBackground
+    let margin = Metrics.calendarMargin
+    calendarView.layoutMargins = .init(top: margin, left: margin, bottom: margin, right: margin)
 
     calendarView.translatesAutoresizingMaskIntoConstraints = false
     return calendarView
@@ -143,10 +171,51 @@ final class ProfileViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .plain)
     tableView.dataSource = dataSource
     tableView.delegate = self
+    tableView.backgroundColor = DesignSystemColor.secondaryBackground
     tableView.register(ProfileViewMealGokTableViewCell.self, forCellReuseIdentifier: ProfileViewMealGokTableViewCell.identifier)
 
     tableView.translatesAutoresizingMaskIntoConstraints = false
     return tableView
+  }()
+
+  private lazy var calendarAndContentStackView: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [
+      calendarView,
+      mealGokChallengeTableView,
+    ])
+    stackView.spacing = 0
+    stackView.axis = .vertical
+
+    stackView.layer.masksToBounds = true
+
+    stackView.layer.cornerRadius = 15
+    stackView.layer.cornerCurve = .continuous
+
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    return stackView
+  }()
+
+  private let contentScrollView: UIScrollView = {
+    let scrollView = UIScrollView()
+
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    return scrollView
+  }()
+
+  private lazy var contentStackView: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [
+      settingButtonWithSpacer,
+      headerStackView,
+      calendarAndContentStackView,
+    ])
+    stackView.alignment = .fill
+    stackView.axis = .vertical
+    stackView.spacing = 15
+    stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.layoutMargins = .init(top: 0, left: Metrics.leadingAndTrailingSpace, bottom: 100, right: Metrics.leadingAndTrailingSpace)
+
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    return stackView
   }()
 
   // MARK: Initializations
@@ -167,6 +236,11 @@ final class ProfileViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    contentScrollView.contentSize = contentStackView.bounds.size
   }
 }
 
@@ -198,7 +272,7 @@ private extension ProfileViewController {
 
   func setFakeDataSource() {
     if var snapshot = dataSource?.snapshot() {
-      snapshot.appendItems([.init(), .init(), .init()])
+      snapshot.appendItems([.init(), .init(), .init(), .init(), .init(), .init()])
       dataSource?.apply(snapshot)
     }
   }
@@ -206,31 +280,21 @@ private extension ProfileViewController {
   func setupHierarchyAndConstraints() {
     let safeArea = view.safeAreaLayoutGuide
 
-    view.addSubview(settingButton)
-    settingButton.trailingAnchor
-      .constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingSpace).isActive = true
-    settingButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Metrics.topSpacing).isActive = true
+    view.addSubview(contentScrollView)
 
-    view.addSubview(headerStackView)
-    headerStackView.topAnchor
-      .constraint(equalTo: settingButton.bottomAnchor, constant: Metrics.headerStackViewTopSpacing).isActive = true
-    headerStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-    headerStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    contentScrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    contentScrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    contentScrollView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+    contentScrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+
+    contentScrollView.addSubview(contentStackView)
+
+    contentStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    contentStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
 
     profileImageView.widthAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
     profileImageView.heightAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
 
-    view.addSubview(calendarView)
-    calendarView.leadingAnchor
-      .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingSpace).isActive = true
-    calendarView.trailingAnchor
-      .constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingSpace).isActive = true
-    calendarView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: Metrics.calendarViewTopSpacing).isActive = true
-
-    view.addSubview(mealGokChallengeTableView)
-    mealGokChallengeTableView.topAnchor.constraint(equalTo: calendarView.bottomAnchor, constant: 12).isActive = true
-    mealGokChallengeTableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-    mealGokChallengeTableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
     mealGokChallengeTableView.heightAnchor.constraint(equalToConstant: 300).isActive = true
   }
 
@@ -253,6 +317,11 @@ private extension ProfileViewController {
     static let topSpacing: CGFloat = 24
 
     static let headerStackViewTopSpacing: CGFloat = 12
+    static let headerStackViewLeftAndRightMargin: CGFloat = 12
+    static let headerStackViewTopMargin: CGFloat = 12
+    static let headerStackViewBottomMargin: CGFloat = 24
+
+    static let calendarMargin: CGFloat = 12
 
     static let imageViewWidthAndHeight: CGFloat = 72
     static let imageViewBorderWidth: CGFloat = 2
