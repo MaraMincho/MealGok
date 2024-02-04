@@ -10,14 +10,25 @@ import Combine
 import DesignSystem
 import UIKit
 
+// MARK: - ProfileViewControllerProperty
+
+struct ProfileViewControllerProperty {
+  let startDate: Date
+  let endDate: Date
+}
+
 // MARK: - ProfileViewController
 
 final class ProfileViewController: UIViewController {
   // MARK: Properties
 
+  private let profileViewControllerProperty: ProfileViewControllerProperty
+
   private let viewModel: ProfileViewModelRepresentable
 
   private var subscriptions: Set<AnyCancellable> = []
+
+  var decorations = Set<Date?>()
 
   // MARK: UI Components
 
@@ -77,7 +88,6 @@ final class ProfileViewController: UIViewController {
     label.text = "안녕하세요 좋은 아침"
     label.textColor = DesignSystemColor.primaryText
     label.numberOfLines = 4
-    label.backgroundColor = .blue
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -103,10 +113,29 @@ final class ProfileViewController: UIViewController {
     return stackView
   }()
 
+  private lazy var calendarView: UICalendarView = {
+    let calendarView = UICalendarView()
+
+    // Create an instance of the Gregorian calendar.
+    let gregorianCalendar = Calendar(identifier: .gregorian)
+    // Set the calendar displayed by the view.
+    calendarView.calendar = gregorianCalendar
+    calendarView.locale = Locale(identifier: Constants.localIdentifier)
+    calendarView.fontDesign = .monospaced
+    calendarView.delegate = self
+    calendarView.tintColor = DesignSystemColor.main01
+    calendarView.availableDateRange = .init(start: profileViewControllerProperty.startDate, end: profileViewControllerProperty.endDate)
+    calendarView.wantsDateDecorations = true
+
+    calendarView.translatesAutoresizingMaskIntoConstraints = false
+    return calendarView
+  }()
+
   // MARK: Initializations
 
-  init(viewModel: ProfileViewModelRepresentable) {
+  init(viewModel: ProfileViewModelRepresentable, property: ProfileViewControllerProperty) {
     self.viewModel = viewModel
+    profileViewControllerProperty = property
     super.init(nibName: nil, bundle: nil)
   }
 
@@ -128,6 +157,7 @@ private extension ProfileViewController {
     setupStyles()
     setupHierarchyAndConstraints()
     bind()
+    addCalendarDecoration()
   }
 
   func setupHierarchyAndConstraints() {
@@ -146,6 +176,13 @@ private extension ProfileViewController {
 
     profileImageView.widthAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
     profileImageView.heightAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
+
+    view.addSubview(calendarView)
+    calendarView.leadingAnchor
+      .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingSpace).isActive = true
+    calendarView.trailingAnchor
+      .constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingSpace).isActive = true
+    calendarView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: Metrics.calendarViewTopSpacing).isActive = true
   }
 
   func setupStyles() {
@@ -174,13 +211,33 @@ private extension ProfileViewController {
     static let profileAndDescriptionLabelSpacing: CGFloat = 12
 
     static let leadingAndTrailingSpace: CGFloat = 24
+    static let calendarViewTopSpacing: CGFloat = 36
   }
 
   enum Constants {
+    static let localIdentifier = "ko_KR"
+
     static let settingButtonImage = "gearshape"
 
     static let profileNameLabelDfeaultText = "밀꼭꼭이"
 
     static let settingButtonImageFont = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 23))
+
+    static let gragorian = Calendar(identifier: .gregorian)
+
+    /// Specify the starting date.
+    static let fromDateComponents = DateComponents(
+      calendar: gragorian,
+      year: 2024,
+      month: 1,
+      day: 1
+    )
+    /// Specify the ending date.
+    static let toDateComponents = DateComponents(
+      calendar: gragorian,
+      year: 2024,
+      month: 12,
+      day: 31
+    )
   }
 }

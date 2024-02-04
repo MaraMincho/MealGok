@@ -22,7 +22,10 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
 
   public func build() -> UIViewController {
     let viewModel = ProfileViewModel()
-    return ProfileViewController(viewModel: viewModel)
+
+    let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date!
+    let property: ProfileViewControllerProperty = .init(startDate: initDate, endDate: Date.now)
+    return ProfileViewController(viewModel: viewModel, property: property)
   }
 
   public init(parentRouter: Routing?, navigationController: UINavigationController?) {
