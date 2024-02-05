@@ -23,6 +23,8 @@ final class MealGokHomeViewController: UIViewController {
 
   private let generator = UINotificationFeedbackGenerator()
 
+  private let softFeedBackGenerator = UIImpactFeedbackGenerator(style: .soft)
+
   // MARK: UI Components
 
   private let titleLabel: UILabel = {
@@ -232,7 +234,7 @@ private extension MealGokHomeViewController {
     targetTimeButton.publisher(event: .touchUpInside)
       .sink { [weak self] _ in
         guard let self else { return }
-        self.presentAlertAction()
+        presentAlertAction()
       }
       .store(in: &subscriptions)
 
@@ -254,21 +256,45 @@ private extension MealGokHomeViewController {
 
     timerView.updateTimerCenterDescription(text: Constants.timerCenterDescriptionText)
   }
-  
-  func presentAlertAction() {
-    let alert = UIAlertController(title: "날짜 고르기", message: "날짜를 골라주세요", preferredStyle: .actionSheet)
-    let datePicker = UIDatePicker()
-    datePicker.datePickerMode = .date
-    datePicker.preferredDatePickerStyle = .wheels
-    datePicker.datePickerMode = .countDownTimer
-    datePicker.locale = Locale(identifier: "ko_KR")
-    datePicker.minuteInterval = 10
 
-    let ok = UIAlertAction(title: "선택 완료", style: .cancel, handler: nil)
+  func presentAlertAction() {
+    let alert = UIAlertController(title: "타겟 타임", message: "목표하는 시간을 스와이프 해주세요", preferredStyle: .actionSheet)
+
+    let curVal = CurrentValueSubject<Int, Never>(10)
+
+    let slider = UISlider()
+    slider.layoutMargins = .init(top: 10, left: 10, bottom: 10, right: 10)
+    slider.maximumValue = 20
+    slider.minimumValue = 10
+    slider.heightAnchor.constraint(equalToConstant: 120).isActive = true
+    slider.publisher(event: .valueChanged)
+      .compactMap { ($0 as? UISlider)?.value }
+      .sink { [weak self] value in
+        let roundValue = round(value)
+
+        let currentVal = Int(roundValue)
+
+        if curVal.value != currentVal {
+          curVal.send(currentVal)
+        }
+        slider.value = roundValue
+        alert.title = "타겟 타임: \(Int(roundValue))분"
+      }
+      .store(in: &subscriptions)
+
+    curVal.sink { [weak self] _ in
+      self?.softFeedBackGenerator.impactOccurred()
+    }.store(in: &subscriptions)
+
+    let ok = UIAlertAction(title: "선택 완료", style: .cancel) { [weak self] _ in
+      self?.targetTimeButtonTimeLabel.text = "\(Int(slider.value).description):00"
+    }
+
     let vc = UIViewController()
-    vc.view = datePicker
+    vc.view = slider
     alert.addAction(ok)
-    alert.setValue(vc, forKey: "contentViewController")
+
+    alert.setValue(vc, forKey: "ContentViewController")
 
     present(alert, animated: true)
   }
