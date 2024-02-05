@@ -229,6 +229,13 @@ private extension MealGokHomeViewController {
   func bind() {
     subscriptions.removeAll()
 
+    targetTimeButton.publisher(event: .touchUpInside)
+      .sink { [weak self] _ in
+        guard let self else { return }
+        self.presentAlertAction()
+      }
+      .store(in: &subscriptions)
+
     let output = viewModel.transform(input: .init(
       didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
       didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
@@ -246,6 +253,24 @@ private extension MealGokHomeViewController {
     .store(in: &subscriptions)
 
     timerView.updateTimerCenterDescription(text: Constants.timerCenterDescriptionText)
+  }
+  
+  func presentAlertAction() {
+    let alert = UIAlertController(title: "날짜 고르기", message: "날짜를 골라주세요", preferredStyle: .actionSheet)
+    let datePicker = UIDatePicker()
+    datePicker.datePickerMode = .date
+    datePicker.preferredDatePickerStyle = .wheels
+    datePicker.datePickerMode = .countDownTimer
+    datePicker.locale = Locale(identifier: "ko_KR")
+    datePicker.minuteInterval = 10
+
+    let ok = UIAlertAction(title: "선택 완료", style: .cancel, handler: nil)
+    let vc = UIViewController()
+    vc.view = datePicker
+    alert.addAction(ok)
+    alert.setValue(vc, forKey: "contentViewController")
+
+    present(alert, animated: true)
   }
 
   func presentCameraPicker() {
