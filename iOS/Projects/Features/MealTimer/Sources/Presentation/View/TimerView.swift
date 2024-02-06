@@ -66,19 +66,21 @@ final class TimerView: UIView {
     let label = UILabel()
     label.textColor = DesignSystemColor.gray03
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
-    label.text = "20"
+    label.text = " "
     label.textAlignment = .left
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
 
+  /// TimerView의 정 가운데 배치 됩니다.
   private let timerColonLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.gray03
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
     label.textAlignment = .center
     label.text = ":"
+    label.numberOfLines = 2
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -89,7 +91,7 @@ final class TimerView: UIView {
     label.textColor = DesignSystemColor.gray03
     label.font = .preferredFont(forTextStyle: .title1, weight: .bold)
     label.textAlignment = .right
-    label.text = "00"
+    label.text = " "
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -155,6 +157,10 @@ final class TimerView: UIView {
 }
 
 extension TimerView {
+  func updateTimerCenterDescription(text: String?) {
+    timerColonLabel.text = text
+  }
+
   func updateTimerLabel(minutes: String?, seconds: String?) {
     timerMinuteLabel.text = minutes
     timerSecondsLabel.text = seconds
@@ -175,7 +181,7 @@ extension TimerView {
     pieChartView.heartBeatAnimation()
   }
 
-  func setView(_ view: UIView, hidden: Bool) {
+  private func setView(_ view: UIView, hidden: Bool) {
     UIView.transition(with: view, duration: 1.5, options: .transitionCrossDissolve, animations: {
       view.isHidden = hidden
     })

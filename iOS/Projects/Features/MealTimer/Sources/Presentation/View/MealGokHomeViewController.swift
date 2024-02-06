@@ -23,6 +23,8 @@ final class MealGokHomeViewController: UIViewController {
 
   private let generator = UINotificationFeedbackGenerator()
 
+  private let softFeedBackGenerator = UIImpactFeedbackGenerator(style: .soft)
+
   // MARK: UI Components
 
   private let titleLabel: UILabel = {
@@ -73,12 +75,86 @@ final class MealGokHomeViewController: UIViewController {
   private let timerDescriptionLabel: UILabel = {
     let label = UILabel()
     label.textColor = DesignSystemColor.primaryText
-    label.font = .preferredFont(forTextStyle: .body)
+    label.font = .preferredFont(forTextStyle: .caption1, weight: .regular)
     label.text = Constants.timerDescriptionLabelText
     label.textAlignment = .center
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
+  }()
+
+  private let targetTimeButtonTitleLabel: UILabel = {
+    let label = UILabel()
+    label.font = .preferredFont(forTextStyle: .title2)
+    label.textColor = DesignSystemColor.primaryText
+    label.text = Constants.targetTimeButtonTitleText
+    label.textAlignment = .left
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let targetTimeButtonTimeLabel: UILabel = {
+    let label = UILabel()
+    label.font = .preferredFont(forTextStyle: .body, weight: .bold)
+    label.textColor = DesignSystemColor.primaryText
+    label.text = "20:00"
+    label.textAlignment = .center
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let targetTimeButtonBottomArrowLabel: UILabel = {
+    let label = UILabel()
+    label.font = .preferredFont(forTextStyle: .title2)
+    label.textColor = DesignSystemColor.primaryText
+    label.textAlignment = .right
+    label.setText("", prependedBySymbolNamed: Constants.targetTimeButtonBottomArrowButtonImageSystemName)
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private lazy var targetTimeButtonContentStackView: UIStackView = {
+    let stackView = UIStackView(arrangedSubviews: [
+      targetTimeButtonTitleLabel,
+      targetTimeButtonTimeLabel,
+      targetTimeButtonBottomArrowLabel,
+    ])
+
+    stackView.axis = .horizontal
+    stackView.distribution = .fillEqually
+    stackView.alignment = .center
+
+    stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.layoutMargins = .init(
+      top: 0,
+      left: Metrics.timerContentStackViewLeftAndRightMargin,
+      bottom: 0,
+      right: Metrics.timerContentStackViewLeftAndRightMargin
+    )
+    stackView.isUserInteractionEnabled = false
+
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    return stackView
+  }()
+
+  private lazy var targetTimeButton: UIButton = {
+    let button = UIButton()
+    var configure = UIButton.Configuration.filled()
+    configure.baseBackgroundColor = DesignSystemColor.main03
+    button.configuration = configure
+
+    button.addSubview(targetTimeButtonContentStackView)
+
+    button.layer.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
+    button.layer.shadowOffset = .init(width: -2, height: 2)
+    button.layer.shadowOpacity = 1
+    button.layer.shadowRadius = 3.0
+
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
   }()
 
   // MARK: Initializations
@@ -134,6 +210,17 @@ private extension MealGokHomeViewController {
       .constraint(equalTo: timerView.bottomAnchor, constant: Metrics.timerDescriptionLabelTopSpacing).isActive = true
     timerDescriptionLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
     timerDescriptionLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+
+    view.addSubview(targetTimeButton)
+    targetTimeButton.topAnchor
+      .constraint(equalTo: timerDescriptionLabel.bottomAnchor, constant: Metrics.targetTimerButtonTopSpacing).isActive = true
+    targetTimeButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
+    targetTimeButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
+    targetTimeButton.heightAnchor.constraint(equalToConstant: Metrics.buttonHeight).isActive = true
+
+    targetTimeButtonContentStackView.leadingAnchor.constraint(equalTo: targetTimeButton.leadingAnchor).isActive = true
+    targetTimeButtonContentStackView.trailingAnchor.constraint(equalTo: targetTimeButton.trailingAnchor).isActive = true
+    targetTimeButtonContentStackView.centerYAnchor.constraint(equalTo: targetTimeButton.centerYAnchor).isActive = true
   }
 
   func setupStyles() {
@@ -143,6 +230,13 @@ private extension MealGokHomeViewController {
 
   func bind() {
     subscriptions.removeAll()
+
+    targetTimeButton.publisher(event: .touchUpInside)
+      .sink { [weak self] _ in
+        guard let self else { return }
+        presentAlertAction()
+      }
+      .store(in: &subscriptions)
 
     let output = viewModel.transform(input: .init(
       didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
@@ -159,6 +253,50 @@ private extension MealGokHomeViewController {
       }
     }
     .store(in: &subscriptions)
+
+    timerView.updateTimerCenterDescription(text: Constants.timerCenterDescriptionText)
+  }
+
+  func presentAlertAction() {
+    let alert = UIAlertController(title: "타겟 타임", message: "목표하는 시간을 스와이프 해주세요", preferredStyle: .actionSheet)
+
+    let curVal = CurrentValueSubject<Int, Never>(10)
+
+    let slider = UISlider()
+    slider.layoutMargins = .init(top: 10, left: 10, bottom: 10, right: 10)
+    slider.maximumValue = 20
+    slider.minimumValue = 10
+    slider.heightAnchor.constraint(equalToConstant: 120).isActive = true
+    slider.publisher(event: .valueChanged)
+      .compactMap { ($0 as? UISlider)?.value }
+      .sink { [weak self] value in
+        let roundValue = round(value)
+
+        let currentVal = Int(roundValue)
+
+        if curVal.value != currentVal {
+          curVal.send(currentVal)
+        }
+        slider.value = roundValue
+        alert.title = "타겟 타임: \(Int(roundValue))분"
+      }
+      .store(in: &subscriptions)
+
+    curVal.sink { [weak self] _ in
+      self?.softFeedBackGenerator.impactOccurred()
+    }.store(in: &subscriptions)
+
+    let ok = UIAlertAction(title: "선택 완료", style: .cancel) { [weak self] _ in
+      self?.targetTimeButtonTimeLabel.text = "\(Int(slider.value).description):00"
+    }
+
+    let vc = UIViewController()
+    vc.view = slider
+    alert.addAction(ok)
+
+    alert.setValue(vc, forKey: "ContentViewController")
+
+    present(alert, animated: true)
   }
 
   func presentCameraPicker() {
@@ -180,18 +318,29 @@ private extension MealGokHomeViewController {
 
     static let cameraButtonAndTimerViewTrailingSpacing: CGFloat = -24
 
+    static let targetTimerButtonTopSpacing: CGFloat = 48
+
     static let timerDescriptionLabelTopSpacing: CGFloat = 27
+
+    static let timerContentStackViewLeftAndRightMargin: CGFloat = 24
+
+    static let buttonHeight: CGFloat = 52
   }
 
   enum Constants {
     static let titleLabelText: String = "밀꼭"
     static let descriptionTitleText: String = "천천히 먹기: 가장 쉽고 빠른 다이어트"
 
+    static let timerCenterDescriptionText: String = "탭 하여\n타이머 시작"
+
     static let timerDescriptionText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
 
     static let cameraButtonTitleText: String = "camera.viewfinder"
 
     static let timerDescriptionLabelText: String = "시간이 완료되면 자동으로 타이머가 울립니다"
+
+    static let targetTimeButtonTitleText: String = "목표 시간"
+    static let targetTimeButtonBottomArrowButtonImageSystemName: String = "chevron.down"
   }
 }
 
@@ -204,5 +353,23 @@ extension MealGokHomeViewController: UINavigationControllerDelegate, UIImagePick
       return
     }
     picker.dismiss(animated: true, completion: nil)
+  }
+}
+
+extension UILabel {
+  func setText(_ text: String, prependedBySymbolNamed symbolSystemName: String, font: UIFont? = nil) {
+    if #available(iOS 13.0, *) {
+      if let font { self.font = font }
+      let symbolConfiguration = UIImage.SymbolConfiguration(font: self.font)
+      let symbolImage = UIImage(systemName: symbolSystemName, withConfiguration: symbolConfiguration)?.withRenderingMode(.alwaysTemplate)
+      let symbolTextAttachment = NSTextAttachment()
+      symbolTextAttachment.image = symbolImage
+      let attributedText = NSMutableAttributedString()
+      attributedText.append(NSAttributedString(attachment: symbolTextAttachment))
+      attributedText.append(NSAttributedString(string: " " + text))
+      self.attributedText = attributedText
+    } else {
+      self.text = text // fallback
+    }
   }
 }
