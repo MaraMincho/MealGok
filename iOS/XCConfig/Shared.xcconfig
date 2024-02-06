@@ -1,2 +1,0 @@
-OTHER_SWIFT_FLAGS[config=DEBUG][sdk=*] = $(inherited) -DDEBUG
-OTHER_SWIFT_FLAGS[config=RELEASE][sdk=*] = $(inherited) -DRELEASE
