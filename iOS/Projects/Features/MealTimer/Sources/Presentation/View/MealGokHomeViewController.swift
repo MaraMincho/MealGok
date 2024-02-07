@@ -25,6 +25,10 @@ final class MealGokHomeViewController: UIViewController {
 
   private let softFeedBackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
+  private let needUpdateTargetTimeSubject: PassthroughSubject<Void, Never> = .init()
+  private let saveTargetTimeSubject: PassthroughSubject<Int, Never> = .init()
+  @Published private var targetTime: Int = 20
+
   // MARK: UI Components
 
   private let titleLabel: UILabel = {
@@ -182,6 +186,8 @@ private extension MealGokHomeViewController {
     setupStyles()
     bind()
     setupHierarchyAndConstraints()
+
+    needUpdateTargetTimeSubject.send()
   }
 
   func setupHierarchyAndConstraints() {
@@ -240,14 +246,24 @@ private extension MealGokHomeViewController {
 
     let output = viewModel.transform(input: .init(
       didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
-      didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
+      didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher(),
+      needUpdateTargetTimePublisher: needUpdateTargetTimeSubject.eraseToAnyPublisher(),
+      saveTargetTimePublisher: saveTargetTimeSubject.eraseToAnyPublisher()
     ))
+
+    $targetTime.sink { [weak self] targetTime in
+      self?.updateTargetTime(targetTime)
+    }
+    .store(in: &subscriptions)
 
     output.sink { [weak self] state in
       switch state {
       case .presentCamera:
         self?.generator.notificationOccurred(.success)
         self?.presentCameraPicker()
+      case let .targetTime(value):
+        self?.targetTime = value
+        self?.updateTargetTime(value)
       case .idle:
         break
       }
@@ -258,27 +274,25 @@ private extension MealGokHomeViewController {
   }
 
   func presentAlertAction() {
-    let alert = UIAlertController(title: "타겟 타임", message: "목표하는 시간을 스와이프 해주세요", preferredStyle: .actionSheet)
-
+    let alert = UIAlertController(title: "목표 시간", message: "목표하는 시간을 스와이프 해주세요", preferredStyle: .actionSheet)
     let curVal = CurrentValueSubject<Int, Never>(10)
-
     let slider = UISlider()
     slider.layoutMargins = .init(top: 10, left: 10, bottom: 10, right: 10)
     slider.maximumValue = 20
     slider.minimumValue = 10
     slider.heightAnchor.constraint(equalToConstant: 120).isActive = true
+    slider.value = Float(targetTime)
     slider.publisher(event: .valueChanged)
       .compactMap { ($0 as? UISlider)?.value }
-      .sink { [weak self] value in
+      .sink { value in
         let roundValue = round(value)
-
         let currentVal = Int(roundValue)
 
         if curVal.value != currentVal {
           curVal.send(currentVal)
         }
         slider.value = roundValue
-        alert.title = "타겟 타임: \(Int(roundValue))분"
+        alert.title = "목표 시간: \(Int(roundValue))분"
       }
       .store(in: &subscriptions)
 
@@ -286,15 +300,17 @@ private extension MealGokHomeViewController {
       self?.softFeedBackGenerator.impactOccurred()
     }.store(in: &subscriptions)
 
-    let ok = UIAlertAction(title: "선택 완료", style: .cancel) { [weak self] _ in
-      self?.targetTimeButtonTimeLabel.text = "\(Int(slider.value).description):00"
+    let confirmButton = UIAlertAction(title: "선택 완료", style: .cancel) { [weak self] _ in
+      let targetTimeValue = Int(slider.value)
+      self?.updateTargetTime(Int(slider.value))
+      self?.saveTargetTimeSubject.send(targetTimeValue)
     }
 
-    let vc = UIViewController()
-    vc.view = slider
-    alert.addAction(ok)
+    let sliderViewController = UIViewController()
+    sliderViewController.view = slider
 
-    alert.setValue(vc, forKey: "ContentViewController")
+    alert.addAction(confirmButton)
+    alert.setValue(sliderViewController, forKey: "ContentViewController")
 
     present(alert, animated: true)
   }
@@ -306,6 +322,10 @@ private extension MealGokHomeViewController {
     pickerController.mediaTypes = ["public.image"]
     pickerController.sourceType = .camera
     present(pickerController, animated: true)
+  }
+
+  func updateTargetTime(_ targetTime: Int) {
+    targetTimeButtonTimeLabel.text = "\(targetTime.description):00"
   }
 
   enum Metrics {

@@ -12,7 +12,7 @@ import UIKit
 // MARK: - MealGokHomeFactoriable
 
 protocol MealGokHomeFactoriable: RouterFactoriable {
-  func startMealTimerScene()
+  func startMealTimerScene(targetTime: Int)
 }
 
 // MARK: - MealGokHomeRouterFactory
@@ -29,7 +29,10 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
   }
 
   public func build() -> UIViewController {
-    let viewModel = MealGokHomeViewModel()
+    let repository = TargetTimeRepository()
+    let useCase = TargetTimeUseCase(repository: repository)
+
+    let viewModel = MealGokHomeViewModel(targetTimeUseCase: useCase)
     viewModel.router = self
     return MealGokHomeViewController(viewModel: viewModel)
   }
@@ -43,10 +46,11 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
 // MARK: MealGokHomeFactoriable
 
 extension MealGokHomeRouterFactory: MealGokHomeFactoriable {
-  func startMealTimerScene() {
+  func startMealTimerScene(targetTime: Int) {
     let router = StartMealTimerSceneRouterFactory(
       parentRouter: self,
-      navigationController: navigationController
+      navigationController: navigationController,
+      targetTime: targetTime
     )
     childRouters.append(router)
     router.start(build: router.build())

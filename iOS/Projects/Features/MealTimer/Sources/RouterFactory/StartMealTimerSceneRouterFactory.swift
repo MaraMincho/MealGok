@@ -24,12 +24,15 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
 
   var childRouters: [Routing] = []
 
+  private let targetTime: Int
+
   func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: false)
+    navigationController?.interactivePopGestureRecognizer?.isEnabled = false
   }
 
   func build() -> UIViewController {
-    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 5, totalUpdateCount: 480)
+    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
     let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter)
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)
@@ -39,9 +42,10 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
     return viewController
   }
 
-  init(parentRouter: Routing?, navigationController: UINavigationController?) {
+  init(parentRouter: Routing?, navigationController: UINavigationController?, targetTime: Int) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
+    self.targetTime = targetTime
   }
 }
 

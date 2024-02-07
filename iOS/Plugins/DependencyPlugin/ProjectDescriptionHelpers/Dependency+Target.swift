@@ -18,6 +18,7 @@ public enum Feature: String {
   }
 }
 
+// MARK: - Shared
 public extension TargetDependency {
   static let designSystem: TargetDependency = .project(target: "DesignSystem", path: .relativeToShared("DesignSystem"))
   static let routerFactory: TargetDependency = .project(target: "RouterFactory", path: .relativeToCore("RouterFactory"))
@@ -30,3 +31,7 @@ public extension TargetDependency {
   }
 }
 
+// MARK: - ThirdParty
+public extension TargetDependency {
+  static let realm: TargetDependency = .external(name: "Realm")
+}

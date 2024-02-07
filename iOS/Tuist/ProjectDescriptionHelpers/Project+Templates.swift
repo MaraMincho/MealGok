@@ -3,7 +3,6 @@ import EnvironmentPlugin
 import Foundation
 
 private let isCI = ProcessInfo.processInfo.environment["TUIST_CI"] != nil
-private let isDebug = ProcessInfo.processInfo.environment["TUIST_SCHEME"] == "DEBUG"
 
 public extension Project {
   
@@ -12,20 +11,19 @@ public extension Project {
     targets: [Target],
     packages: [Package] = []
   ) -> Project {
+    let settingConfiguration: [Configuration] =
+    if isCI { [.debug(name: .debug)] }
+    else {[.debug(name: .debug, xcconfig: Path.relativeToXCConfig("Server/Debug")),
+            .release(name: .release, xcconfig: Path.relativeToXCConfig("Server/Release"))
+    ]}
     
-    print("is Debug = \(isDebug)")
-    
-    let settingConfiguration: Configuration =
-    if isCI { .debug(name: .debug) }
-    else if isDebug { .debug(name: .debug, xcconfig: Path.relativeToRoot("XCConfig/server/Debug.xcconfig")) }
-    else { .debug(name: .release, xcconfig: Path.relativeToXCConfig("Server/Relase")) }
     
     let settings: Settings = .settings(
       base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
-      configurations: [settingConfiguration])
+      configurations: settingConfiguration)
     
-    let configurationName: ConfigurationName = isDebug || isCI ? .debug : .release
-    let schemes: [Scheme] = [.makeScheme(configuration: configurationName, name: name)]
+
+    let schemes: [Scheme] = [ .makeScheme( name: name) ]
     
     return Project(
       name: name,
@@ -41,20 +39,20 @@ public extension Project {
 
 extension Scheme {
   /// Scheme을 만드는 메소드
-  static func makeScheme(configuration: ConfigurationName, name: String) -> Scheme {
+  static func makeScheme(name: String) -> Scheme {
     return Scheme(
       name: name,
       shared: true,
       buildAction: .buildAction(targets: ["\(name)"]),
       testAction: .targets(
         ["\(name)Tests"],
-        configuration: configuration,
+        configuration: .debug,
         options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
       ),
-      runAction: .runAction(configuration: configuration),
-      archiveAction: .archiveAction(configuration: configuration),
-      profileAction: .profileAction(configuration: configuration),
-      analyzeAction: .analyzeAction(configuration: configuration)
+      runAction: .runAction(configuration: .debug),
+      archiveAction: .archiveAction(configuration: .release),
+      profileAction: .profileAction(configuration: .debug),
+      analyzeAction: .analyzeAction(configuration: .debug)
     )
   }
 }

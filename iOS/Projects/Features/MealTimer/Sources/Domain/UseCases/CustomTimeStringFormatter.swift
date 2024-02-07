@@ -12,8 +12,6 @@ import Foundation
 
 final class CustomTimeStringFormatter {
   private let totalSeconds: Int
-  private let updateIntervalRadian: Double
-  private var prevPortionRadian: Double
 
   private let numberFormatter: NumberFormatter = {
     let formatter = NumberFormatter()
@@ -48,11 +46,8 @@ final class CustomTimeStringFormatter {
     return .init(minute: minutesString, seconds: secondsString, fanRadian: nil)
   }
 
-  init(minutes: Int, seconds: Int = 0, totalUpdateCount: Int = 120) {
+  init(minutes: Int, seconds: Int = 0) {
     totalSeconds = minutes * 60 + seconds
     let secondsRadian = 2 * Double.pi / Double(totalSeconds)
-    let userSettingRadian = 2 * Double.pi / Double(totalUpdateCount)
-    updateIntervalRadian = secondsRadian > userSettingRadian ? secondsRadian : userSettingRadian
-    prevPortionRadian = updateIntervalRadian
   }
 }
