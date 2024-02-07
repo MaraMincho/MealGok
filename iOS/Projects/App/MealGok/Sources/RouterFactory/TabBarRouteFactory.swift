@@ -29,6 +29,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
 
   public func start(build: UIViewController) {
     navigationController?.setViewControllers([build], animated: false)
+    navigationController?.interactivePopGestureRecognizer?.isEnabled = false
   }
 
   public func build() -> UIViewController {

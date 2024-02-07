@@ -299,7 +299,7 @@ private extension MealGokHomeViewController {
     curVal.sink { [weak self] _ in
       self?.softFeedBackGenerator.impactOccurred()
     }.store(in: &subscriptions)
-	
+
     let confirmButton = UIAlertAction(title: "선택 완료", style: .cancel) { [weak self] _ in
       let targetTimeValue = Int(slider.value)
       self?.updateTargetTime(Int(slider.value))

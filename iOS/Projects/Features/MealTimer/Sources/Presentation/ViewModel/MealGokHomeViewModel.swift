@@ -56,8 +56,8 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
     subscriptions.removeAll()
 
     input.didTimerStartButtonTouchPublisher
-      .sink { [router] _ in
-        router?.startMealTimerScene()
+      .sink { [targetTimeUseCase, router] _ in
+        router?.startMealTimerScene(targetTime: targetTimeUseCase.targetTime())
       }
       .store(in: &subscriptions)
 

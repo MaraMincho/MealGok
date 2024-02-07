@@ -36,6 +36,7 @@ class PieChartView: UIView {
   let pulseLayer = CAShapeLayer()
 
   func heartBeatAnimation() {
+    updatePieChart(radian: 2 * .pi)
     let scaleAnimation = CABasicAnimation(keyPath: "transform.scale.xy")
     scaleAnimation.fromValue = 1
     scaleAnimation.toValue = 1.2
