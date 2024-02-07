@@ -29,7 +29,10 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
   }
 
   public func build() -> UIViewController {
-    let viewModel = MealGokHomeViewModel()
+    let repository = TargetTimeRepository()
+    let useCase = TargetTimeUseCase(repository: repository)
+
+    let viewModel = MealGokHomeViewModel(targetTimeUseCase: useCase)
     viewModel.router = self
     return MealGokHomeViewController(viewModel: viewModel)
   }
