@@ -7,6 +7,7 @@
 //
 
 import RouterFactory
+import ThirdParty
 import UIKit
 
 // MARK: - StartMealTimerSceneRouterFactoriable
@@ -32,7 +33,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let repository = try? SaveMealGokChalengeRepository()
+    let realm = RealmShared.shared.realm
+    let repository = SaveMealGokChalengeRepository(realm: realm)
     let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
     let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter, repository: repository)
 

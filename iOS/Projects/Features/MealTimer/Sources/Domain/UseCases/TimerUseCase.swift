@@ -63,6 +63,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private func saveSuccessData() {
     do {
       try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: nil))
+      Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
     } catch {
       // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.
       Logger().error("error was occurred \(error.localizedDescription)")

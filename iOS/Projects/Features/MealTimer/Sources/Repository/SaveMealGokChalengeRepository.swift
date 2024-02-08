@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 import RealmSwift
 
 // MARK: - SaveMealGokChalengeRepository
@@ -15,9 +16,9 @@ final class SaveMealGokChalengeRepository: SaveMealGokChalengeRepositoryRepresen
   func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
     let persistableObject = MealGokChallengePersistedObject(dto: dto)
 
-    try realm?.write {
-      realm?.add(persistableObject)
-      realm?.add(fakeData())
+    try realm.write {
+      realm.add(persistableObject)
+      realm.add(fakeData())
     }
   }
 
@@ -25,9 +26,9 @@ final class SaveMealGokChalengeRepository: SaveMealGokChalengeRepositoryRepresen
     return MealGokChallengePersistedObject(dto: .init(startTime: .now - 600, endTime: .now + 600, isSuccess: true, imageDataURL: nil))
   }
 
-  var realm: Realm?
-  init() throws {
-    realm = try! Realm()
+  var realm: Realm
+  init(realm: Realm) {
+    self.realm = realm
   }
 }
 
