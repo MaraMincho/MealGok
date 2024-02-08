@@ -16,7 +16,6 @@ import ThirdParty
 final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokChalengeRepositoryRepresentable {
   func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
     let persistableObject = dto.adaptPersistableObject()
-
     try realm.write {
       realm.add(persistableObject)
       realm.add(fakeData())
@@ -26,8 +25,8 @@ final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokCha
   // TODO: 삭제 필수 -
   func fakeData() -> MealGokChallengePersistedObject {
     let now = Date.now
-    var dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-mm-dd"
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
     let challengeDateString = dateFormatter.string(from: now)
     return .init(challengeDateString: challengeDateString, startTime: now - 600, endTime: now + 600, imageDataURLString: nil, isSuccess: true)
   }
@@ -47,8 +46,14 @@ public struct MealGokChallengeDTO {
   var dateFormatter = DateFormatter()
 
   func adaptPersistableObject() -> MealGokChallengePersistedObject {
-    dateFormatter.dateFormat = "yyyy-mm-dd"
+    dateFormatter.dateFormat = "yyyy-MM-dd"
     let dateString = dateFormatter.string(from: startTime)
-    return .init(challengeDateString: dateString, startTime: startTime, endTime: endTime, imageDataURLString: imageDataURL?.absoluteString, isSuccess: isSuccess)
+    return .init(
+      challengeDateString: dateString,
+      startTime: startTime,
+      endTime: endTime,
+      imageDataURLString: imageDataURL?.absoluteString,
+      isSuccess: isSuccess
+    )
   }
 }

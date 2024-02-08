@@ -48,7 +48,6 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
     subscriptions.removeAll()
 
     let date = mealGokHistoryFetchUseCase.fetchHistoryBy(startDate: .now)
-    print(date)
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
