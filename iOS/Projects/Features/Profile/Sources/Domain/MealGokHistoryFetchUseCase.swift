@@ -21,7 +21,7 @@ final class MealGokHistoryFetchUseCase: MealGokHistoryFetchUseCaseRepresentable 
     self.fetchRepository = fetchRepository
   }
 
-  func fetchHistoryBy(startDate: Date) -> MealGokChallengeProperty {
+  func fetchHistoryBy(startDate: Date) -> [MealGokChallengeProperty] {
     return fetchRepository.fetch(date: startDate)
   }
 }

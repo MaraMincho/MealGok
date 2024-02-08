@@ -12,11 +12,11 @@ import RealmSwift
 
 public final class MealGokChallengePersistedObject: Object {
   @Persisted(primaryKey: true) public var _id: ObjectId
-  @Persisted var challengeDateString: String
-  @Persisted var endTime: Date
-  @Persisted var startTime: Date
-  @Persisted var imageDataURL: String?
-  @Persisted var isSuccess: Bool
+  @Persisted public var challengeDateString: String
+  @Persisted public var endTime: Date
+  @Persisted public var startTime: Date
+  @Persisted public var imageDataURL: String?
+  @Persisted public var isSuccess: Bool
   
   /// init MealGokChallengePersistedObject
   /// - Parameters:

@@ -9,5 +9,5 @@
 import Foundation
 
 protocol MealGokHistoryFetchRepositoryRepresentable {
-  func fetch(date: Date) -> MealGokChallengeProperty
+  func fetch(date: Date) -> [MealGokChallengeProperty]
 }

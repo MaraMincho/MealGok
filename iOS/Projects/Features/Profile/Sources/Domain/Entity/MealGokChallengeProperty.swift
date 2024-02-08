@@ -8,4 +8,10 @@
 
 import Foundation
 
-struct MealGokChallengeProperty {}
+struct MealGokChallengeProperty {
+  let challengeDateString: String
+  let endTime: Date
+  let startTime: Date
+  let imageDateURL: String?
+  let isSuccess: Bool
+}
