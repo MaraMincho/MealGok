@@ -13,12 +13,3 @@ import Foundation
 protocol SaveMealGokChalengeRepositoryRepresentable {
   func save(mealGokChallengeDTO: MealGokChallengeDTO) throws
 }
-
-// MARK: - MealGokChallengeDTO
-
-struct MealGokChallengeDTO {
-  let startTime: Date?
-  let endTime: Date?
-  let isSuccess: Bool?
-  let imageDataURL: URL?
-}

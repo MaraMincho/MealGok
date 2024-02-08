@@ -61,6 +61,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   private func saveSuccessData() {
+    guard let startTime else { return }
     do {
       try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: nil))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")

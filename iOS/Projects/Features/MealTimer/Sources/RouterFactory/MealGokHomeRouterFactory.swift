@@ -6,7 +6,6 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
-import RealmSwift
 import RouterFactory
 import UIKit
 
@@ -20,7 +19,6 @@ protocol MealGokHomeFactoriable: RouterFactoriable {
 
 public final class MealGokHomeRouterFactory: RouterFactoriable {
   public weak var parentRouter: Routing?
-  let realm = try! Realm()
 
   public weak var navigationController: UINavigationController?
 

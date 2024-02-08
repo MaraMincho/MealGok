@@ -9,12 +9,13 @@
 import Foundation
 import OSLog
 import RealmSwift
+import ThirdParty
 
 // MARK: - SaveMealGokChalengeRepository
 
-final class SaveMealGokChalengeRepository: SaveMealGokChalengeRepositoryRepresentable {
+final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokChalengeRepositoryRepresentable {
   func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
-    let persistableObject = MealGokChallengePersistedObject(dto: dto)
+    let persistableObject = dto.adaptPersistableObject()
 
     try realm.write {
       realm.add(persistableObject)
@@ -22,29 +23,32 @@ final class SaveMealGokChalengeRepository: SaveMealGokChalengeRepositoryRepresen
     }
   }
 
+  // TODO: 삭제 필수 -
   func fakeData() -> MealGokChallengePersistedObject {
-    return MealGokChallengePersistedObject(dto: .init(startTime: .now - 600, endTime: .now + 600, isSuccess: true, imageDataURL: nil))
+    let now = Date.now
+    var dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-mm-dd"
+    let challengeDateString = dateFormatter.string(from: now)
+    return .init(challengeDateString: challengeDateString, startTime: now - 600, endTime: now + 600, imageDataURLString: nil, isSuccess: true)
   }
 
-  var realm: Realm
-  init(realm: Realm) {
-    self.realm = realm
+  override init() {
+    super.init()
   }
 }
 
-// MARK: - MealGokChallengePersistedObject
+// MARK: - MealGokChallengeDTO
 
-class MealGokChallengePersistedObject: Object {
-  @Persisted(primaryKey: true) var _id: ObjectId
-  @Persisted var endTime: Date?
-  @Persisted var startTime: Date?
-  @Persisted var imageDataURL: String?
-  @Persisted var isSuccess: Bool?
-  convenience init(dto: MealGokChallengeDTO) {
-    self.init()
-    endTime = dto.endTime
-    startTime = dto.startTime
-    imageDataURL = dto.imageDataURL?.absoluteString
-    isSuccess = dto.isSuccess
+public struct MealGokChallengeDTO {
+  let startTime: Date
+  let endTime: Date
+  let isSuccess: Bool
+  let imageDataURL: URL?
+  var dateFormatter = DateFormatter()
+
+  func adaptPersistableObject() -> MealGokChallengePersistedObject {
+    dateFormatter.dateFormat = "yyyy-mm-dd"
+    let dateString = dateFormatter.string(from: startTime)
+    return .init(challengeDateString: dateString, startTime: startTime, endTime: endTime, imageDataURLString: imageDataURL?.absoluteString, isSuccess: isSuccess)
   }
 }
