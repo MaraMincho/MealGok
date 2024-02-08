@@ -12,12 +12,38 @@ import RealmSwift
 // MARK: - SaveMealGokChalengeRepository
 
 final class SaveMealGokChalengeRepository: SaveMealGokChalengeRepositoryRepresentable {
-  func save(mealGokChallengeDTO _: MealGokChallengeDTO) throws {
-    // let persistableObject = MealGokChallengePersistedObject(dto: dto)
+  func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
+    let persistableObject = MealGokChallengePersistedObject(dto: dto)
+
+    try realm?.write {
+      realm?.add(persistableObject)
+      realm?.add(fakeData())
+    }
   }
 
-  let realm: Realm
+  func fakeData() -> MealGokChallengePersistedObject {
+    return MealGokChallengePersistedObject(dto: .init(startTime: .now - 600, endTime: .now + 600, isSuccess: true, imageDataURL: nil))
+  }
+
+  var realm: Realm?
   init() throws {
-    realm = try Realm()
+    realm = try! Realm()
+  }
+}
+
+// MARK: - MealGokChallengePersistedObject
+
+class MealGokChallengePersistedObject: Object {
+  @Persisted(primaryKey: true) var _id: ObjectId
+  @Persisted var endTime: Date?
+  @Persisted var startTime: Date?
+  @Persisted var imageDataURL: String?
+  @Persisted var isSuccess: Bool?
+  convenience init(dto: MealGokChallengeDTO) {
+    self.init()
+    endTime = dto.endTime
+    startTime = dto.startTime
+    imageDataURL = dto.imageDataURL?.absoluteString
+    isSuccess = dto.isSuccess
   }
 }

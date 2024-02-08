@@ -33,6 +33,9 @@ public extension TargetDependency {
 
 // MARK: - ThirdParty
 public extension TargetDependency {
-  static let Realm = TargetDependency.external(name: "Realm")
-  static let RealmSwift = TargetDependency.external(name: "RealmSwift")
+  static let thirdParty: TargetDependency = .project(target: "ThirdParty", path: .relativeToShared("ThirdParty"), condition: .none)
+  
+  static let Realm = TargetDependency.package(product: "Realm")
+  static let RealmSwift = TargetDependency.package(product: "RealmSwift")
+  
 }

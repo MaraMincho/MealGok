@@ -13,8 +13,7 @@ let project = Project.makeModule(
       .designSystem,
       .routerFactory,
       .combineCocoa,
-      .Realm,
-      .RealmSwift,
+      .thirdParty,
     ],
     testDependencies: []
   )
