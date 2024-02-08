@@ -27,8 +27,11 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   private let customStringFormatter: CustomTimeStringFormatter
 
-  init(customStringFormatter: CustomTimeStringFormatter) {
+  private let repository: SaveMealGokChalengeRepositoryRepresentable?
+
+  init(customStringFormatter: CustomTimeStringFormatter, repository: SaveMealGokChalengeRepositoryRepresentable?) {
     self.customStringFormatter = customStringFormatter
+    self.repository = repository
   }
 
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never> {
@@ -48,6 +51,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
         let entity = customStringFormatter.subtract(from: from)
         if entity == nil {
           isFinishPublisher.send(true)
+          try? repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: nil))
         }
         return entity
       }.eraseToAnyPublisher()
