@@ -24,7 +24,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
 
   var childRouters: [Routing] = []
 
-  private let targetTime: Int
+  private let targetTimeOfMinutes: Int
 
   func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: false)
@@ -33,7 +33,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
 
   func build() -> UIViewController {
     let repository = SaveMealGokChalengeRepository()
-    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
+    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: 0)
     let timerUseCase = TimerUseCase(customStringFormatter: customStringFormatter, repository: repository)
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)
@@ -43,10 +43,10 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
     return viewController
   }
 
-  init(parentRouter: Routing?, navigationController: UINavigationController?, targetTime: Int) {
+  init(parentRouter: Routing?, navigationController: UINavigationController?, targetTimeOfMinutes: Int) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
-    self.targetTime = targetTime
+    self.targetTimeOfMinutes = targetTimeOfMinutes
   }
 }
 

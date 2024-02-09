@@ -272,12 +272,12 @@ private extension ProfileViewController {
   }
 
   func setupTableViewDataSource() {
-    dataSource = .init(tableView: mealGokChallengeTableView) { tableView, indexPath, _ in
+    dataSource = .init(tableView: mealGokChallengeTableView) { tableView, indexPath, item in
       let tableViewCell = tableView.dequeueReusableCell(withIdentifier: ProfileViewMealGokTableViewCell.identifier, for: indexPath)
       guard let cell = tableViewCell as? ProfileViewMealGokTableViewCell else {
-        return nil
+        return UITableViewCell()
       }
-      cell.configure()
+      cell.configure(challengeProperty: item)
       return cell
     }
   }
