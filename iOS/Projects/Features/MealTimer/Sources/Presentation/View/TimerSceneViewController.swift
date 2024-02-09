@@ -112,7 +112,7 @@ private extension TimerSceneViewController {
   }
 
   func showFinishAlert() {
-    let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertMessage, preferredStyle: .actionSheet)
+    let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertMessage, preferredStyle: .alert)
 
     let cancelButton = UIAlertAction(title: Constants.cancelButtonTitle, style: .cancel)
     let confirmButton = UIAlertAction(title: Constants.confirmButtonTitle, style: .destructive) { [weak self] _ in
