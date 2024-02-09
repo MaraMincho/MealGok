@@ -8,4 +8,9 @@
 
 import UIKit
 
-extension ProfileViewController: UITableViewDelegate {}
+extension ProfileViewController: UITableViewDelegate {
+  func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+    let cellHeight: CGFloat = 80
+    return cellHeight
+  }
+}

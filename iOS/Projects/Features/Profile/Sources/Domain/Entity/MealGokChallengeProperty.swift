@@ -14,4 +14,38 @@ public struct MealGokChallengeProperty: Hashable {
   let startTime: Date
   let imageDateURL: String?
   let isSuccess: Bool
+
+  func formattedStartDate() -> String {
+    return Self.dateFormatter.string(from: startTime)
+  }
+
+  func formattedEndDate() -> String {
+    return Self.dateFormatter.string(from: startTime)
+  }
+
+  func stringOfAMPM() -> String {
+    return Self.AMPMFormatter.string(from: startTime)
+  }
+
+  func challengeDurationTime() -> (minutes: Int, seconds: Int) {
+    let timeInterval = endTime.timeIntervalSince(endTime)
+    let minutes = Int(timeInterval / 60)
+    let seconds = Int(Int(timeInterval) % 60)
+
+    return (minutes, seconds)
+  }
+
+  private static let AMPMFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "a"
+
+    return formatter
+  }()
+
+  private static let dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "mm:dd"
+
+    return formatter
+  }()
 }
