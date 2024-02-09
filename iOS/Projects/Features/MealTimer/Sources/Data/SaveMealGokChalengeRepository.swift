@@ -18,7 +18,6 @@ final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokCha
     let persistableObject = dto.adaptPersistableObject()
     try realm.write {
       realm.add(persistableObject)
-      realm.add(fakeData())
     }
   }
 
