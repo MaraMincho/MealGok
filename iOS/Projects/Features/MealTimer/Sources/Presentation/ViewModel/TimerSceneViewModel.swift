@@ -43,6 +43,7 @@ final class TimerSceneViewModel {
 
   private var timerUseCase: TimerUseCasesRepresentable
   private var subscriptions: Set<AnyCancellable> = []
+  private let isFinished: CurrentValueSubject<Bool, Never> = .init(false)
   weak var router: StartMealTimerSceneRouterFactoriable?
 
   init(timerUseCase: TimerUseCasesRepresentable) {
@@ -68,20 +69,36 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
         return TimerSceneState.updateTimerView(entity)
       }.eraseToAnyPublisher()
 
-    let completeState: TimerSceneViewModelOutput = timerUseCase
+    timerUseCase
       .timerFinished()
+      .sink { [weak self] bool in
+        self?.isFinished.send(bool)
+      }
+      .store(in: &subscriptions)
+
+    let completeState: TimerSceneViewModelOutput = isFinished
       .map { bool in return bool ? TimerSceneState.timerDidFinish : TimerSceneState.idle }
       .eraseToAnyPublisher()
-    
+
     let showAlertState: TimerSceneViewModelOutput = input
       .showAlertPublisher
-      .map{_ in return TimerSceneState.showFinishConfirmAlert}
+      .map { _ in return TimerSceneState.showFinishConfirmAlert }
       .eraseToAnyPublisher()
-  
 
     input.didTapCompleteButton
+      .compactMap { [weak self] _ -> Void? in
+        // 만약 타이머가 종료 되었다면, 이벤트를 무시하고, 종료되었다면 state를 전달합니다.
+        return self?.isFinished.value == true ? () : nil
+      }
       .sink { [router] _ in
         router?.pushSuccessScene()
+      }
+      .store(in: &subscriptions)
+
+    input.didCancelChallenge
+      .sink { [weak self] _ in
+        self?.timerUseCase.cancelChallenge()
+        self?.router?.pushSuccessScene()
       }
       .store(in: &subscriptions)
 
