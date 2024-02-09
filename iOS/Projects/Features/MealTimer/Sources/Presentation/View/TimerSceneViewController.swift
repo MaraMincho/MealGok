@@ -26,6 +26,15 @@ final class TimerSceneViewController: UIViewController {
   // MARK: UI Components
 
   private let timerView = TimerView(contentSize: Metrics.timerIntrinsicContentSize)
+  
+  private let descriptionLabel: UILabel = {
+    let label = UILabel()
+    label.text = Constants.descriptionText
+    label.font = .preferredFont(forTextStyle: .caption1, weight: .medium)
+    label.textColor = DesignSystemColor.secondaryBackground
+    
+    return label
+  }
 
   // MARK: Initializations
 
@@ -66,6 +75,10 @@ private extension TimerSceneViewController {
     timerView.translatesAutoresizingMaskIntoConstraints = false
     timerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     timerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    
+    view.addSubview(descriptionLabel)
+    descriptionLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor, constant: Metrics.descriptionLabelSpacing).isActive = true
+    descriptionLabel.centerXAnchor.constraint(equalTo: timerView.centerXAnchor).isActive = true
   }
 
   func setupStyles() {
@@ -94,5 +107,11 @@ private extension TimerSceneViewController {
 
   enum Metrics {
     static let timerIntrinsicContentSize: CGSize = .init(width: 290, height: 290)
+    
+    static let descriptionLabelSpacing: CGFloat = 20
+  }
+  
+  enum Constants {
+    static let descriptionText: String = "타이머를 3초이상 누르면 도전을 종료할 수 있습니다."
   }
 }
