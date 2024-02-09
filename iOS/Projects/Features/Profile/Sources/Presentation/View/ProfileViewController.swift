@@ -258,8 +258,6 @@ final class ProfileViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     contentScrollView.contentSize = contentStackView.bounds.size
-    selectToday()
-    requestMealGokHistory.send()
   }
 }
 
@@ -269,6 +267,8 @@ private extension ProfileViewController {
     setupHierarchyAndConstraints()
     bind()
     setupTableViewDataSource()
+    selectToday()
+    requestMealGokHistory.send()
   }
 
   func setupTableViewDataSource() {
@@ -370,6 +370,9 @@ private extension ProfileViewController {
     // apply today tableViewTitle
     snapshot.appendSections([today])
     dataSource?.apply(snapshot)
+
+    // fetch Today MealGokHistory
+    didChangeDate.send(today)
   }
 
   enum Metrics {
