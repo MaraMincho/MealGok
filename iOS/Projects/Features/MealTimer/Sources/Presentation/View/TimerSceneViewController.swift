@@ -118,7 +118,9 @@ private extension TimerSceneViewController {
     guard isPresentingAlert == false else {
       return
     }
-
+    
+    generator.notificationOccurred(.warning)
+    
     isPresentingAlert.toggle()
     let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertMessage, preferredStyle: .alert)
 
