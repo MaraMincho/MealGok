@@ -338,6 +338,14 @@ private extension ProfileViewController {
       day: Calendar.current.component(.day, from: now)
     )
     calendarBehavior.setSelected(today, animated: true)
+
+    guard var snapshot = dataSource?.snapshot() else {
+      return
+    }
+
+    // apply today tableViewTitle
+    snapshot.appendSections([today])
+    dataSource?.apply(snapshot)
   }
 
   enum Metrics {
