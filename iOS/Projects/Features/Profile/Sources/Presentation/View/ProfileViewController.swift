@@ -28,6 +28,8 @@ final class ProfileViewController: UIViewController {
 
   private var subscriptions: Set<AnyCancellable> = []
 
+  private let didChangeDate: PassthroughSubject<String, Never> = .init()
+
   var decorations = Set<Date?>()
 
   var dataSource: ProfileViewMealGokDataSource?
@@ -159,6 +161,7 @@ final class ProfileViewController: UIViewController {
     calendarView.wantsDateDecorations = true
     calendarView.selectionBehavior = calendarBehavior
     calendarView.backgroundColor = DesignSystemColor.secondaryBackground
+
     let margin = Metrics.calendarMargin
     calendarView.layoutMargins = .init(top: margin, left: margin, bottom: margin, right: margin)
 
@@ -316,9 +319,14 @@ private extension ProfileViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
+    let output = viewModel.transform(input: .init(
+      didChangeDate: didChangeDate.eraseToAnyPublisher()
+    ))
+
     output.sink { state in
       switch state {
+      case .updateContent:
+        break
       case .idle:
         break
       }
@@ -372,5 +380,38 @@ private extension ProfileViewController {
       month: 12,
       day: 31
     )
+  }
+}
+
+extension ProfileViewController {
+  func updateSnapshot(with dateComponents: DateComponents?) {
+    guard let dateComponents else { return }
+    updateSection(with: dateComponents)
+    updateItems(with: dateComponents)
+  }
+
+  private func updateSection(with dateComponents: DateComponents) {
+    guard let dataSource else {
+      return
+    }
+
+    var snapshot = dataSource.snapshot()
+    snapshot.deleteAllItems()
+    snapshot.appendSections([dateComponents])
+
+    dataSource.apply(snapshot)
+  }
+
+  private func updateItems(with dateComponents: DateComponents) {
+    guard
+      let year = dateComponents.year,
+      let month = dateComponents.month,
+      let day = dateComponents.day
+    else {
+      return
+    }
+
+    let targetString = "\(year)-\(month)-\(day)"
+    didChangeDate.send(targetString)
   }
 }

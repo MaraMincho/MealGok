@@ -11,7 +11,9 @@ import Foundation
 
 // MARK: - ProfileViewModelInput
 
-public struct ProfileViewModelInput {}
+public struct ProfileViewModelInput {
+  let didChangeDate: AnyPublisher<String, Never>
+}
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
 
@@ -19,6 +21,7 @@ public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
 
 public enum ProfileState {
   case idle
+  case updateContent
 }
 
 // MARK: - ProfileViewModelRepresentable
