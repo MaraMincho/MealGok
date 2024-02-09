@@ -38,7 +38,7 @@ extension MealGokHistoryFetchRepository: MealGokHistoryFetchRepositoryRepresenta
       imageDateURL: $0.imageDataURL,
       isSuccess: $0.isSuccess
     ) }
-    
+
     return challengeProperties
   }
 }

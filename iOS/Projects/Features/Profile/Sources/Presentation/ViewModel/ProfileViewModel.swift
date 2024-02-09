@@ -13,6 +13,7 @@ import Foundation
 
 public struct ProfileViewModelInput {
   let didChangeDate: AnyPublisher<DateComponents, Never>
+  let fetchMealGokHistory: AnyPublisher<Void, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -22,7 +23,7 @@ public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
 public enum ProfileState {
   case idle
   case updateContent
-  case updateMealGokChallengeHistoryDate([DateComponents])
+  case updateMealGokChallengeHistoryDate([Date])
   case updateTargetDayMealGokChallengeContent([MealGokChallengeProperty])
 }
 
@@ -52,9 +53,10 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
   public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
 
-    let updateHistoryDate = Just(ProfileState.updateMealGokChallengeHistoryDate(
-      mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents()
-    ))
+    let updateHistoryDate = input.fetchMealGokHistory
+      .compactMap { [weak self] _ in self?.mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents() }
+      .map { ProfileState.updateMealGokChallengeHistoryDate($0) }
+      .eraseToAnyPublisher()
 
     let updateDate = input.didChangeDate
       .compactMap { [weak self] components -> [MealGokChallengeProperty]? in

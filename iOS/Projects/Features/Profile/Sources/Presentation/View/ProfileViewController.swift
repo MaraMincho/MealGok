@@ -29,8 +29,9 @@ final class ProfileViewController: UIViewController {
   private var subscriptions: Set<AnyCancellable> = []
 
   private let didChangeDate: PassthroughSubject<DateComponents, Never> = .init()
+  private let requestMealGokHistory: PassthroughSubject<Void, Never> = .init()
 
-  var decorations = Set<DateComponents?>()
+  var decorations = Set<Date?>()
 
   var dataSource: ProfileViewMealGokDataSource?
 
@@ -258,6 +259,7 @@ final class ProfileViewController: UIViewController {
     super.viewDidAppear(animated)
     contentScrollView.contentSize = contentStackView.bounds.size
     selectToday()
+    requestMealGokHistory.send()
   }
 }
 
@@ -307,15 +309,16 @@ private extension ProfileViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      didChangeDate: didChangeDate.eraseToAnyPublisher()
+      didChangeDate: didChangeDate.eraseToAnyPublisher(),
+      fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher()
     ))
 
     output.sink { [weak self] state in
       switch state {
       case .updateContent:
         break
-      case let .updateMealGokChallengeHistoryDate(compoenets):
-        self?.updateDecoration(challengeDate: compoenets)
+      case let .updateMealGokChallengeHistoryDate(date):
+        self?.updateDecoration(challengeDate: date)
       case let .updateTargetDayMealGokChallengeContent(property):
         self?.updateTableView(with: property)
       case .idle:
@@ -325,8 +328,19 @@ private extension ProfileViewController {
     .store(in: &subscriptions)
   }
 
-  func updateDecoration(challengeDate: [DateComponents]) {
-    challengeDate.forEach { decorations.insert($0) }
+  func updateDecoration(challengeDate: [Date]) {
+    challengeDate.forEach { dateComponent in decorations.insert(dateComponent) }
+    let gregorian = Calendar(identifier: .gregorian)
+    let challengeDateComponents = challengeDate.map { date in
+
+      let year = gregorian.component(.year, from: date)
+      let month = gregorian.component(.month, from: date)
+      let day = gregorian.component(.day, from: date)
+
+      return DateComponents(calendar: gregorian, year: year, month: month, day: day)
+    }
+
+    calendarView.reloadDecorations(forDateComponents: challengeDateComponents, animated: true)
   }
 
   func updateTableView(with property: [MealGokChallengeProperty]) {

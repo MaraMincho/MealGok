@@ -14,14 +14,14 @@ import UIKit
 extension ProfileViewController: UICalendarViewDelegate {
   /// UICalendarViewDelegate 을 통해서, 만약 선택될 날짜가 있을 경우 데코레이션을 한다.
   func calendarView(_: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-    let selectedDateComponents = DateComponents(
+    let day = DateComponents(
       calendar: dateComponents.calendar,
       year: dateComponents.year,
       month: dateComponents.month,
       day: dateComponents.day
     )
 
-    return decorations.contains(selectedDateComponents) ? makeDecoration() : nil
+    return decorations.contains(day.date) ? makeDecoration() : nil
   }
 
   private func makeDecoration() -> UICalendarView.Decoration {

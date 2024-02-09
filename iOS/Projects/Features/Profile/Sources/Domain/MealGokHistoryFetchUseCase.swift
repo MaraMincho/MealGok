@@ -12,7 +12,7 @@ import Foundation
 
 protocol MealGokHistoryFetchUseCaseRepresentable {
   func fetchHistoryBy(dateComponents: DateComponents) -> [MealGokChallengeProperty]
-  func fetchAllHistoryDateComponents() -> [DateComponents]
+  func fetchAllHistoryDateComponents() -> [Date]
 }
 
 // MARK: - MealGokHistoryFetchUseCase
@@ -23,6 +23,13 @@ final class MealGokHistoryFetchUseCase: MealGokHistoryFetchUseCaseRepresentable 
     let numberFormatter = NumberFormatter()
     numberFormatter.minimumIntegerDigits = 2
     return numberFormatter
+  }()
+
+  let dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+
+    return dateFormatter
   }()
 
   func fetchHistoryBy(dateComponents: DateComponents) -> [MealGokChallengeProperty] {
@@ -38,21 +45,11 @@ final class MealGokHistoryFetchUseCase: MealGokHistoryFetchUseCaseRepresentable 
     return fetchRepository.fetch(dateString: "\(year)-\(formattedMonth)-\(formattedDay)")
   }
 
-  func fetchAllHistoryDateComponents() -> [DateComponents] {
+  func fetchAllHistoryDateComponents() -> [Date] {
     let objects = fetchRepository.fetchAllHistory()
-    let hashableDate: [String] = Array(Set(objects.map(\.challengeDateString)))
-    let gregorian = Calendar(identifier: .gregorian)
-    let dateComponents = hashableDate.map { str in
-      let yearMonthDay = str.split(separator: "-")
-      return DateComponents(
-        calendar: gregorian,
-        year: Int(yearMonthDay[0]),
-        month: Int(yearMonthDay[1]),
-        day: Int(yearMonthDay[2])
-      )
-    }
-
-    return dateComponents
+    let hashableDateString: [String] = Array(Set(objects.map(\.challengeDateString)))
+    let hashableDate = hashableDateString.compactMap { dateFormatter.date(from: $0) }
+    return hashableDate
   }
 
   init(fetchRepository: MealGokHistoryFetchRepositoryRepresentable) {
