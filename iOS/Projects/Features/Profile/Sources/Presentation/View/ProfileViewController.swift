@@ -136,6 +136,10 @@ final class ProfileViewController: UIViewController {
     stackView.isLayoutMarginsRelativeArrangement = true
     stackView.backgroundColor = DesignSystemColor.secondaryBackground
 
+    stackView.layer.cornerRadius = Metrics.headerCornerRadius
+    stackView.layer.cornerCurve = .continuous
+    stackView.addShadow()
+
     stackView.translatesAutoresizingMaskIntoConstraints = false
     return stackView
   }()
@@ -158,6 +162,11 @@ final class ProfileViewController: UIViewController {
     let margin = Metrics.calendarMargin
     calendarView.layoutMargins = .init(top: margin, left: margin, bottom: margin, right: margin)
 
+    // addCornerRadius
+    calendarView.clipsToBounds = true
+    calendarView.layer.cornerRadius = Metrics.headerCornerRadius
+    calendarView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
+
     calendarView.translatesAutoresizingMaskIntoConstraints = false
     return calendarView
   }()
@@ -173,6 +182,10 @@ final class ProfileViewController: UIViewController {
     tableView.delegate = self
     tableView.backgroundColor = DesignSystemColor.secondaryBackground
     tableView.register(ProfileViewMealGokTableViewCell.self, forCellReuseIdentifier: ProfileViewMealGokTableViewCell.identifier)
+    // addCornerRadius
+    tableView.clipsToBounds = true
+    tableView.layer.cornerRadius = Metrics.headerCornerRadius
+    tableView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMaxYCorner, .layerMaxXMaxYCorner)
 
     tableView.translatesAutoresizingMaskIntoConstraints = false
     return tableView
@@ -186,10 +199,10 @@ final class ProfileViewController: UIViewController {
     stackView.spacing = 0
     stackView.axis = .vertical
 
-    stackView.layer.masksToBounds = true
-
     stackView.layer.cornerRadius = 15
     stackView.layer.cornerCurve = .continuous
+
+    stackView.addShadow()
 
     stackView.translatesAutoresizingMaskIntoConstraints = false
     return stackView
@@ -315,6 +328,8 @@ private extension ProfileViewController {
 
   enum Metrics {
     static let topSpacing: CGFloat = 24
+
+    static let headerCornerRadius: CGFloat = 8
 
     static let headerStackViewTopSpacing: CGFloat = 12
     static let headerStackViewLeftAndRightMargin: CGFloat = 12
