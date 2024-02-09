@@ -87,7 +87,8 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
 
     input.didTapCompleteButton
       .compactMap { [weak self] _ -> Void? in
-        // 만약 타이머가 종료 되었다면, 이벤트를 무시하고, 종료되었다면 state를 전달합니다.
+        // 만약 타이머가 종료 된 상태에서 완료 버튼을 누를시 이벤트를 전달하고
+        // 아닐 경우에는 이벤트를 무시합니다.
         return self?.isFinished.value == true ? () : nil
       }
       .sink { [router] _ in
@@ -96,6 +97,11 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
       .store(in: &subscriptions)
 
     input.didCancelChallenge
+      .compactMap { [weak self] _ -> Void? in
+        // 만약 타이머가 종료 된 상태에서 취소 버튼을 눌렀다면 이벤트를 무시합니다.
+        // 이미 완료한 시점에서 취소 버튼을 누르는 경우를 방지합니다.
+        return self?.isFinished.value == true ? nil : ()
+      }
       .sink { [weak self] _ in
         self?.timerUseCase.cancelChallenge()
         self?.router?.pushSuccessScene()

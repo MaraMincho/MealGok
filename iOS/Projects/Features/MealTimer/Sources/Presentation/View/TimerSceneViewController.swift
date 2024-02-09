@@ -100,6 +100,7 @@ private extension TimerSceneViewController {
         self?.timerView.updateTimerLabel(minutes: property.minute, seconds: property.seconds)
         self?.timerView.updateFan(to: property.fanRadian)
       case .timerDidFinish:
+        self?.dismiss(animated: false)
         self?.timerView.didFinish()
       case .showFinishConfirmAlert:
         self?.showFinishAlert()
