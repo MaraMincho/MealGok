@@ -257,6 +257,7 @@ final class ProfileViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     contentScrollView.contentSize = contentStackView.bounds.size
+    selectToday()
   }
 }
 
@@ -265,8 +266,9 @@ private extension ProfileViewController {
     setupStyles()
     setupHierarchyAndConstraints()
     bind()
-    addCalendarDecoration()
     setupTableViewDataSource()
+
+    addCalendarDecoration()
   }
 
   func setupTableViewDataSource() {
@@ -277,19 +279,6 @@ private extension ProfileViewController {
       }
       cell.configure()
       return cell
-    }
-
-    if var snapshot = dataSource?.snapshot() {
-      snapshot.appendSections([.init(calendar: .init(identifier: .gregorian), year: 2024, month: 2, day: 4)])
-      dataSource?.apply(snapshot)
-      setFakeDataSource()
-    }
-  }
-
-  func setFakeDataSource() {
-    if var snapshot = dataSource?.snapshot() {
-      snapshot.appendItems([.init(), .init(), .init(), .init(), .init(), .init()])
-      dataSource?.apply(snapshot)
     }
   }
 
@@ -327,11 +316,28 @@ private extension ProfileViewController {
       switch state {
       case .updateContent:
         break
+      case let .updateMealGokChallengeHistoryDate(compoenets):
+        break
+      case let .updateTargetDayMealGokChallengeContent(property):
+        break
       case .idle:
         break
       }
     }
     .store(in: &subscriptions)
+  }
+
+  private func selectToday() {
+    let now = Date.now
+
+    // Select Today
+    let today = DateComponents(
+      calendar: Calendar(identifier: .gregorian),
+      year: Calendar.current.component(.year, from: now),
+      month: Calendar.current.component(.month, from: now),
+      day: Calendar.current.component(.day, from: now)
+    )
+    calendarBehavior.setSelected(today, animated: true)
   }
 
   enum Metrics {

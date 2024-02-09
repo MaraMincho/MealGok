@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MealGokChallengeProperty {
+public struct MealGokChallengeProperty: Hashable {
   let challengeDateString: String
   let endTime: Date
   let startTime: Date

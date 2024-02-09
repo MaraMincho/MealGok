@@ -22,6 +22,8 @@ public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
 public enum ProfileState {
   case idle
   case updateContent
+  case updateMealGokChallengeHistoryDate([DateComponents])
+  case updateTargetDayMealGokChallengeContent([MealGokChallengeProperty])
 }
 
 // MARK: - ProfileViewModelRepresentable
@@ -47,13 +49,23 @@ final class ProfileViewModel {
 // MARK: ProfileViewModelRepresentable
 
 extension ProfileViewModel: ProfileViewModelRepresentable {
-  public func transform(input _: ProfileViewModelInput) -> ProfileViewModelOutput {
+  public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
 
-    let date = mealGokHistoryFetchUseCase.fetchHistoryBy(startDate: .now)
+    let updateHistoryDate = Just(ProfileState.updateMealGokChallengeHistoryDate(
+      mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents()
+    ))
+
+    let updateDate = input.didChangeDate
+      .compactMap { [weak self] dateString -> [MealGokChallengeProperty]? in
+        guard let self else { return nil }
+        let contents = mealGokHistoryFetchUseCase.fetchHistoryBy(startDateString: dateString)
+        return contents
+      }
+      .map { ProfileState.updateTargetDayMealGokChallengeContent($0) }
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState
+    return initialState.merge(with: updateHistoryDate, updateDate).eraseToAnyPublisher()
   }
 }

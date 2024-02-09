@@ -27,8 +27,6 @@ extension ProfileViewController: UICalendarViewDelegate {
       day: Calendar.current.component(.day, from: now)
     )
     decorations.insert(today.date)
-
-    calendarBehavior.setSelected(today, animated: true)
   }
 
   /// UICalendarViewDelegate 을 통해서, 만약 선택될 날짜가 있을 경우 데코레이션을 한다.
