@@ -17,17 +17,21 @@ extension ProfileViewController: UICalendarViewDelegate {
   }
 
   private func addTodayDecoration() {
+    let now = Date.now
+
+    // Select Today
     let today = DateComponents(
       calendar: Calendar(identifier: .gregorian),
-      year: 2024,
-      month: 2,
-      day: 4
+      year: Calendar.current.component(.year, from: now),
+      month: Calendar.current.component(.month, from: now),
+      day: Calendar.current.component(.day, from: now)
     )
     decorations.insert(today.date)
 
     calendarBehavior.setSelected(today, animated: true)
   }
 
+  /// UICalendarViewDelegate 을 통해서, 만약 선택될 날짜가 있을 경우 데코레이션을 한다.
   func calendarView(_: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
     let date = DateComponents(
       calendar: dateComponents.calendar,
@@ -54,5 +58,7 @@ extension ProfileViewController: UICalendarViewDelegate {
 // MARK: - ProfileViewController + UICalendarSelectionSingleDateDelegate
 
 extension ProfileViewController: UICalendarSelectionSingleDateDelegate {
-  func dateSelection(_: UICalendarSelectionSingleDate, didSelectDate _: DateComponents?) {}
+  func dateSelection(_: UICalendarSelectionSingleDate, didSelectDate date: DateComponents?) {
+    updateSnapshot(with: date)
+  }
 }
