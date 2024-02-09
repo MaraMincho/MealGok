@@ -5,8 +5,6 @@
 --indent 2
 --selfrequired
 --importgrouping alpha
---enable acronyms
---acronyms "URL, ID, UUID"
 --enable blankLineAfterImports
 --enable blankLinesAroundMark
 --enable blockComments

@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import OSLog
 
 // MARK: - TimerUseCasesRepresentable
 
@@ -27,8 +28,11 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   private let customStringFormatter: CustomTimeStringFormatter
 
-  init(customStringFormatter: CustomTimeStringFormatter) {
+  private let repository: SaveMealGokChalengeRepositoryRepresentable?
+
+  init(customStringFormatter: CustomTimeStringFormatter, repository: SaveMealGokChalengeRepositoryRepresentable?) {
     self.customStringFormatter = customStringFormatter
+    self.repository = repository
   }
 
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never> {
@@ -48,11 +52,24 @@ final class TimerUseCase: TimerUseCasesRepresentable {
         let entity = customStringFormatter.subtract(from: from)
         if entity == nil {
           isFinishPublisher.send(true)
+          saveSuccessData()
         }
         return entity
       }.eraseToAnyPublisher()
 
     return initValuePublisher.merge(with: secondsPublisher).eraseToAnyPublisher()
+  }
+
+  private func saveSuccessData() {
+    guard let startTime else { return }
+    do {
+      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: nil))
+      Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
+    } catch {
+      // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.
+      Logger().error("error was occurred \(error.localizedDescription)")
+      return
+    }
   }
 
   func start() {

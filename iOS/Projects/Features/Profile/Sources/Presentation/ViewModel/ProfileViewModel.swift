@@ -33,6 +33,12 @@ final class ProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
+
+  private let mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase
+
+  init(mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase) {
+    self.mealGokHistoryFetchUseCase = mealGokHistoryFetchUseCase
+  }
 }
 
 // MARK: ProfileViewModelRepresentable
@@ -40,6 +46,8 @@ final class ProfileViewModel {
 extension ProfileViewModel: ProfileViewModelRepresentable {
   public func transform(input _: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
+
+    let date = mealGokHistoryFetchUseCase.fetchHistoryBy(startDate: .now)
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
