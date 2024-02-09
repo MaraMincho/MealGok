@@ -28,9 +28,9 @@ final class ProfileViewController: UIViewController {
 
   private var subscriptions: Set<AnyCancellable> = []
 
-  private let didChangeDate: PassthroughSubject<String, Never> = .init()
+  private let didChangeDate: PassthroughSubject<DateComponents, Never> = .init()
 
-  var decorations = Set<Date?>()
+  var decorations = Set<DateComponents?>()
 
   var dataSource: ProfileViewMealGokDataSource?
 
@@ -267,8 +267,6 @@ private extension ProfileViewController {
     setupHierarchyAndConstraints()
     bind()
     setupTableViewDataSource()
-
-    addCalendarDecoration()
   }
 
   func setupTableViewDataSource() {
@@ -312,14 +310,14 @@ private extension ProfileViewController {
       didChangeDate: didChangeDate.eraseToAnyPublisher()
     ))
 
-    output.sink { state in
+    output.sink { [weak self] state in
       switch state {
       case .updateContent:
         break
       case let .updateMealGokChallengeHistoryDate(compoenets):
-        break
+        self?.updateDecoration(challengeDate: compoenets)
       case let .updateTargetDayMealGokChallengeContent(property):
-        break
+        self?.updateTableView(with: property)
       case .idle:
         break
       }
@@ -327,7 +325,19 @@ private extension ProfileViewController {
     .store(in: &subscriptions)
   }
 
-  private func selectToday() {
+  func updateDecoration(challengeDate: [DateComponents]) {
+    challengeDate.forEach { decorations.insert($0) }
+  }
+
+  func updateTableView(with property: [MealGokChallengeProperty]) {
+    guard var snapshot = dataSource?.snapshot() else {
+      return
+    }
+    snapshot.appendItems(property)
+    dataSource?.apply(snapshot)
+  }
+
+  func selectToday() {
     let now = Date.now
 
     // Select Today
@@ -401,7 +411,7 @@ extension ProfileViewController {
   func updateSnapshot(with dateComponents: DateComponents?) {
     guard let dateComponents else { return }
     updateSection(with: dateComponents)
-    updateItems(with: dateComponents)
+    didChangeDate.send(dateComponents)
   }
 
   private func updateSection(with dateComponents: DateComponents) {
@@ -414,18 +424,5 @@ extension ProfileViewController {
     snapshot.appendSections([dateComponents])
 
     dataSource.apply(snapshot)
-  }
-
-  private func updateItems(with dateComponents: DateComponents) {
-    guard
-      let year = dateComponents.year,
-      let month = dateComponents.month,
-      let day = dateComponents.day
-    else {
-      return
-    }
-
-    let targetString = "\(year)-\(month)-\(day)"
-    didChangeDate.send(targetString)
   }
 }

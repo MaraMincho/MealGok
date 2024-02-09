@@ -31,7 +31,6 @@ extension MealGokHistoryFetchRepository: MealGokHistoryFetchRepositoryRepresenta
 
   func fetch(dateString: String) -> [MealGokChallengeProperty] {
     let objects = realm.objects(MealGokChallengePersistedObject.self).where { $0.challengeDateString.equals(dateString) }
-
     let challengeProperties: [MealGokChallengeProperty] = objects.map { .init(
       challengeDateString: $0.challengeDateString,
       endTime: $0.endTime,
@@ -39,6 +38,7 @@ extension MealGokHistoryFetchRepository: MealGokHistoryFetchRepositoryRepresenta
       imageDateURL: $0.imageDataURL,
       isSuccess: $0.isSuccess
     ) }
+    
     return challengeProperties
   }
 }

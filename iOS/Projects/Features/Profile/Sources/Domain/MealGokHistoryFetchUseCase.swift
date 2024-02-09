@@ -11,7 +11,7 @@ import Foundation
 // MARK: - MealGokHistoryFetchUseCaseRepresentable
 
 protocol MealGokHistoryFetchUseCaseRepresentable {
-  func fetchHistoryBy(startDateString str: String) -> [MealGokChallengeProperty]
+  func fetchHistoryBy(dateComponents: DateComponents) -> [MealGokChallengeProperty]
   func fetchAllHistoryDateComponents() -> [DateComponents]
 }
 
@@ -19,13 +19,23 @@ protocol MealGokHistoryFetchUseCaseRepresentable {
 
 final class MealGokHistoryFetchUseCase: MealGokHistoryFetchUseCaseRepresentable {
   let fetchRepository: MealGokHistoryFetchRepositoryRepresentable
+  let numberFormatter: NumberFormatter = {
+    let numberFormatter = NumberFormatter()
+    numberFormatter.minimumIntegerDigits = 2
+    return numberFormatter
+  }()
 
-  init(fetchRepository: MealGokHistoryFetchRepositoryRepresentable) {
-    self.fetchRepository = fetchRepository
-  }
-
-  func fetchHistoryBy(startDateString str: String) -> [MealGokChallengeProperty] {
-    return fetchRepository.fetch(dateString: str)
+  func fetchHistoryBy(dateComponents: DateComponents) -> [MealGokChallengeProperty] {
+    guard
+      let year = dateComponents.year,
+      let month = dateComponents.month,
+      let day = dateComponents.day
+    else {
+      return []
+    }
+    let formattedMonth = numberFormatter.string(for: month) ?? ""
+    let formattedDay = numberFormatter.string(for: day) ?? ""
+    return fetchRepository.fetch(dateString: "\(year)-\(formattedMonth)-\(formattedDay)")
   }
 
   func fetchAllHistoryDateComponents() -> [DateComponents] {
@@ -43,5 +53,9 @@ final class MealGokHistoryFetchUseCase: MealGokHistoryFetchUseCaseRepresentable 
     }
 
     return dateComponents
+  }
+
+  init(fetchRepository: MealGokHistoryFetchRepositoryRepresentable) {
+    self.fetchRepository = fetchRepository
   }
 }

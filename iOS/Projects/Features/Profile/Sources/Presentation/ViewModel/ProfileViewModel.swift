@@ -12,7 +12,7 @@ import Foundation
 // MARK: - ProfileViewModelInput
 
 public struct ProfileViewModelInput {
-  let didChangeDate: AnyPublisher<String, Never>
+  let didChangeDate: AnyPublisher<DateComponents, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -57,9 +57,9 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
     ))
 
     let updateDate = input.didChangeDate
-      .compactMap { [weak self] dateString -> [MealGokChallengeProperty]? in
+      .compactMap { [weak self] components -> [MealGokChallengeProperty]? in
         guard let self else { return nil }
-        let contents = mealGokHistoryFetchUseCase.fetchHistoryBy(startDateString: dateString)
+        let contents = mealGokHistoryFetchUseCase.fetchHistoryBy(dateComponents: components)
         return contents
       }
       .map { ProfileState.updateTargetDayMealGokChallengeContent($0) }

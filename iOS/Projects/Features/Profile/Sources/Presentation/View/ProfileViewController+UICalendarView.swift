@@ -12,36 +12,16 @@ import UIKit
 // MARK: - ProfileViewController + UICalendarViewDelegate
 
 extension ProfileViewController: UICalendarViewDelegate {
-  func addCalendarDecoration() {
-    addTodayDecoration()
-  }
-
-  private func addTodayDecoration() {
-    let now = Date.now
-
-    // Select Today
-    let today = DateComponents(
-      calendar: Calendar(identifier: .gregorian),
-      year: Calendar.current.component(.year, from: now),
-      month: Calendar.current.component(.month, from: now),
-      day: Calendar.current.component(.day, from: now)
-    )
-    decorations.insert(today.date)
-  }
-
   /// UICalendarViewDelegate 을 통해서, 만약 선택될 날짜가 있을 경우 데코레이션을 한다.
   func calendarView(_: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-    let date = DateComponents(
+    let selectedDateComponents = DateComponents(
       calendar: dateComponents.calendar,
       year: dateComponents.year,
       month: dateComponents.month,
       day: dateComponents.day
-    ).date
+    )
 
-    if decorations.contains(date) {
-      return makeDecoration()
-    }
-    return nil
+    return decorations.contains(selectedDateComponents) ? makeDecoration() : nil
   }
 
   private func makeDecoration() -> UICalendarView.Decoration {
