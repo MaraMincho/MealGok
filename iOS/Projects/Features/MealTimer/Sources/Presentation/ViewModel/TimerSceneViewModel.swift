@@ -15,6 +15,8 @@ import RouterFactory
 public struct TimerSceneViewModelInput {
   let viewDidAppear: AnyPublisher<Void, Never>
   let didTapCompleteButton: AnyPublisher<Void, Never>
+  let showAlertPublisher: AnyPublisher<Void, Never>
+  let didCancelChallenge: AnyPublisher<Void, Never>
 }
 
 public typealias TimerSceneViewModelOutput = AnyPublisher<TimerSceneState, Never>
@@ -25,6 +27,7 @@ public enum TimerSceneState {
   case idle
   case updateTimerView(TimerUseCasePropertyEntity)
   case timerDidFinish
+  case showFinishConfirmAlert
 }
 
 // MARK: - TimerSceneViewModelRepresentable
@@ -69,6 +72,12 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
       .timerFinished()
       .map { bool in return bool ? TimerSceneState.timerDidFinish : TimerSceneState.idle }
       .eraseToAnyPublisher()
+    
+    let showAlertState: TimerSceneViewModelOutput = input
+      .showAlertPublisher
+      .map{_ in return TimerSceneState.showFinishConfirmAlert}
+      .eraseToAnyPublisher()
+  
 
     input.didTapCompleteButton
       .sink { [router] _ in
@@ -78,6 +87,6 @@ extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
 
     let initialState: TimerSceneViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState.merge(with: updateTimerLabelText, completeState).eraseToAnyPublisher()
+    return initialState.merge(with: updateTimerLabelText, completeState, showAlertState).eraseToAnyPublisher()
   }
 }

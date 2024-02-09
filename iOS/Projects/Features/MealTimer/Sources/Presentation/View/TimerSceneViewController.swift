@@ -22,19 +22,22 @@ final class TimerSceneViewController: UIViewController {
   private let viewModel: TimerSceneViewModelRepresentable
 
   private var subscriptions: Set<AnyCancellable> = []
+  
+  private let cancelButtonDidTapPublisher: PassthroughSubject<Void, Never> = .init()
 
   // MARK: UI Components
 
   private let timerView = TimerView(contentSize: Metrics.timerIntrinsicContentSize)
-  
+
   private let descriptionLabel: UILabel = {
     let label = UILabel()
     label.text = Constants.descriptionText
     label.font = .preferredFont(forTextStyle: .caption1, weight: .medium)
     label.textColor = DesignSystemColor.secondaryBackground
-    
+
+    label.translatesAutoresizingMaskIntoConstraints = false
     return label
-  }
+  }()
 
   // MARK: Initializations
 
@@ -75,10 +78,11 @@ private extension TimerSceneViewController {
     timerView.translatesAutoresizingMaskIntoConstraints = false
     timerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     timerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-    
+
     view.addSubview(descriptionLabel)
     descriptionLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor, constant: Metrics.descriptionLabelSpacing).isActive = true
     descriptionLabel.centerXAnchor.constraint(equalTo: timerView.centerXAnchor).isActive = true
+    
   }
 
   func setupStyles() {
@@ -88,7 +92,9 @@ private extension TimerSceneViewController {
   func bind() {
     let output = viewModel.transform(input: .init(
       viewDidAppear: viewDidAppearPublisher.eraseToAnyPublisher(),
-      didTapCompleteButton: timerView.publisher(gesture: .tap).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher()
+      didTapCompleteButton: timerView.publisher(gesture: .tap).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher(),
+      showAlertPublisher: timerView.publisher(gesture: .longPress).eraseToAnyPublisher().map {_ in return }.eraseToAnyPublisher(),
+      didCancelChallenge: cancelButtonDidTapPublisher.eraseToAnyPublisher()
     ))
     output.sink { [weak self] state in
       switch state {
@@ -98,20 +104,39 @@ private extension TimerSceneViewController {
       case .timerDidFinish:
         self?.timerView.isUserInteractionEnabled = true
         self?.timerView.didFinish()
+      case .showFinishConfirmAlert:
+        self?.showFinishAlert()
       case .idle:
         break
       }
     }
     .store(in: &subscriptions)
   }
+  func showFinishAlert() {
+    let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertMessage, preferredStyle: .actionSheet)
+    
+    let cancelButton = UIAlertAction(title: Constants.cancelButtonTitle, style: .cancel)
+    let confirmButton = UIAlertAction(title: Constants.confirmButtonTitle, style: .destructive) { [weak self] _ in
+      self?.cancelButtonDidTapPublisher.send()
+    }
+
+    alert.addAction(confirmButton)
+
+    present(alert, animated: true)
+  }
 
   enum Metrics {
     static let timerIntrinsicContentSize: CGSize = .init(width: 290, height: 290)
-    
+
     static let descriptionLabelSpacing: CGFloat = 20
   }
-  
+
   enum Constants {
     static let descriptionText: String = "타이머를 3초이상 누르면 도전을 종료할 수 있습니다."
+    
+    static let alertTitle: String = "경고"
+    static let alertMessage: String = "도전을 정말로 취소 하시겠습니까?"
+    static let cancelButtonTitle: String = "취소"
+    static let confirmButtonTitle: String = "도전 끝내기"
   }
 }
