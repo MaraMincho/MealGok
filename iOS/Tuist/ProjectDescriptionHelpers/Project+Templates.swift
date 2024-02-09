@@ -21,7 +21,6 @@ public extension Project {
     let settings: Settings = .settings(
       base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
       configurations: settingConfiguration)
-    
 
     let schemes: [Scheme] = [ .makeScheme( name: name) ]
     

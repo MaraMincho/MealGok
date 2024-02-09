@@ -21,8 +21,9 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
   }
 
   public func build() -> UIViewController {
-    let viewModel = ProfileViewModel()
-
+    let mealGokHistoryFetchRepository = MealGokHistoryFetchRepository()
+    let mealGokHistoryFetchUseCase = MealGokHistoryFetchUseCase(fetchRepository: mealGokHistoryFetchRepository)
+    let viewModel = ProfileViewModel(mealGokHistoryFetchUseCase: mealGokHistoryFetchUseCase)
     let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date!
     let property: ProfileViewControllerProperty = .init(startDate: initDate, endDate: Date.now)
     return ProfileViewController(viewModel: viewModel, property: property)

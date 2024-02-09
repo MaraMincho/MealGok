@@ -217,7 +217,7 @@ public extension [Target] {
         infoPlist: .extendingDefault(with: mergedInfoPlist),
         sources: "Sources/**",
         resources: resources,
-        scripts: [.swiftFormat, .swiftLint],
+        scripts: [],
         dependencies: dependencies,
         settings: settings
       ),
@@ -231,7 +231,7 @@ public extension [Target] {
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureTests",
           sources: "Tests/**",
-          scripts: [.swiftLint, .swiftFormat],
+          scripts: [],
           dependencies: testDependencies + [.target(name: name)]
         )
       )
@@ -245,7 +245,7 @@ public extension [Target] {
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureUITests",
           sources: "UITests/**",
-          scripts: [.swiftLint, .swiftFormat],
+          scripts: [],
           dependencies: testDependencies + [.target(name: name)]
         )
       )
