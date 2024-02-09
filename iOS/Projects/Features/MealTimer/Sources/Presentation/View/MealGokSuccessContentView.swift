@@ -62,10 +62,7 @@ final class MealGokSuccessContentView: UIStackView {
     addArrangedSubview(descriptionTitleLabel)
     addArrangedSubview(descriptionLabel)
 
-    descriptionImageView.widthAnchor.constraint(equalToConstant: Metrics.imageWidth).isActive = true
     descriptionImageView.heightAnchor.constraint(equalToConstant: Metrics.imageHeight).isActive = true
-
-    dateLabel.widthAnchor.constraint(equalToConstant: Metrics.imageWidth).isActive = true
   }
 
   init(frame: CGRect, mealGokContentProperty: MealGokSuccessContentViewProperty) {

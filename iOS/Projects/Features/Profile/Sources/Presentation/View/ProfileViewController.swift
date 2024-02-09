@@ -28,6 +28,9 @@ final class ProfileViewController: UIViewController {
 
   private var subscriptions: Set<AnyCancellable> = []
 
+  private let didChangeDate: PassthroughSubject<DateComponents, Never> = .init()
+  private let requestMealGokHistory: PassthroughSubject<Void, Never> = .init()
+
   var decorations = Set<Date?>()
 
   var dataSource: ProfileViewMealGokDataSource?
@@ -159,6 +162,7 @@ final class ProfileViewController: UIViewController {
     calendarView.wantsDateDecorations = true
     calendarView.selectionBehavior = calendarBehavior
     calendarView.backgroundColor = DesignSystemColor.secondaryBackground
+
     let margin = Metrics.calendarMargin
     calendarView.layoutMargins = .init(top: margin, left: margin, bottom: margin, right: margin)
 
@@ -262,8 +266,9 @@ private extension ProfileViewController {
     setupStyles()
     setupHierarchyAndConstraints()
     bind()
-    addCalendarDecoration()
     setupTableViewDataSource()
+    selectToday()
+    requestMealGokHistory.send()
   }
 
   func setupTableViewDataSource() {
@@ -274,19 +279,6 @@ private extension ProfileViewController {
       }
       cell.configure()
       return cell
-    }
-
-    if var snapshot = dataSource?.snapshot() {
-      snapshot.appendSections([.init(calendar: .init(identifier: .gregorian), year: 2024, month: 2, day: 4)])
-      dataSource?.apply(snapshot)
-      setFakeDataSource()
-    }
-  }
-
-  func setFakeDataSource() {
-    if var snapshot = dataSource?.snapshot() {
-      snapshot.appendItems([.init(), .init(), .init(), .init(), .init(), .init()])
-      dataSource?.apply(snapshot)
     }
   }
 
@@ -316,14 +308,71 @@ private extension ProfileViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
-    output.sink { state in
+    let output = viewModel.transform(input: .init(
+      didChangeDate: didChangeDate.eraseToAnyPublisher(),
+      fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher()
+    ))
+
+    output.sink { [weak self] state in
       switch state {
+      case .updateContent:
+        break
+      case let .updateMealGokChallengeHistoryDate(date):
+        self?.updateDecoration(challengeDate: date)
+      case let .updateTargetDayMealGokChallengeContent(property):
+        self?.updateTableView(with: property)
       case .idle:
         break
       }
     }
     .store(in: &subscriptions)
+  }
+
+  func updateDecoration(challengeDate: [Date]) {
+    challengeDate.forEach { dateComponent in decorations.insert(dateComponent) }
+    let gregorian = Calendar(identifier: .gregorian)
+    let challengeDateComponents = challengeDate.map { date in
+
+      let year = gregorian.component(.year, from: date)
+      let month = gregorian.component(.month, from: date)
+      let day = gregorian.component(.day, from: date)
+
+      return DateComponents(calendar: gregorian, year: year, month: month, day: day)
+    }
+
+    calendarView.reloadDecorations(forDateComponents: challengeDateComponents, animated: true)
+  }
+
+  func updateTableView(with property: [MealGokChallengeProperty]) {
+    guard var snapshot = dataSource?.snapshot() else {
+      return
+    }
+    snapshot.appendItems(property)
+    dataSource?.apply(snapshot)
+  }
+
+  func selectToday() {
+    let now = Date.now
+
+    // Select Today
+    let today = DateComponents(
+      calendar: Calendar(identifier: .gregorian),
+      year: Calendar.current.component(.year, from: now),
+      month: Calendar.current.component(.month, from: now),
+      day: Calendar.current.component(.day, from: now)
+    )
+    calendarBehavior.setSelected(today, animated: true)
+
+    guard var snapshot = dataSource?.snapshot() else {
+      return
+    }
+
+    // apply today tableViewTitle
+    snapshot.appendSections([today])
+    dataSource?.apply(snapshot)
+
+    // fetch Today MealGokHistory
+    didChangeDate.send(today)
   }
 
   enum Metrics {
@@ -372,5 +421,25 @@ private extension ProfileViewController {
       month: 12,
       day: 31
     )
+  }
+}
+
+extension ProfileViewController {
+  func updateSnapshot(with dateComponents: DateComponents?) {
+    guard let dateComponents else { return }
+    updateSection(with: dateComponents)
+    didChangeDate.send(dateComponents)
+  }
+
+  private func updateSection(with dateComponents: DateComponents) {
+    guard let dataSource else {
+      return
+    }
+
+    var snapshot = dataSource.snapshot()
+    snapshot.deleteAllItems()
+    snapshot.appendSections([dateComponents])
+
+    dataSource.apply(snapshot)
   }
 }
