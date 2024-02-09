@@ -25,6 +25,8 @@ final class TimerSceneViewController: UIViewController {
 
   private let cancelButtonDidTapPublisher: PassthroughSubject<Void, Never> = .init()
 
+  private var isPresentingAlert: Bool = false
+
   // MARK: UI Components
 
   private let timerView = TimerView(contentSize: Metrics.timerIntrinsicContentSize)
@@ -94,6 +96,7 @@ private extension TimerSceneViewController {
       showAlertPublisher: timerView.publisher(gesture: .longPress).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher(),
       didCancelChallenge: cancelButtonDidTapPublisher.eraseToAnyPublisher()
     ))
+
     output.sink { [weak self] state in
       switch state {
       case let .updateTimerView(property):
@@ -112,9 +115,16 @@ private extension TimerSceneViewController {
   }
 
   func showFinishAlert() {
+    guard isPresentingAlert == false else {
+      return
+    }
+
+    isPresentingAlert.toggle()
     let alert = UIAlertController(title: Constants.alertTitle, message: Constants.alertMessage, preferredStyle: .alert)
 
-    let cancelButton = UIAlertAction(title: Constants.cancelButtonTitle, style: .cancel)
+    let cancelButton = UIAlertAction(title: Constants.cancelButtonTitle, style: .cancel) { [weak self] _ in
+      self?.isPresentingAlert.toggle()
+    }
     let confirmButton = UIAlertAction(title: Constants.confirmButtonTitle, style: .destructive) { [weak self] _ in
       self?.cancelButtonDidTapPublisher.send()
     }
