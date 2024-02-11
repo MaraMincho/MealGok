@@ -23,6 +23,7 @@ public extension TargetDependency {
   static let designSystem: TargetDependency = .project(target: "DesignSystem", path: .relativeToShared("DesignSystem"))
   static let routerFactory: TargetDependency = .project(target: "RouterFactory", path: .relativeToCore("RouterFactory"))
   static let combineCocoa: TargetDependency = .project(target: "CombineCocoa", path: .relativeToCore("CombineCocoa"))
+  static let imageManager: TargetDependency = .project(target: "ImageManager", path: .relativeToShared("ImageManager"))
   static func feature(_ feature: Feature) -> TargetDependency {
     return .project(
       target: "\(feature.targetName)Feature",

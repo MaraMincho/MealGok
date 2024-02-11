@@ -8,7 +8,8 @@ let project = Project.makeModule(
     product: .framework, 
     dependencies: [
       .Realm,
-      .RealmSwift
+      .RealmSwift,
+      .imageManager
     ],
     resources: "Resources/**"
   )
