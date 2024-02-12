@@ -7,6 +7,7 @@
 //
 
 import RouterFactory
+import SharedNotificationName
 import UIKit
 
 // MARK: - MealGokSuccessSceneRouter
@@ -58,6 +59,6 @@ final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
 
 extension MealGokSuccessSceneRouterFactory: MealGokSuccessSceneRouter {
   func goHome() {
-    SharedRouterNotificationCenter.goHome()
+    SharedPostNotification.goHomeAndReBuild()
   }
 }
