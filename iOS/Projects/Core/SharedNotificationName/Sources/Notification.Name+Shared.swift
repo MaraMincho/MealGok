@@ -1,4 +1,10 @@
-
+//
+//  Notification.Name+Shared2.swift
+//  SharedNotificationName
+//
+//  Created by MaraMincho on 2/12/24.
+//  Copyright © 2024 com.maramincho. All rights reserved.
+//
 
 import Foundation
 
