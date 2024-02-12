@@ -1,4 +1,5 @@
 import DesignSystem
+import SharedNotificationName
 import UIKit
 
 @main
@@ -22,10 +23,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func addAppDelegateObserver() {
-    NotificationCenter.default.addObserver(forName: Notification.Name("PortraitScreenMode"), object: nil, queue: .main) { _ in
+    NotificationCenter.default.addObserver(forName: .portraitScreenMode, object: nil, queue: .main) { _ in
       self.changeOrientation = false
     }
-    NotificationCenter.default.addObserver(forName: Notification.Name("AllScreenMode"), object: nil, queue: .main) { _ in
+    NotificationCenter.default.addObserver(forName: .allScreenMode, object: nil, queue: .main) { _ in
       self.changeOrientation = true
     }
   }
