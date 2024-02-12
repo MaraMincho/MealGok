@@ -3,10 +3,8 @@ import UIKit
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-  func application(
-    _: UIApplication,
-    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
-  ) -> Bool {
+  func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+    addAppDelegateObserver()
     return true
   }
 
@@ -14,8 +12,21 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     _: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
     options _: UIScene.ConnectionOptions
-  )
-    -> UISceneConfiguration {
+  ) -> UISceneConfiguration {
     return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+  }
+
+  var changeOrientation: Bool = false
+  func application(_: UIApplication, supportedInterfaceOrientationsFor _: UIWindow?) -> UIInterfaceOrientationMask {
+    return changeOrientation ? [.all] : [.portrait]
+  }
+
+  func addAppDelegateObserver() {
+    NotificationCenter.default.addObserver(forName: Notification.Name("PortraitScreenMode"), object: nil, queue: .main) { _ in
+      self.changeOrientation = false
+    }
+    NotificationCenter.default.addObserver(forName: Notification.Name("AllScreenMode"), object: nil, queue: .main) { _ in
+      self.changeOrientation = true
+    }
   }
 }

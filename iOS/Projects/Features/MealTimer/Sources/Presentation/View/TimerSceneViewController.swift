@@ -65,6 +65,16 @@ final class TimerSceneViewController: UIViewController {
     generator.notificationOccurred(.success)
     viewDidAppearPublisher.send()
   }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    NotificationCenter.default.post(name: Notification.Name(rawValue: "AllScreenMode"), object: nil)
+  }
+
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    NotificationCenter.default.post(name: Notification.Name(rawValue: "PortraitScreenMode"), object: nil)
+  }
 }
 
 private extension TimerSceneViewController {
