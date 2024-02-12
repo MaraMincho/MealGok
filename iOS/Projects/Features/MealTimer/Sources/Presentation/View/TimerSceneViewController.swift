@@ -8,6 +8,7 @@
 
 import Combine
 import DesignSystem
+import SharedNotificationName
 import UIKit
 
 // MARK: - TimerSceneViewController
@@ -68,12 +69,12 @@ final class TimerSceneViewController: UIViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    NotificationCenter.default.post(name: Notification.Name(rawValue: "AllScreenMode"), object: nil)
+    SharedPostNotification.AllScreenMode()
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    NotificationCenter.default.post(name: Notification.Name(rawValue: "PortraitScreenMode"), object: nil)
+    SharedPostNotification.PortraitScreenMode()
   }
 }
 

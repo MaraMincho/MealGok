@@ -11,6 +11,7 @@ let project = Project.makeModule(
     dependencies: [
       .designSystem,
       .routerFactory,
+      .sharedNotificationName,
       .feature(.profile),
       .feature(.mealTimer),
     ],

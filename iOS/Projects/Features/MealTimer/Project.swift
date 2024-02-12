@@ -13,6 +13,7 @@ let project = Project.makeModule(
       .designSystem,
       .routerFactory,
       .combineCocoa,
+      .sharedNotificationName,
       .thirdParty,
     ],
     testDependencies: []
