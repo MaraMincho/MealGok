@@ -25,6 +25,8 @@ final class MealGokHomeViewController: UIViewController {
 
   private let softFeedBackGenerator = UIImpactFeedbackGenerator(style: .soft)
 
+  private var contentScrollViewContentSize: CGSize { .init(width: UIScreen.main.bounds.width, height: targetTimeButton.frame.maxY + 20) }
+
   private let needUpdateTargetTimeSubject: PassthroughSubject<Void, Never> = .init()
   private let saveTargetTimeSubject: PassthroughSubject<Int, Never> = .init()
   @Published private var targetTime: Int = 20
@@ -161,6 +163,13 @@ final class MealGokHomeViewController: UIViewController {
     return button
   }()
 
+  private let contentScrollView: UIScrollView = {
+    let scrollView = UIScrollView()
+
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    return scrollView
+  }()
+
   // MARK: Initializations
 
   init(viewModel: MealTimerSceneViewModelRepresentable) {
@@ -179,6 +188,11 @@ final class MealGokHomeViewController: UIViewController {
     super.viewDidLoad()
     setup()
   }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    contentScrollView.contentSize = contentScrollViewContentSize
+  }
 }
 
 private extension MealGokHomeViewController {
@@ -192,32 +206,39 @@ private extension MealGokHomeViewController {
 
   func setupHierarchyAndConstraints() {
     let safeArea = view.safeAreaLayoutGuide
-    view.addSubview(titleLabel)
-    titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Metrics.topSpacing).isActive = true
-    titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
 
-    view.addSubview(descriptionTitleLabel)
+    view.addSubview(contentScrollView)
+    contentScrollView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+    contentScrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    contentScrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    contentScrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+
+    contentScrollView.addSubview(titleLabel)
+    titleLabel.topAnchor.constraint(equalTo: contentScrollView.topAnchor, constant: Metrics.topSpacing).isActive = true
+    titleLabel.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
+
+    contentScrollView.addSubview(descriptionTitleLabel)
     descriptionTitleLabel.topAnchor
       .constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.descriptionTitleLabelTopSpacing).isActive = true
     descriptionTitleLabel.leadingAnchor
       .constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
 
-    view.addSubview(timerView)
+    contentScrollView.addSubview(timerView)
     timerView.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: Metrics.timerTopSpacing).isActive = true
     timerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor).isActive = true
 
-    view.addSubview(cameraButton)
+    contentScrollView.addSubview(cameraButton)
     cameraButton.topAnchor.constraint(equalTo: timerView.topAnchor).isActive = true
     cameraButton.leadingAnchor
       .constraint(equalTo: timerView.trailingAnchor, constant: Metrics.cameraButtonAndTimerViewTrailingSpacing).isActive = true
 
-    view.addSubview(timerDescriptionLabel)
+    contentScrollView.addSubview(timerDescriptionLabel)
     timerDescriptionLabel.topAnchor
       .constraint(equalTo: timerView.bottomAnchor, constant: Metrics.timerDescriptionLabelTopSpacing).isActive = true
     timerDescriptionLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
     timerDescriptionLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
 
-    view.addSubview(targetTimeButton)
+    contentScrollView.addSubview(targetTimeButton)
     targetTimeButton.topAnchor
       .constraint(equalTo: timerDescriptionLabel.bottomAnchor, constant: Metrics.targetTimerButtonTopSpacing).isActive = true
     targetTimeButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true

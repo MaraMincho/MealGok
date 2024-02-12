@@ -19,6 +19,8 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   private let mealGokContentProperty: MealGokSuccessContentViewProperty
 
+  private var contentScrollViewContentSize: CGSize { .init(width: UIScreen.main.bounds.width, height: buttonStackView.frame.maxY + 20) }
+
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: UI Components
@@ -82,6 +84,13 @@ final class MealGokSuccessSceneViewController: UIViewController {
     return stackView
   }()
 
+  private let contentScrollView: UIScrollView = {
+    let scrollView = UIScrollView()
+
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    return scrollView
+  }()
+
   // MARK: Initializations
 
   init(viewModel: MealGokSuccessSceneViewModelRepresentable, mealGokContentProperty: MealGokSuccessContentViewProperty) {
@@ -101,6 +110,11 @@ final class MealGokSuccessSceneViewController: UIViewController {
     super.viewDidLoad()
     setup()
   }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    contentScrollView.contentSize = contentScrollViewContentSize
+  }
 }
 
 private extension MealGokSuccessSceneViewController {
@@ -113,18 +127,24 @@ private extension MealGokSuccessSceneViewController {
   func setupHierarchyAndConstraints() {
     let safeArea = view.safeAreaLayoutGuide
 
-    view.addSubview(titleLabel)
-    titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: Metrics.topSpacing).isActive = true
+    view.addSubview(contentScrollView)
+    contentScrollView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+    contentScrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    contentScrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    contentScrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+
+    contentScrollView.addSubview(titleLabel)
+    titleLabel.topAnchor.constraint(equalTo: contentScrollView.topAnchor, constant: Metrics.topSpacing).isActive = true
     titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuideValue).isActive = true
     titleLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuideValue).isActive = true
 
-    view.addSubview(mealGokSuccessContentView)
+    contentScrollView.addSubview(mealGokSuccessContentView)
     mealGokSuccessContentView.topAnchor
       .constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.titleLabelAndContentSpacing).isActive = true
     mealGokSuccessContentView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
     mealGokSuccessContentView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
 
-    view.addSubview(buttonStackView)
+    contentScrollView.addSubview(buttonStackView)
     buttonStackView.topAnchor
       .constraint(equalTo: mealGokSuccessContentView.bottomAnchor, constant: Metrics.contentAndButtonSpacing).isActive = true
     buttonStackView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
