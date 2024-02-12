@@ -17,7 +17,7 @@ public struct DownSampleProperty {
   }
 }
 
-extension Data {
+public extension Data {
   func downSample(downSampleProperty property: DownSampleProperty?) -> UIImage? {
     guard let property else { return nil }
     

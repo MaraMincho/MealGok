@@ -1,6 +1,6 @@
 import UIKit
 
-final class FileCacher {
+public final class FileCacher {
   private enum ImageFileManagerProperty{
     static let documentPath = FileManager.default.urls(for: .documentDirectory,in: .userDomainMask).first!
     static let imageDirPath = documentPath.appending(path: ImageCacherConstants.dirName)
@@ -10,8 +10,9 @@ final class FileCacher {
   private enum ImageNetworkProperty {
     static let imageSession: URLSession = .init(configuration: .default)
   }
+  
   private enum ImageCacherConstants {
-    static let dirName: String = "Images"
+    static let dirName: String = "MealGokImages"
   }
   
   public enum FileCacherError: LocalizedError {
@@ -25,7 +26,7 @@ final class FileCacher {
   ///   - completion: Network data
   /// - Returns: DataTask if image in cache return nil
   @discardableResult
-  static func load(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask?{
+  public static func load(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask?{
     
     /// 파일지 저장될 URL입니다.
     let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: url.lastPathComponent)
