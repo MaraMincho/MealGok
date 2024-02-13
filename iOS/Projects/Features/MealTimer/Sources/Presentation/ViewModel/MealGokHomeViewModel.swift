@@ -43,9 +43,11 @@ final class MealGokHomeViewModel {
   private var subscriptions: Set<AnyCancellable> = []
   weak var router: MealGokHomeFactoriable?
   private let targetTimeUseCase: TargetTimeUseCaseRepresentable
+  private let savePhotoUseCase: SavePhotoUseCaseRepresentable
 
-  init(targetTimeUseCase: TargetTimeUseCaseRepresentable) {
+  init(targetTimeUseCase: TargetTimeUseCaseRepresentable, savePhotoUseCase: SavePhotoUseCaseRepresentable) {
     self.targetTimeUseCase = targetTimeUseCase
+    self.savePhotoUseCase = savePhotoUseCase
   }
 }
 
@@ -56,8 +58,9 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
     subscriptions.removeAll()
 
     input.startTimeScenePublisher
-      .sink { [targetTimeUseCase, router] _ in
-        router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime())
+      .sink { [targetTimeUseCase, router, savePhotoUseCase] data in
+        let startTime = savePhotoUseCase.saveDataWithNowDescription(data)
+        router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime(), startTime: startTime)
       }
       .store(in: &subscriptions)
 

@@ -1,4 +1,5 @@
 import UIKit
+import OSLog
 
 public final class FileCacher {
   private enum ImageFileManagerProperty{
@@ -19,6 +20,23 @@ public final class FileCacher {
     case noData
   }
   
+  
+  public static func save(fileName: String, data: Data?) {
+    guard let data else { return }
+    let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+    let fileManager = ImageFileManagerProperty.fileManger
+    
+    do {
+      if fileManager.fileExists(atPath: ImageFileManagerProperty.imageDirPath.path()) == false {
+        try fileManager.createDirectory(at: ImageFileManagerProperty.imageDirPath, withIntermediateDirectories: true)
+      }
+      try data.write(to: imagePathURL)
+    } catch {
+      Logger().error("\(error.localizedDescription)")
+      Logger().error("error(Cant make ImageFileManagerProperty, \(#function)")
+    }
+    
+  }
   
   /// LoadImageData
   /// - Parameters:

@@ -24,16 +24,17 @@ protocol TimerUseCasesRepresentable {
 final class TimerUseCase: TimerUseCasesRepresentable {
   private var oneSecondsTimer = Timer.publish(every: 1, on: .main, in: .common)
 
-  private var startTime: Date? = nil
+  private var startTime: Date
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
 
   private let repository: SaveMealGokChalengeRepositoryRepresentable?
 
-  init(customStringFormatter: CustomTimeStringFormatter, repository: SaveMealGokChalengeRepositoryRepresentable?) {
+  init(startTime: Date, customStringFormatter: CustomTimeStringFormatter, repository: SaveMealGokChalengeRepositoryRepresentable?) {
     self.customStringFormatter = customStringFormatter
     self.repository = repository
+    self.startTime = startTime
   }
 
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never> {
@@ -43,7 +44,6 @@ final class TimerUseCase: TimerUseCasesRepresentable {
       .compactMap { [weak self] val -> TimerUseCasePropertyEntity? in
         guard
           let self,
-          let startTime,
           isFinishPublisher.value == false
         else {
           return nil
@@ -62,7 +62,6 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   private func saveSuccessData() {
-    guard let startTime else { return }
     do {
       try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: nil))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
@@ -74,7 +73,6 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   func cancelChallenge() {
-    guard let startTime else { return }
     do {
       try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: false, imageDataURL: nil))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
