@@ -21,7 +21,6 @@ public extension Data {
   func downSample(downSampleProperty property: DownSampleProperty?) -> UIImage? {
     guard let property else { return nil }
     
-    let imageSourceOption = [kCGImageSourceShouldCache: false] as CFDictionary
     let data = self as CFData
     
     guard let imageSource = CGImageSourceCreateWithData(data, nil) else {
