@@ -20,6 +20,14 @@ public final class FileCacher {
     case noData
   }
   
+  public static func url(fileName: String) -> URL {
+    return ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+  }
+  
+  public static func isExistURL(fileName: String) -> Bool {
+    let url = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+    return ImageFileManagerProperty.fileManger.fileExists(atPath: url.path())
+  }
   
   public static func save(fileName: String, data: Data?) {
     guard let data else { return }

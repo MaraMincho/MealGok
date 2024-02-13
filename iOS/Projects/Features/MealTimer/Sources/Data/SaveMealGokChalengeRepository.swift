@@ -21,15 +21,6 @@ final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokCha
     }
   }
 
-  // TODO: 삭제 필수 -
-  func fakeData() -> MealGokChallengePersistedObject {
-    let now = Date.now
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd"
-    let challengeDateString = dateFormatter.string(from: now)
-    return .init(challengeDateString: challengeDateString, startTime: now - 600, endTime: now + 600, imageDataURLString: nil, isSuccess: true)
-  }
-
   override init() {
     super.init()
   }
