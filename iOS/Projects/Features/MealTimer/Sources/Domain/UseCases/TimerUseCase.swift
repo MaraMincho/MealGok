@@ -47,7 +47,6 @@ final class TimerUseCase: TimerUseCasesRepresentable {
     }()
 
     let fileName = dateFormatter.string(from: startTime)
-    print(FileCacher.url(fileName: fileName))
     if FileCacher.isExistURL(fileName: fileName) {
       return FileCacher.url(fileName: fileName)
     }

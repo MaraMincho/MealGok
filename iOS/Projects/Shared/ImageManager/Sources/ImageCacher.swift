@@ -56,7 +56,7 @@ public final class FileCacher {
   @discardableResult
   public static func load(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask?{
     
-    /// 파일지 저장될 URL입니다.
+    /// 파일에 저장될 URL입니다.
     let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: url.lastPathComponent)
     do {
       

@@ -42,7 +42,7 @@ public struct MealGokChallengeDTO {
       challengeDateString: dateString,
       startTime: startTime,
       endTime: endTime,
-      imageDataURLString: imageDataURL?.absoluteString,
+      imageDataURLString: imageDataURL?.lastPathComponent,
       isSuccess: isSuccess
     )
   }

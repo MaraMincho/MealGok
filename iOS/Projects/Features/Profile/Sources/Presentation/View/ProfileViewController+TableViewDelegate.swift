@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import ImageManager
 import UIKit
 
 extension ProfileViewController: UITableViewDelegate {
@@ -17,21 +18,20 @@ extension ProfileViewController: UITableViewDelegate {
   func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard
       let snapShot = dataSource?.snapshot(),
-      let imageDataURLString = snapShot.itemIdentifiers[indexPath.row].imageDateURL,
-      let imageDataURL = URL(string: imageDataURLString)
+      let imageDataName = snapShot.itemIdentifiers[indexPath.row].imageDateURL
     else {
       return
     }
     do {
+      let imageDataURL = FileCacher.url(fileName: imageDataName)
       let imageData = try Data(contentsOf: imageDataURL)
       let vc = UIViewController()
       let imageView = UIImageView()
       imageView.image = UIImage(data: imageData)
       vc.view = imageView
       present(vc, animated: true)
-    }catch {
+    } catch {
       fatalError("Cant load DataContent")
     }
-    
   }
 }

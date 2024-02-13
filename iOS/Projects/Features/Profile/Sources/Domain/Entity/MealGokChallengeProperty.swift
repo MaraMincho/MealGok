@@ -28,7 +28,7 @@ public struct MealGokChallengeProperty: Hashable {
   }
 
   func challengeDurationTime() -> (minutes: Int, seconds: Int) {
-    let timeInterval = endTime.timeIntervalSince(endTime)
+    let timeInterval = endTime.timeIntervalSince(startTime)
     let minutes = Int(timeInterval / 60)
     let seconds = Int(Int(timeInterval) % 60)
 
@@ -44,7 +44,7 @@ public struct MealGokChallengeProperty: Hashable {
 
   private static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateFormat = "mm:dd"
+    formatter.dateFormat = "HH:mm"
 
     return formatter
   }()
