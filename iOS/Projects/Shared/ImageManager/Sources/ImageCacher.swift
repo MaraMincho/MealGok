@@ -25,8 +25,9 @@ public final class FileCacher {
   }
   
   public static func isExistURL(fileName: String) -> Bool {
-    let url = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
-    return ImageFileManagerProperty.fileManger.fileExists(atPath: url.path())
+    let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+    Logger().debug("\(imagePathURL.path())")
+    return ImageFileManagerProperty.fileManger.fileExists(atPath: imagePathURL.path())
   }
   
   public static func save(fileName: String, data: Data?) {
@@ -38,6 +39,7 @@ public final class FileCacher {
       if fileManager.fileExists(atPath: ImageFileManagerProperty.imageDirPath.path()) == false {
         try fileManager.createDirectory(at: ImageFileManagerProperty.imageDirPath, withIntermediateDirectories: true)
       }
+      Logger().debug("\(imagePathURL.path())")
       try data.write(to: imagePathURL)
     } catch {
       Logger().error("\(error.localizedDescription)")

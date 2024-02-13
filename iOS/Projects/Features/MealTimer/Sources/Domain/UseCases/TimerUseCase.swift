@@ -27,9 +27,6 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   private var startTime: Date
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
-  private lazy var imageDataURL: URL? = {
-    FileCacher.isExistURL(fileName: self.startTime.description) ? FileCacher.url(fileName: self.startTime.description) : nil
-  }()
 
   private let customStringFormatter: CustomTimeStringFormatter
 
@@ -39,6 +36,22 @@ final class TimerUseCase: TimerUseCasesRepresentable {
     self.customStringFormatter = customStringFormatter
     self.repository = repository
     self.startTime = startTime
+  }
+
+  func imageDataURL() -> URL? {
+    let dateFormatter: DateFormatter = {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "yyyy-MM-dd_HH:mm"
+
+      return dateFormatter
+    }()
+
+    let fileName = dateFormatter.string(from: startTime)
+    print(FileCacher.url(fileName: fileName))
+    if FileCacher.isExistURL(fileName: fileName) {
+      return FileCacher.url(fileName: fileName)
+    }
+    return nil
   }
 
   func timerLabelText() -> AnyPublisher<TimerUseCasePropertyEntity, Never> {
@@ -67,7 +80,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   private func saveSuccessData() {
     do {
-      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: imageDataURL))
+      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: imageDataURL()))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
     } catch {
       // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.
@@ -78,7 +91,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   func cancelChallenge() {
     do {
-      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: false, imageDataURL: imageDataURL))
+      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: false, imageDataURL: imageDataURL()))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
     } catch {
       // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.

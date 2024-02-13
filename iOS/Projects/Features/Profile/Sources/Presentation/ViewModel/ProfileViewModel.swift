@@ -62,6 +62,7 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
       .compactMap { [weak self] components -> [MealGokChallengeProperty]? in
         guard let self else { return nil }
         let contents = mealGokHistoryFetchUseCase.fetchHistoryBy(dateComponents: components)
+        print(contents)
         return contents
       }
       .map { ProfileState.updateTargetDayMealGokChallengeContent($0) }

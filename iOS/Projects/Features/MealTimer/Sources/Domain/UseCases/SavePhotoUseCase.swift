@@ -18,12 +18,20 @@ protocol SavePhotoUseCaseRepresentable {
 // MARK: - SavePhotoUseCase
 
 final class SavePhotoUseCase: SavePhotoUseCaseRepresentable {
+  let dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd_HH:mm"
+
+    return dateFormatter
+  }()
+
   /// 데이터를 현재 시간으로 저장합니다.
   /// - Parameter data: 저장할 데이터 입니다. data가 nil 일경우 아무 일도 일어나지 않습니다.
-  /// - Returns: 파일의 이름을 리턴합니다.(Date.now.description)
+  /// - Returns: 파일의 이름을 리턴합니다.(yyyy-MM-dd_HH:mm)
   func saveDataWithNowDescription(_ data: Data?) -> Date {
     let now = Date.now
-    FileCacher.save(fileName: now.description, data: data)
+    let fileName = dateFormatter.string(from: now)
+    FileCacher.save(fileName: fileName, data: data)
     return now
   }
 }

@@ -40,7 +40,7 @@ final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
 
     let date = Date.now
     let formatter = DateFormatter()
-    formatter.dateFormat = "YYYY. MM. DD"
+    formatter.dateFormat = "yyyy. MM. dd"
     let dateString = formatter.string(from: date)
     let viewController = MealGokSuccessSceneViewController(
       viewModel: viewModel,
