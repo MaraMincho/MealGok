@@ -22,7 +22,6 @@ public extension Data {
     guard let property else { return nil }
     
     let data = self as CFData
-    
     guard let imageSource = CGImageSourceCreateWithData(data, nil) else {
       return nil
     }
