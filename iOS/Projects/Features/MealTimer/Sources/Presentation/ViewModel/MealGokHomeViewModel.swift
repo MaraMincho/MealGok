@@ -14,7 +14,7 @@ import RouterFactory
 
 public struct MealGokHomeViewModelInput {
   let didCameraButtonTouchPublisher: AnyPublisher<Void, Never>
-  let didTimerStartButtonTouchPublisher: AnyPublisher<Void, Never>
+  let startTimeScenePublisher: AnyPublisher<Data?, Never>
   let needUpdateTargetTimePublisher: AnyPublisher<Void, Never>
   let saveTargetTimePublisher: AnyPublisher<Int, Never>
 }
@@ -55,7 +55,7 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
   public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
 
-    input.didTimerStartButtonTouchPublisher
+    input.startTimeScenePublisher
       .sink { [targetTimeUseCase, router] _ in
         router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime())
       }
