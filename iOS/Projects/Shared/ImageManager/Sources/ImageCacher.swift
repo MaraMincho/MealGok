@@ -1,4 +1,5 @@
 import UIKit
+import OSLog
 
 public final class FileCacher {
   private enum ImageFileManagerProperty{
@@ -19,6 +20,33 @@ public final class FileCacher {
     case noData
   }
   
+  public static func url(fileName: String) -> URL {
+    return ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+  }
+  
+  public static func isExistURL(fileName: String) -> Bool {
+    let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+    Logger().debug("\(imagePathURL.path())")
+    return ImageFileManagerProperty.fileManger.fileExists(atPath: imagePathURL.path())
+  }
+  
+  public static func save(fileName: String, data: Data?) {
+    guard let data else { return }
+    let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: fileName)
+    let fileManager = ImageFileManagerProperty.fileManger
+    
+    do {
+      if fileManager.fileExists(atPath: ImageFileManagerProperty.imageDirPath.path()) == false {
+        try fileManager.createDirectory(at: ImageFileManagerProperty.imageDirPath, withIntermediateDirectories: true)
+      }
+      Logger().debug("\(imagePathURL.path())")
+      try data.write(to: imagePathURL)
+    } catch {
+      Logger().error("\(error.localizedDescription)")
+      Logger().error("error(Cant make ImageFileManagerProperty, \(#function)")
+    }
+    
+  }
   
   /// LoadImageData
   /// - Parameters:
@@ -28,7 +56,7 @@ public final class FileCacher {
   @discardableResult
   public static func load(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask?{
     
-    /// 파일지 저장될 URL입니다.
+    /// 파일에 저장될 URL입니다.
     let imagePathURL = ImageFileManagerProperty.imageDirPath.appending(path: url.lastPathComponent)
     do {
       

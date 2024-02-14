@@ -14,7 +14,7 @@ import RouterFactory
 
 public struct MealGokHomeViewModelInput {
   let didCameraButtonTouchPublisher: AnyPublisher<Void, Never>
-  let didTimerStartButtonTouchPublisher: AnyPublisher<Void, Never>
+  let startTimeScenePublisher: AnyPublisher<Data?, Never>
   let needUpdateTargetTimePublisher: AnyPublisher<Void, Never>
   let saveTargetTimePublisher: AnyPublisher<Int, Never>
 }
@@ -43,9 +43,11 @@ final class MealGokHomeViewModel {
   private var subscriptions: Set<AnyCancellable> = []
   weak var router: MealGokHomeFactoriable?
   private let targetTimeUseCase: TargetTimeUseCaseRepresentable
+  private let savePhotoUseCase: SavePhotoUseCaseRepresentable
 
-  init(targetTimeUseCase: TargetTimeUseCaseRepresentable) {
+  init(targetTimeUseCase: TargetTimeUseCaseRepresentable, savePhotoUseCase: SavePhotoUseCaseRepresentable) {
     self.targetTimeUseCase = targetTimeUseCase
+    self.savePhotoUseCase = savePhotoUseCase
   }
 }
 
@@ -55,9 +57,10 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
   public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
 
-    input.didTimerStartButtonTouchPublisher
-      .sink { [targetTimeUseCase, router] _ in
-        router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime())
+    input.startTimeScenePublisher
+      .sink { [targetTimeUseCase, router, savePhotoUseCase] data in
+        let startTime = savePhotoUseCase.saveDataWithNowDescription(data)
+        router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime(), startTime: startTime)
       }
       .store(in: &subscriptions)
 

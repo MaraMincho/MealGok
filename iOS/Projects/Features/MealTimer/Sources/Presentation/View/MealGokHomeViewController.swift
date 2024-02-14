@@ -29,6 +29,7 @@ final class MealGokHomeViewController: UIViewController {
 
   private let needUpdateTargetTimeSubject: PassthroughSubject<Void, Never> = .init()
   private let saveTargetTimeSubject: PassthroughSubject<Int, Never> = .init()
+  private let startTimerSubject: PassthroughSubject<Data?, Never> = .init()
   @Published private var targetTime: Int = 20
 
   // MARK: UI Components
@@ -200,6 +201,7 @@ private extension MealGokHomeViewController {
     setupStyles()
     bind()
     setupHierarchyAndConstraints()
+    timerView.updateTimerCenterDescription(text: Constants.timerCenterDescriptionText)
 
     needUpdateTargetTimeSubject.send()
   }
@@ -267,7 +269,7 @@ private extension MealGokHomeViewController {
 
     let output = viewModel.transform(input: .init(
       didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
-      didTimerStartButtonTouchPublisher: timerView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher(),
+      startTimeScenePublisher: startTimerSubject.eraseToAnyPublisher(),
       needUpdateTargetTimePublisher: needUpdateTargetTimeSubject.eraseToAnyPublisher(),
       saveTargetTimePublisher: saveTargetTimeSubject.eraseToAnyPublisher()
     ))
@@ -291,7 +293,15 @@ private extension MealGokHomeViewController {
     }
     .store(in: &subscriptions)
 
-    timerView.updateTimerCenterDescription(text: Constants.timerCenterDescriptionText)
+    bindTimerViewGesture()
+  }
+
+  func bindTimerViewGesture() {
+    timerView.publisher(gesture: .tap)
+      .sink { [weak self] _ in
+        self?.startTimerSubject.send(nil)
+      }
+      .store(in: &subscriptions)
   }
 
   func presentAlertAction() {
@@ -339,7 +349,6 @@ private extension MealGokHomeViewController {
   func presentCameraPicker() {
     let pickerController = UIImagePickerController()
     pickerController.delegate = self
-    pickerController.setEditing(true, animated: true)
     pickerController.mediaTypes = ["public.image"]
     pickerController.sourceType = .camera
     present(pickerController, animated: true)
@@ -388,16 +397,23 @@ private extension MealGokHomeViewController {
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
 extension MealGokHomeViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-    guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+  func imagePickerController(
+    _ picker: UIImagePickerController,
+    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+  ) {
+    guard
+      let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+      let data = image.pngData()
+    else {
       picker.dismiss(animated: true)
       return
     }
+    startTimerSubject.send(data)
     picker.dismiss(animated: true, completion: nil)
   }
 }
 
-extension UILabel {
+private extension UILabel {
   func setText(_ text: String, prependedBySymbolNamed symbolSystemName: String, font: UIFont? = nil) {
     if #available(iOS 13.0, *) {
       if let font { self.font = font }
