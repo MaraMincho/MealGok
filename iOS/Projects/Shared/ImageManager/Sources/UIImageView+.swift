@@ -14,11 +14,12 @@ public extension UIImageView {
   }
   
   @discardableResult
-  func setImage(url: URL?, downSampleProperty property: DownSampleProperty?) -> URLSessionDataTask? {
+  func setImage(url: URL?, downSampleProperty property: DownSampleProperty? = nil) -> URLSessionDataTask? {
     guard let url = url else {
       return nil
     }
     return FileCacher.load(url: url) { [weak self] result in
+      print("메인 쓰레드 인가요? \(Thread.isMainThread)")
       switch result {
         
       /// 성공했을 때 다운샘플링 프로퍼티에 따라서 이미지를 resizing 합니다.

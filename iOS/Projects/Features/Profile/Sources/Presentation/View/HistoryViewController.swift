@@ -6,12 +6,16 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
+import CombineCocoa
 import UIKit
 
 // MARK: - HistoryViewController
 
 final class HistoryViewController: UIViewController {
-  let property: HistoryContentPictureViewProperty
+  private let property: HistoryContentPictureViewProperty
+  private var subscription: Set<AnyCancellable> = .init()
+
   private var contentWidth: CGFloat {
     guard let screenWidth = view.window?.screen.bounds.width else {
       return 345
@@ -43,6 +47,7 @@ private extension HistoryViewController {
   func setup() {
     view.backgroundColor = .black.withAlphaComponent(Constants.backgroundAlpha)
     setupConstraintsAndLayouts()
+    setupUserInteraction()
   }
 
   func setupConstraintsAndLayouts() {
@@ -52,6 +57,14 @@ private extension HistoryViewController {
     contentView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor).isActive = true
     contentView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24).isActive = true
     contentView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24).isActive = true
+  }
+
+  func setupUserInteraction() {
+    view.publisher(gesture: .tap)
+      .sink { [weak self] _ in
+        self?.dismiss(animated: true)
+      }
+      .store(in: &subscription)
   }
 
   enum Constants {

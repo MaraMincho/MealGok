@@ -37,7 +37,6 @@ final class HistoryContentPictureView: UIStackView {
 
   private lazy var descriptionImageView: UIImageView = {
     let imageView = UIImageView()
-    imageView.setImage(url: property.pictureURL, downSampleProperty: nil)
     imageView.contentMode = .scaleAspectFit
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,6 +59,7 @@ final class HistoryContentPictureView: UIStackView {
     addArrangedSubview(descriptionImageView)
     addArrangedSubview(descriptionTitleLabel)
 
+    descriptionImageView.setImage(url: property.pictureURL, downSampleProperty: nil)
     let imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
     imageHeightConstraint.isActive = true
     guard let imageSize = descriptionImageView.image?.size else {
