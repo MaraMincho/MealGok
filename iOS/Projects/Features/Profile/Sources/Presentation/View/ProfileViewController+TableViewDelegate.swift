@@ -25,6 +25,12 @@ extension ProfileViewController: UITableViewDelegate {
     do {
       let imageDataURL = FileCacher.url(fileName: imageDataName)
       let imageData = try Data(contentsOf: imageDataURL)
+      
+      
+      //let view = ContentPictureView(frame: <#T##CGRect#>, contentPictureViewProperty: <#T##ContentPictureViewProperty#>)
+      
+      
+      
       let vc = UIViewController()
       let imageView = UIImageView()
       imageView.image = UIImage(data: imageData)
