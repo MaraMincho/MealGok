@@ -1,5 +1,5 @@
 //
-//  ContentPicutreView.swift
+//  HistoryContentPictureView.swift
 //  ProfileFeature
 //
 //  Created by MaraMincho on 2/15/24.
@@ -7,13 +7,22 @@
 //
 
 import DesignSystem
+import ImageManager
 import OSLog
 import UIKit
 
-// MARK: - MealGokSuccessContentView
+// MARK: - HistoryContentPictureView
 
-final class ContentPictureView: UIStackView {
-  private let property: ContentPictureViewProperty
+final class HistoryContentPictureView: UIStackView {
+  private let property: HistoryContentPictureViewProperty
+
+  private var portraitImageHeight: CGFloat {
+    return 448
+  }
+
+  private var landScapeImageHeight: CGFloat {
+    return 309
+  }
 
   private lazy var dateLabel: UILabel = {
     let label = UILabel()
@@ -27,7 +36,8 @@ final class ContentPictureView: UIStackView {
   }()
 
   private lazy var descriptionImageView: UIImageView = {
-    let imageView = UIImageView(image: SharedImages.successSceneDefaultImage)
+    let imageView = UIImageView()
+    imageView.setImage(url: property.pictureURL, downSampleProperty: nil)
     imageView.contentMode = .scaleAspectFit
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -50,10 +60,16 @@ final class ContentPictureView: UIStackView {
     addArrangedSubview(descriptionImageView)
     addArrangedSubview(descriptionTitleLabel)
 
-    descriptionImageView.heightAnchor.constraint(equalToConstant: Metrics.imageHeight).isActive = true
+    let imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
+    imageHeightConstraint.isActive = true
+    guard let imageSize = descriptionImageView.image?.size else {
+      return
+    }
+    let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
+    imageHeightConstraint.constant = imageHeight
   }
 
-  init(frame: CGRect, contentPictureViewProperty: ContentPictureViewProperty) {
+  init(frame: CGRect, contentPictureViewProperty: HistoryContentPictureViewProperty) {
     property = contentPictureViewProperty
     super.init(frame: frame)
 
@@ -103,18 +119,15 @@ final class ContentPictureView: UIStackView {
   private enum Constants {}
 }
 
-// MARK: - MealGokSuccessContentViewProperty
+// MARK: - HistoryContentPictureViewProperty
 
-struct ContentPictureViewProperty {
+struct HistoryContentPictureViewProperty {
   /// yyyy. mm. dd 형식의 날짜 String
   let date: String
 
-  /// 결과 화면의 이미지 입니다.
+  /// 컨텐츠의 이미지 입니다.
   let pictureURL: URL?
 
-  /// 설명의 타이틀 입니다.
+  /// 먹은 시간에 대한 표시를 위한 Property 입니다.
   let title: String
-
-  /// 설명 문구 입니다.
-  let description: String
 }

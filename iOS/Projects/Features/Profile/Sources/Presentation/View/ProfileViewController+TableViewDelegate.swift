@@ -22,22 +22,10 @@ extension ProfileViewController: UITableViewDelegate {
     else {
       return
     }
-    do {
-      let imageDataURL = FileCacher.url(fileName: imageDataName)
-      let imageData = try Data(contentsOf: imageDataURL)
-      
-      
-      //let view = ContentPictureView(frame: <#T##CGRect#>, contentPictureViewProperty: <#T##ContentPictureViewProperty#>)
-      
-      
-      
-      let vc = UIViewController()
-      let imageView = UIImageView()
-      imageView.image = UIImage(data: imageData)
-      vc.view = imageView
-      present(vc, animated: true)
-    } catch {
-      fatalError("Cant load DataContent")
-    }
+    let imageDataURL = FileCacher.url(fileName: imageDataName)
+    let vc = HistoryViewController(property: .init(date: "2023-03-02", pictureURL: imageDataURL, title: "오후: ㅁㄴㅇㄹ: ㅂㅈㄷ"))
+    vc.modalTransitionStyle = .crossDissolve
+    vc.modalPresentationStyle = .overFullScreen
+    present(vc, animated: true)
   }
 }
