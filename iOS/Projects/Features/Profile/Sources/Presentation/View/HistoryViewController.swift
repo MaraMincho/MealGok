@@ -62,6 +62,7 @@ private extension HistoryViewController {
   func setupUserInteraction() {
     view.publisher(gesture: .tap)
       .sink { [weak self] _ in
+        print("눌렸어요")
         self?.dismiss(animated: true)
       }
       .store(in: &subscription)

@@ -22,8 +22,9 @@ extension ProfileViewController: UITableViewDelegate {
     else {
       return
     }
+    let item = snapShot.itemIdentifiers[indexPath.row]
     let imageDataURL = FileCacher.url(fileName: imageDataName)
-    let vc = HistoryViewController(property: .init(date: "2023-03-02", pictureURL: imageDataURL, title: "오후: ㅁㄴㅇㄹ: ㅂㅈㄷ"))
+    let vc = HistoryViewController(property: .init(date: item.challengeDate(), pictureURL: imageDataURL, title: item.mealTime()))
     vc.modalTransitionStyle = .crossDissolve
     vc.modalPresentationStyle = .overFullScreen
     present(vc, animated: true)

@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import DesignSystem
 import ImageManager
 import OSLog
@@ -15,6 +16,8 @@ import UIKit
 
 final class HistoryContentPictureView: UIStackView {
   private let property: HistoryContentPictureViewProperty
+  private var imageSubscription: AnyCancellable?
+  private var imageHeightConstraint: NSLayoutConstraint?
 
   private var portraitImageHeight: CGFloat {
     return 448
@@ -60,13 +63,19 @@ final class HistoryContentPictureView: UIStackView {
     addArrangedSubview(descriptionTitleLabel)
 
     descriptionImageView.setImage(url: property.pictureURL, downSampleProperty: nil)
-    let imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
-    imageHeightConstraint.isActive = true
-    guard let imageSize = descriptionImageView.image?.size else {
-      return
-    }
-    let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
-    imageHeightConstraint.constant = imageHeight
+    imageSubscription = descriptionImageView.publisher(for: \.image, options: .new)
+      .sink { [weak self] _ in
+        guard let self else { return }
+        guard let imageSize = descriptionImageView.image?.size else {
+          return
+        }
+        let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
+        imageHeightConstraint?.constant = imageHeight
+        descriptionImageView.downsampleImage()
+      }
+
+    imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
+    imageHeightConstraint?.isActive = true
   }
 
   init(frame: CGRect, contentPictureViewProperty: HistoryContentPictureViewProperty) {
