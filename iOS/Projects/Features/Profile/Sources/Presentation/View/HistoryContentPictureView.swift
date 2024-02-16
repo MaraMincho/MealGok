@@ -71,7 +71,6 @@ final class HistoryContentPictureView: UIStackView {
         }
         let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
         imageHeightConstraint?.constant = imageHeight
-        descriptionImageView.downsampleImage()
       }
 
     imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
