@@ -14,7 +14,7 @@ public extension UIImageView {
   }
   
   @discardableResult
-  func setImage(url: URL?, downSampleProperty property: DownSampleProperty?) -> URLSessionDataTask? {
+  func setImage(url: URL?, downSampleProperty property: DownSampleProperty? = nil) -> URLSessionDataTask? {
     guard let url = url else {
       return nil
     }

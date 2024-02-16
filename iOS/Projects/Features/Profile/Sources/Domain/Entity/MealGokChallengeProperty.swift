@@ -15,12 +15,23 @@ public struct MealGokChallengeProperty: Hashable {
   let imageDateURL: String?
   let isSuccess: Bool
 
+  func mealTime() -> String {
+    return "식사시간 \(stringOfAMPM()) \(formattedStartDate()) ~ \(formattedEndDate())"
+  }
+
+  /// 언제 도전을 시작했는지 yyyy. MM. dd 로 나타냅니다.
+  ///
+  /// ex) 2024. 02. 16
+  func challengeDate() -> String {
+    return Self.challengeDateDateFormatter.string(from: startTime)
+  }
+
   func formattedStartDate() -> String {
     return Self.dateFormatter.string(from: startTime)
   }
 
   func formattedEndDate() -> String {
-    return Self.dateFormatter.string(from: startTime)
+    return Self.dateFormatter.string(from: endTime)
   }
 
   func stringOfAMPM() -> String {
@@ -45,6 +56,13 @@ public struct MealGokChallengeProperty: Hashable {
   private static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH:mm"
+
+    return formatter
+  }()
+
+  private static let challengeDateDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy. MM. dd"
 
     return formatter
   }()
