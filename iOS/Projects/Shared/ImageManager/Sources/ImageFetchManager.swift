@@ -23,7 +23,7 @@ final class ImageFetchManager {
     let fetchStatusPublisher: CurrentValueSubject<FetchDescriptionStatus, Never> = .init(.fetching)
 
     let publisher = dataTaskPublisher
-      .subscribe(on: LoadImageProperty.queue)
+      .receive(on: LoadImageProperty.queue)
       .sink { complete in
         switch complete {
         case .finished:
