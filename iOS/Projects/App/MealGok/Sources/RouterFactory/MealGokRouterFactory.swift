@@ -51,7 +51,7 @@ final class MealGokRouterFactory: RouterFactoriable {
   }
 }
 
-// MARK: GoHomeRouting
+// MARK: MealGokRouterFactory apply NotificationCenter
 
 extension MealGokRouterFactory {
   func observeNotification() {
