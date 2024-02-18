@@ -1,5 +1,5 @@
 //
-//  UIImageView+.swift
+//  UIImageView+MealGokCacher.swift
 //  ImageManager
 //
 //  Created by MaraMincho on 2/12/24.
@@ -7,8 +7,8 @@
 //
 
 import Combine
-import UIKit
 import OSLog
+import UIKit
 
 public extension UIImageView {
   func setImage(url: URL?, downSampleProperty property: DownSampleProperty? = nil) {

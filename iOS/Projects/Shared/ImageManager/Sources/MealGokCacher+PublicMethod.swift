@@ -1,5 +1,5 @@
 //
-//  FileCacher+PublicMethod.swift
+//  MealGokCacher+PublicMethod.swift
 //  ImageManager
 //
 //  Created by MaraMincho on 2/18/24.
