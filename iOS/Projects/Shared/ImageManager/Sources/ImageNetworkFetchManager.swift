@@ -13,7 +13,7 @@ import Foundation
 
 final class ImageNetworkFetchManager {
   private enum LoadImageProperty {
-    static let queue = DispatchConcurrentQueue(label: "ImageQueue")
+    static let queue = DispatchSerialQueue(label: "ImageQueue")
   }
 
   private var subscription = Set<AnyCancellable>()
