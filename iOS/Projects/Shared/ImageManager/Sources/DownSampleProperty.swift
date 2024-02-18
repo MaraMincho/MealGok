@@ -10,16 +10,9 @@ import UIKit
 
 // MARK: - DownSampleProperty
 
-public struct DownSampleProperty {
-  let size: CGSize
-  let scale: Int
-  init(size: CGSize, scale: Int = 1) {
-    self.size = size
-    self.scale = scale
-  }
-}
-
 public extension Data {
+  
+  /// DownSampleProperty가 nil일경우 nil을 반환합니다.
   func downSample(downSampleProperty property: DownSampleProperty?) -> UIImage? {
     guard let property else { return nil }
 
@@ -40,5 +33,14 @@ public extension Data {
       return nil
     }
     return UIImage(cgImage: cgImage)
+  }
+}
+
+public struct DownSampleProperty {
+  let size: CGSize
+  let scale: Int
+  init(size: CGSize, scale: Int = 1) {
+    self.size = size
+    self.scale = scale
   }
 }
