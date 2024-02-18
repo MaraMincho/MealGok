@@ -4,10 +4,11 @@
 //
 //  Created by MaraMincho on 1/26/24.
 //
-import ProjectDescription
 import DependencyPlugin
 import EnvironmentPlugin
+import ProjectDescription
 
+// MARK: - TestingOption
 
 public enum TestingOption {
   case unitTest
@@ -30,7 +31,6 @@ public extension [Target] {
     testDependencies: [TargetDependency] = [],
     infoPlist: [String: Plist.Value] = [:]
   ) -> [Target] {
-    
     let mergedInfoPlist: [String: Plist.Value] = [
       "BaseURL": "$(BASE_URL)",
       "SocketURL": "$(SOCKET_URL)",
@@ -50,13 +50,12 @@ public extension [Target] {
         "fetch",
         "location",
         "processing",
-        "remote-notification"
-      ]
+        "remote-notification",
+      ],
     ].merging(infoPlist) { _, new in
       new
     }
-    
-    
+
     var targets: [Target] = [
       Target(
         name: name,
@@ -72,7 +71,7 @@ public extension [Target] {
         dependencies: dependencies
       ),
     ]
-    
+
     if testingOptions.contains(.unitTest) {
       targets.append(
         Target(
@@ -99,10 +98,10 @@ public extension [Target] {
         )
       )
     }
-    
+
     return targets
   }
-  
+
   /// Feature 모듈의 `Target`을 생성합니다.
   /// - Parameters:
   ///   - feature: Feature Module
@@ -121,11 +120,10 @@ public extension [Target] {
     infoPlist: [String: Plist.Value] = [:],
     resources: ResourceFileElements? = nil
   ) -> [Target] {
-    
     let mergedInfoPlist: [String: Plist.Value] = ["BaseURL": "$(BASE_URL)", "SocketURL": "$(SOCKET_URL)"].merging(infoPlist) { _, new in
       new
     }
-    
+
     // 에셋 리소스를 코드로 자동완성 해주는 옵션 활성화
     let settings: Settings = .settings(
       base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
@@ -134,7 +132,7 @@ public extension [Target] {
         .release(name: .release),
       ]
     )
-    
+
     var targets: [Target] = [
       Target(
         name: "\(feature.targetName)Feature",
@@ -150,7 +148,7 @@ public extension [Target] {
         settings: settings
       ),
     ]
-    
+
     if testingOptions.contains(.unitTest) {
       targets.append(
         Target(
@@ -164,7 +162,7 @@ public extension [Target] {
         )
       )
     }
-    
+
     if testingOptions.contains(.uiTest) {
       targets.append(
         Target(
@@ -178,11 +176,11 @@ public extension [Target] {
         )
       )
     }
-    
+
     return targets
   }
-  
-  // Target을 사용자화하여 생성합니다.
+
+  /// Target을 사용자화하여 생성합니다.
   /// - Parameters:
   ///   - name: Target 이름
   ///   - product: Target Product
@@ -202,7 +200,6 @@ public extension [Target] {
     resources: ResourceFileElements? = nil,
     settings: Settings? = nil
   ) -> [Target] {
-    
     let mergedInfoPlist: [String: Plist.Value] = ["BaseURL": "$(BASE_URL)", "SocketURL": "$(SOCKET_URL)"].merging(infoPlist) { _, new in
       new
     }
@@ -217,7 +214,7 @@ public extension [Target] {
         infoPlist: .extendingDefault(with: mergedInfoPlist),
         sources: "Sources/**",
         resources: resources,
-        scripts: [],
+        scripts: [.swiftFormat, .swiftLint],
         dependencies: dependencies,
         settings: settings
       ),

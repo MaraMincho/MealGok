@@ -5,11 +5,11 @@ let project = Project.makeModule(
   name: "ThirdParty",
   targets: .custom(
     name: "ThirdParty",
-    product: .framework, 
+    product: .framework,
     dependencies: [
       .Realm,
       .RealmSwift,
-      .imageManager
+      .imageManager,
     ],
     resources: "Resources/**"
   )

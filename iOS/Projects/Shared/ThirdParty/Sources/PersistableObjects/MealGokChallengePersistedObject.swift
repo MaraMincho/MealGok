@@ -1,5 +1,5 @@
 //
-//  so.swift
+//  MealGokChallengePersistedObject.swift
 //  ThirdParty
 //
 //  Created by MaraMincho on 2/8/24.
@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+
 // MARK: - MealGokChallengePersistedObject
 
 public final class MealGokChallengePersistedObject: Object {
@@ -17,7 +18,7 @@ public final class MealGokChallengePersistedObject: Object {
   @Persisted public var startTime: Date
   @Persisted public var imageDataURL: String?
   @Persisted public var isSuccess: Bool
-  
+
   /// init MealGokChallengePersistedObject
   /// - Parameters:
   ///   - challengeDate: Date String of challenge
@@ -30,7 +31,7 @@ public final class MealGokChallengePersistedObject: Object {
     self.challengeDateString = challengeDateString
     self.startTime = startTime
     self.endTime = endTime
-    self.imageDataURL = imageDataURLString
+    imageDataURL = imageDataURLString
     self.isSuccess = isSuccess
   }
 }
