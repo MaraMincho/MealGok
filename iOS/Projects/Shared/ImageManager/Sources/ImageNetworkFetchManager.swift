@@ -1,5 +1,5 @@
 //
-//  ImageFetchManager.swift
+//  ImageNetworkFetchManager.swift
 //  ImageManager
 //
 //  Created by MaraMincho on 2/18/24.
@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - FetchManager
 
-final class ImageFetchManager {
+final class ImageNetworkFetchManager {
   private enum LoadImageProperty {
     static let queue = DispatchConcurrentQueue(label: "ImageQueue")
   }
