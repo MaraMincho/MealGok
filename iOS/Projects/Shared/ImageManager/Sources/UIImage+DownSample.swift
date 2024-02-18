@@ -9,26 +9,26 @@
 import UIKit
 
 public extension UIImageView {
-  func downsampleImage(scale: CGFloat = 1){
+  func downsampleImage(scale: CGFloat = 1) {
     guard let imageData = image?.jpegData(compressionQuality: 1) else {
       return
     }
     let pointSize = bounds.size
     let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
     let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions)!
-    
+
     let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
     let downsampleOptions = [
       kCGImageSourceCreateThumbnailFromImageAlways: true,
       kCGImageSourceShouldCacheImmediately: true,
       kCGImageSourceCreateThumbnailWithTransform: true,
-      kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
+      kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels,
     ] as CFDictionary
-    
+
     guard let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions) else {
       return
     }
-    
-    self.image = UIImage(cgImage: downsampledImage)
+
+    image = UIImage(cgImage: downsampledImage)
   }
 }

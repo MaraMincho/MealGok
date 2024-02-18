@@ -5,7 +5,5 @@ import PackageDescription
 let package = Package(
   name: "MealGokPackages",
   dependencies: [
-    
   ]
 )
-

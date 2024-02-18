@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - DownSampleProperty
+
 public struct DownSampleProperty {
   let size: CGSize
   let scale: Int
@@ -20,24 +22,23 @@ public struct DownSampleProperty {
 public extension Data {
   func downSample(downSampleProperty property: DownSampleProperty?) -> UIImage? {
     guard let property else { return nil }
-    
+
     let data = self as CFData
     guard let imageSource = CGImageSourceCreateWithData(data, nil) else {
       return nil
     }
-    
+
     let maxPixel = Swift.max(property.size.width, property.size.height)
     let downSampleOptions = [
       kCGImageSourceCreateThumbnailFromImageAlways: true,
       kCGImageSourceShouldCacheImmediately: true,
       kCGImageSourceCreateThumbnailWithTransform: true,
-      kCGImageSourceThumbnailMaxPixelSize: maxPixel
+      kCGImageSourceThumbnailMaxPixelSize: maxPixel,
     ] as CFDictionary
-    
+
     guard let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downSampleOptions) else {
       return nil
     }
     return UIImage(cgImage: cgImage)
   }
 }
-

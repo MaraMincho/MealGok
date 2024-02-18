@@ -11,5 +11,5 @@ import RealmSwift
 
 open class PersistableRepository {
   public let realm = RealmShared.shared.realm
-  public init() { }
+  public init() {}
 }

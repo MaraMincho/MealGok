@@ -1,29 +1,27 @@
-import ProjectDescription
 import EnvironmentPlugin
 import Foundation
+import ProjectDescription
 
 private let isCI = ProcessInfo.processInfo.environment["TUIST_CI"] != nil
 
 public extension Project {
-  
   static func makeModule(
     name: String,
     targets: [Target],
     packages: [Package] = []
   ) -> Project {
     let settingConfiguration: [Configuration] =
-    if isCI { [.debug(name: .debug)] }
-    else {[.debug(name: .debug, xcconfig: Path.relativeToXCConfig("Server/Debug")),
-            .release(name: .release, xcconfig: Path.relativeToXCConfig("Server/Release"))
-    ]}
-    
-    
+      if isCI { [.debug(name: .debug)] }
+    else { [.debug(name: .debug, xcconfig: Path.relativeToXCConfig("Server/Debug")),
+            .release(name: .release, xcconfig: Path.relativeToXCConfig("Server/Release"))] }
+
     let settings: Settings = .settings(
       base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
-      configurations: settingConfiguration)
+      configurations: settingConfiguration
+    )
 
-    let schemes: [Scheme] = [ .makeScheme( name: name) ]
-    
+    let schemes: [Scheme] = [.makeScheme(name: name)]
+
     return Project(
       name: name,
       organizationName: ProjectEnvironment.default.prefixBundleID,
@@ -61,6 +59,7 @@ public extension Path {
     print("XCConfig/\(path).xcconfig")
     return .relativeToRoot("XCConfig/\(path).xcconfig")
   }
+
   static func relativeToXCConfigString(_ path: String = "Shared") -> String {
     return "XCConfig/\(path).xcconfig"
   }

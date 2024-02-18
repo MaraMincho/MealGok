@@ -12,7 +12,7 @@ import RealmSwift
 public final class RealmShared {
   public static let shared = RealmShared()
   public let realm: Realm
-  private init () {
+  private init() {
     let configure = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     realm = try! Realm(configuration: configure)
   }
