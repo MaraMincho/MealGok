@@ -31,7 +31,7 @@ final class SavePhotoUseCase: SavePhotoUseCaseRepresentable {
   func saveDataWithNowDescription(_ data: Data?) -> Date {
     let now = Date.now
     let fileName = dateFormatter.string(from: now)
-    FileCacher.save(fileName: fileName, data: data)
+    MealGokCacher.save(fileName: fileName, data: data)
     return now
   }
 }

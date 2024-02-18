@@ -8,10 +8,11 @@
 
 import Combine
 import UIKit
+import OSLog
 
 public extension UIImageView {
   func setImage(url: URL?, downSampleProperty property: DownSampleProperty? = nil) {
-    FileCacher.loadImage(url: url, target: self) { [weak self] result in
+    MealGokCacher.loadImage(url: url, target: self) { [weak self] result in
 
       switch result {
       // 성공했을 때 다운샘플링 프로퍼티에 따라서 이미지를 resizing 합니다.
@@ -20,21 +21,21 @@ public extension UIImageView {
 
       // 에러가 발생했을 때 Error을 핸들링 하면 좋아 보임
       case let .failure(error):
-        break
+        Logger().error("\(error.localizedDescription)")
       }
     }
   }
 
   func cancelFetch() {
-    FileCacher.cancelFetch(target: self)
+    MealGokCacher.cancelFetch(target: self)
   }
 
-  func fetchPublisher() -> AnyPublisher<FetchManagerFetchStatus, Never>? {
-    return FileCacher.fetchPublisher(target: self)
+  func fetchPublisher() -> AnyPublisher<FetchDescriptionStatus, Never>? {
+    return MealGokCacher.fetchPublisher(target: self)
   }
 
-  func fetchStatus() -> FetchManagerFetchStatus? {
-    return FileCacher.fetchStatus(target: self)
+  func fetchStatus() -> FetchDescriptionStatus? {
+    return MealGokCacher.fetchStatus(target: self)
   }
 
   func applyDownSampling(data: Data, downSampleProperty property: DownSampleProperty?) {

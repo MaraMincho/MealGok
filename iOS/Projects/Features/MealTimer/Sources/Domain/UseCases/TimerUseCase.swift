@@ -47,8 +47,8 @@ final class TimerUseCase: TimerUseCasesRepresentable {
     }()
 
     let fileName = dateFormatter.string(from: startTime)
-    if FileCacher.isExistURL(fileName: fileName) {
-      return FileCacher.url(fileName: fileName)
+    if MealGokCacher.isExistURL(fileName: fileName) {
+      return MealGokCacher.url(fileName: fileName)
     }
     return nil
   }

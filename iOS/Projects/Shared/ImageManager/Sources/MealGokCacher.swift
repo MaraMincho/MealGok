@@ -2,88 +2,11 @@ import Combine
 import OSLog
 import UIKit
 
-// MARK: - FetchDescriptionProperty
+// MARK: - MealGokCacher
 
-public final class FetchDescriptionProperty {
-  private var fetchStatus: CurrentValueSubject<FetchManagerFetchStatus, Never>
-  private weak var fetchSubscription: AnyCancellable?
-
-  init(fetchStatus: CurrentValueSubject<FetchManagerFetchStatus, Never>, fetchSubscription: AnyCancellable?) {
-    self.fetchStatus = fetchStatus
-    self.fetchSubscription = fetchSubscription
-  }
-
-  /// 현재 fetchStatus를 리턴합니다.
-  func currentFetchStatus() -> FetchManagerFetchStatus {
-    return fetchStatus.value
-  }
-
-  /// fetchStatusPublisher를 리턴합니다.
-  func fetchStatusPublisher() -> AnyPublisher<FetchManagerFetchStatus, Never> {
-    return fetchStatus.eraseToAnyPublisher()
-  }
-
-  func cancelFetch() {
-    fetchSubscription?.cancel()
-  }
-}
-
-// MARK: - FetchManager
-
-final class FetchManager {
-  private enum LoadImageProperty {
-    static let queue = DispatchConcurrentQueue(label: "ImageQueue")
-  }
-
-  private var subscription = Set<AnyCancellable>()
-
-  func dataTask(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> FetchDescriptionProperty {
-    let dataTaskPublisher = URLSession.shared.dataTaskPublisher(for: url)
-    let fetchStatusPublisher: CurrentValueSubject<FetchManagerFetchStatus, Never> = .init(.fetching)
-
-    let publisher = dataTaskPublisher
-      .subscribe(on: LoadImageProperty.queue)
-      .sink { complete in
-        switch complete {
-        case .finished:
-          fetchStatusPublisher.send(.finished)
-        case let .failure(error):
-          fetchStatusPublisher.send(.error(error))
-          completion(.failure(error))
-        }
-      } receiveValue: { (data: Data, _: URLResponse) in
-        completion(.success(data))
-      }
-    let property = FetchDescriptionProperty(fetchStatus: fetchStatusPublisher, fetchSubscription: publisher)
-
-    publisher.store(in: &subscription)
-    return property
-  }
-}
-
-// MARK: - FetchManagerFetchStatus
-
-public enum FetchManagerFetchStatus {
-  /// 아직 Fetch를 시작하지 않았습니다.
-  ///
-  /// URL을 Fetch하라는 명령이 있었는지 확인해 보세요
-  case notStarted
-
-  /// 현재 Fetch중입니다.
-  case fetching
-
-  /// Fetch가 끝났습니다.
-  case finished
-
-  /// Fetch중 에러가 발생했습니다.
-  case error(Error)
-}
-
-// MARK: - FileCacher
-
-public final class FileCacher {
+public final class MealGokCacher {
   private init() {}
-  static let shared = FileCacher()
+  static let shared = MealGokCacher()
 
   // MARK: - Property
 
@@ -93,7 +16,7 @@ public final class FileCacher {
     static let documentPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     static let imageDirPath = documentPath.appending(path: ImageCacherConstants.dirName)
     static let fileManger = FileManager.default
-    static let fetchManager = FetchManager()
+    static let imageFetchManager = ImageFetchManager()
   }
 
   private enum ImageNetworkProperty {
@@ -141,16 +64,16 @@ public final class FileCacher {
     shared.targetViewAndFetchProperty.object(forKey: target)?.cancelFetch()
   }
 
-  public static func fetchPublisher(target: UIImageView) -> AnyPublisher<FetchManagerFetchStatus, Never>? {
+  public static func fetchPublisher(target: UIImageView) -> AnyPublisher<FetchDescriptionStatus, Never>? {
     return shared.targetViewAndFetchProperty.object(forKey: target)?.fetchStatusPublisher()
   }
 
-  public static func fetchStatus(target: UIImageView) -> FetchManagerFetchStatus? {
+  public static func fetchStatus(target: UIImageView) -> FetchDescriptionStatus? {
     return shared.targetViewAndFetchProperty.object(forKey: target)?.currentFetchStatus()
   }
 }
 
-private extension FileCacher {
+private extension MealGokCacher {
   /// Local을 통해 Fetch 합니다
   private static func fetchFromLocal(url: URL, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
     do {
@@ -164,7 +87,7 @@ private extension FileCacher {
 
   /// 네트워크를 통해서 Fetch합니다.
   private static func fetchFromNetwork(url: URL, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
-    let fetchManager = ImageFileManagerProperty.fetchManager
+    let fetchManager = ImageFileManagerProperty.imageFetchManager
     let description = fetchManager.dataTask(url: url, completion: completion)
     shared.targetViewAndFetchProperty.setObject(description, forKey: target)
   }

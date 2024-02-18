@@ -10,7 +10,7 @@ import Foundation
 import OSLog
 
 /// 외부에 FileManager를 이용할 때 사용하는 Method입니다.
-public extension FileCacher {
+public extension MealGokCacher {
   /// 도큐먼트 폴더에 파일 이름을 추가한 URL을 리턴합니다.
   static func url(fileName: String) -> URL {
     return ImageFileManagerProperty.imageDirPath.appending(path: fileName)
