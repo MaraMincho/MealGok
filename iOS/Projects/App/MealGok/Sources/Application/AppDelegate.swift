@@ -1,11 +1,19 @@
 import DesignSystem
 import SharedNotificationName
 import UIKit
+import UserNotifications
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
     addAppDelegateObserver()
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+      if granted {
+        DispatchQueue.main.async {
+          UIApplication.shared.registerForRemoteNotifications()
+        }
+      }
+    }
     return true
   }
 
@@ -21,7 +29,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_: UIApplication, supportedInterfaceOrientationsFor _: UIWindow?) -> UIInterfaceOrientationMask {
     return changeOrientation ? [.all] : [.portrait]
   }
-
+}
+private extension AppDelegate {
+  
   func addAppDelegateObserver() {
     NotificationCenter.default.addObserver(forName: .portraitScreenMode, object: nil, queue: .main) { _ in
       self.changeOrientation = false
