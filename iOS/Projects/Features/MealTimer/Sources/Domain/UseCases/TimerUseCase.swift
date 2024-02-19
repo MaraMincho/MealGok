@@ -29,13 +29,20 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
+  private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable
 
   private let repository: SaveMealGokChalengeRepositoryRepresentable?
 
-  init(startTime: Date, customStringFormatter: CustomTimeStringFormatter, repository: SaveMealGokChalengeRepositoryRepresentable?) {
+  init(
+    startTime: Date,
+    customStringFormatter: CustomTimeStringFormatter,
+    timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable,
+    repository: SaveMealGokChalengeRepositoryRepresentable?
+  ) {
     self.customStringFormatter = customStringFormatter
     self.repository = repository
     self.startTime = startTime
+    self.timerLocalNotificationUseCase = timerLocalNotificationUseCase
   }
 
   func imageDataURL() -> URL? {
