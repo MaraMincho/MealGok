@@ -13,7 +13,6 @@ import RouterFactory
 // MARK: - TimerSceneViewModelInput
 
 public struct TimerSceneViewModelInput {
-  let viewDidAppear: AnyPublisher<Void, Never>
   let didTapCompleteButton: AnyPublisher<Void, Never>
   let showAlertPublisher: AnyPublisher<Void, Never>
   let didCancelChallenge: AnyPublisher<Void, Never>
@@ -56,12 +55,6 @@ final class TimerSceneViewModel {
 extension TimerSceneViewModel: TimerSceneViewModelRepresentable {
   public func transform(input: TimerSceneViewModelInput) -> TimerSceneViewModelOutput {
     subscriptions.removeAll()
-
-    input.viewDidAppear
-      .sink { [timerUseCase] in
-        timerUseCase.start()
-      }
-      .store(in: &subscriptions)
 
     let updateTimerLabelText: TimerSceneViewModelOutput = timerUseCase
       .timerLabelText()
