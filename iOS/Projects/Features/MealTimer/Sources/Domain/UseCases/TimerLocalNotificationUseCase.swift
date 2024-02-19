@@ -45,13 +45,13 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String) {
     currentUserNotificationCenter.removePendingNotificationRequests(withIdentifiers: [notificationIdentifier])
   }
-  
+
   private func makeNotificationContent() -> UNMutableNotificationContent {
     let content = UNMutableNotificationContent()
     content.title = notificationContent.notificationContentTitle
     content.body = notificationContent.notificationContentBody
     content.sound = .default
-    
+
     return content
   }
 }
