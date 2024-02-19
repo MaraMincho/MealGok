@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import UserNotifications
 import OSLog
+import UserNotifications
 
 // MARK: - TimerLocalNotificationUseCaseRepresentable
 
@@ -31,10 +31,7 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
   private var currentUserNotificationCenter = UNUserNotificationCenter.current()
 
   func addChallengeCompleteNotification(identifier notificationIdentifier: String) {
-    let content = UNMutableNotificationContent()
-    content.title = notificationContent.notificationContentTitle
-    content.body = notificationContent.notificationContentBody
-
+    let content = makeNotificationContent()
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
 
     let request = UNNotificationRequest(identifier: notificationIdentifier, content: content, trigger: trigger)
@@ -48,12 +45,23 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String) {
     currentUserNotificationCenter.removePendingNotificationRequests(withIdentifiers: [notificationIdentifier])
   }
+  
+  private func makeNotificationContent() -> UNMutableNotificationContent {
+    let content = UNMutableNotificationContent()
+    content.title = notificationContent.notificationContentTitle
+    content.body = notificationContent.notificationContentBody
+    content.sound = .default
+    
+    return content
+  }
 }
+
+// MARK: - NotificationContent
 
 struct NotificationContent {
   let notificationContentTitle: String
   let notificationContentBody: String
-  
+
   init(
     notificationContentTitle: String = "목표한 시간동안 식사를 하셨습니다!",
     notificationContentBody: String = "식사를 기록하고, 공유하는 것은 어떨까요?"
