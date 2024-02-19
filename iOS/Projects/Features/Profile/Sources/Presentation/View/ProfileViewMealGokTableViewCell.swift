@@ -17,6 +17,12 @@ final class ProfileViewMealGokTableViewCell: UITableViewCell {
     setupViewHierarchyAndConstraints()
   }
 
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    challengeImageView.image = nil
+    challengeImageView.backgroundColor = nil
+  }
+
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("Cant use this method")
@@ -26,7 +32,6 @@ final class ProfileViewMealGokTableViewCell: UITableViewCell {
     let imageView = UIImageView()
     imageView.contentMode = .center
     imageView.tintColor = DesignSystemColor.primaryBackground
-    imageView.backgroundColor = DesignSystemColor.main01
 
     imageView.layer.cornerRadius = Metrics.imageCornerRadius
     imageView.layer.cornerCurve = .continuous
@@ -86,8 +91,12 @@ final class ProfileViewMealGokTableViewCell: UITableViewCell {
 
     descriptionLabel.text = "\(challengeProperty.stringOfAMPM()): \(challengeProperty.formattedStartDate()) ~ \(challengeProperty.formattedEndDate())"
 
-    // URL을 통해서 이미지를 받아오는 과정 필요
+    guard let imageDateURL = challengeProperty.imageDateURL else {
+      return
+    }
+
     challengeImageView.image = UIImage(systemName: Constants.placeHolderImageSystemName, withConfiguration: Constants.imageSymbolConfiguration)
+    challengeImageView.backgroundColor = DesignSystemColor.main01
   }
 
   private enum Metrics {

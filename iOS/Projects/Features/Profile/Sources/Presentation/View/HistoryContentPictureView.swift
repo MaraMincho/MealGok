@@ -42,7 +42,6 @@ final class HistoryContentPictureView: UIStackView {
     let imageView = UIImageView()
     imageView.contentMode = .scaleAspectFit
     imageView.clipsToBounds = true
-    imageView.backgroundColor = .red
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
