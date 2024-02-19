@@ -39,7 +39,7 @@ public extension UIImageView {
   }
 
   func applyDownSampling(data: Data, downSampleProperty property: DownSampleProperty?) {
-    let targetImage: UIImage? = property == nil ? UIImage(data: data) : data.downSample(downSampleProperty: property)
+    let targetImage: UIImage? = property == nil ? UIImage(data: data) : data.downSample(downSampleProperty: property!)
 
     DispatchQueue.main.async {
       self.image = targetImage

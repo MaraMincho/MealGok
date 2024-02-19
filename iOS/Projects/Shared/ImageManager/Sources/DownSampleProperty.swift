@@ -12,15 +12,13 @@ import UIKit
 
 public extension Data {
   /// DownSampleProperty가 nil일경우 nil을 반환합니다.
-  func downSample(downSampleProperty property: DownSampleProperty?) -> UIImage? {
-    guard let property else { return nil }
-
+  func downSample(downSampleProperty property: DownSampleProperty) -> UIImage? {
     let data = self as CFData
     guard let imageSource = CGImageSourceCreateWithData(data, nil) else {
       return nil
     }
 
-    let maxPixel = Swift.max(property.size.width, property.size.height)
+    let maxPixel = Swift.max(property.size.width, property.size.height) * property.scale
     let downSampleOptions = [
       kCGImageSourceCreateThumbnailFromImageAlways: true,
       kCGImageSourceShouldCacheImmediately: true,
@@ -39,8 +37,8 @@ public extension Data {
 
 public struct DownSampleProperty {
   let size: CGSize
-  let scale: Int
-  init(size: CGSize, scale: Int = 1) {
+  let scale: CGFloat
+  public init(size: CGSize, scale: CGFloat = 1) {
     self.size = size
     self.scale = scale
   }
