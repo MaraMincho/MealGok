@@ -26,6 +26,7 @@ public extension TargetDependency {
   static let combineCocoa: TargetDependency = .project(target: "CombineCocoa", path: .relativeToCore("CombineCocoa"))
   static let imageManager: TargetDependency = .project(target: "ImageManager", path: .relativeToShared("ImageManager"))
   static let sharedNotificationName: TargetDependency = .project(target: "SharedNotificationName", path: .relativeToCore("SharedNotificationName"))
+  static let commonExtensions: TargetDependency = .project(target: "CommonExtensions", path: .relativeToShared("CommonExtensions"))
   static func feature(_ feature: Feature) -> TargetDependency {
     return .project(
       target: "\(feature.targetName)Feature",
