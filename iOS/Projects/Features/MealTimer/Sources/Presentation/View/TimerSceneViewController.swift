@@ -16,8 +16,6 @@ import UIKit
 final class TimerSceneViewController: UIViewController {
   // MARK: Properties
 
-  private let viewDidAppearPublisher: PassthroughSubject<Void, Never> = .init()
-
   private let generator = UINotificationFeedbackGenerator()
 
   private let viewModel: TimerSceneViewModelRepresentable
@@ -64,7 +62,6 @@ final class TimerSceneViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     generator.notificationOccurred(.success)
-    viewDidAppearPublisher.send()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -102,7 +99,6 @@ private extension TimerSceneViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      viewDidAppear: viewDidAppearPublisher.eraseToAnyPublisher(),
       didTapCompleteButton: timerView.publisher(gesture: .tap).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher(),
       showAlertPublisher: timerView.publisher(gesture: .longPress).eraseToAnyPublisher().map { _ in return }.eraseToAnyPublisher(),
       didCancelChallenge: cancelButtonDidTapPublisher.eraseToAnyPublisher()

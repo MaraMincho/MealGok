@@ -34,8 +34,15 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
 
   func build() -> UIViewController {
     let repository = SaveMealGokChalengeRepository()
+
     let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: 0)
-    let timerUseCase = TimerUseCase(startTime: startTime, customStringFormatter: customStringFormatter, repository: repository)
+    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: 0)
+    let timerUseCase = TimerUseCase(
+      startTime: startTime,
+      customStringFormatter: customStringFormatter,
+      timerLocalNotificationUseCase: timerLocalNotificationUseCase,
+      repository: repository
+    )
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)
     viewModel.router = self
