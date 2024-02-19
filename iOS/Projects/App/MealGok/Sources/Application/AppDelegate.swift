@@ -3,6 +3,8 @@ import SharedNotificationName
 import UIKit
 import UserNotifications
 
+// MARK: - AppDelegate
+
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -30,8 +32,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     return changeOrientation ? [.all] : [.portrait]
   }
 }
+
 private extension AppDelegate {
-  
   func addAppDelegateObserver() {
     NotificationCenter.default.addObserver(forName: .portraitScreenMode, object: nil, queue: .main) { _ in
       self.changeOrientation = false
