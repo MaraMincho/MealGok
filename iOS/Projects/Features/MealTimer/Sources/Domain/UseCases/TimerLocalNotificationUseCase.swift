@@ -51,7 +51,6 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
     content.title = notificationContent.notificationContentTitle
     content.body = notificationContent.notificationContentBody
     content.sound = .default
-    content.userInfo["MealGokChallenge"] = "HelloWorld"
 
     return content
   }

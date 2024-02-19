@@ -39,18 +39,7 @@ extension MealGokPushNotificationManager: UNUserNotificationCenterDelegate {
       }
   }
 
-  func userNotificationCenter(_: UNUserNotificationCenter, didReceive _: UNNotificationResponse) async {
-    guard
-      let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-      let rootViewController = windowScene.windows.first?.rootViewController
-    else {
-      return
-    }
-    let vc = UIViewController()
-    vc.view.backgroundColor = .blue
-    rootViewController.present(vc, animated: true)
-    return
-  }
+  func userNotificationCenter(_: UNUserNotificationCenter, didReceive _: UNNotificationResponse) async {}
 
   func userNotificationCenter(_: UNUserNotificationCenter, willPresent _: UNNotification) async -> UNNotificationPresentationOptions {
     return [.badge, .sound, .badge, .banner]

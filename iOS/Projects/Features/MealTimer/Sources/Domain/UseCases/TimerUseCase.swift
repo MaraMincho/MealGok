@@ -26,7 +26,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private var oneSecondsTimer = Timer.publish(every: 1, on: .main, in: .common)
 
   private var startTime: Date
-  private let notificationIdentifier = UUID()
+  private let notificationIdentifier = "MealGokChallengeLocalNotificationIdentifier"
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
@@ -49,7 +49,8 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   private func addCompleteNotification() {
-    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier.uuidString)
+    timerLocalNotificationUseCase.removeChallengeCompleteNotification(identifier: notificationIdentifier)
+    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier)
   }
 
   func imageDataURL() -> URL? {
