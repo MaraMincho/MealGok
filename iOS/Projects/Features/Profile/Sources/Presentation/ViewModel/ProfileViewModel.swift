@@ -14,6 +14,7 @@ import Foundation
 public struct ProfileViewModelInput {
   let didChangeDate: AnyPublisher<DateComponents, Never>
   let fetchMealGokHistory: AnyPublisher<Void, Never>
+  let showHistoryContent: AnyPublisher<MealGokChallengeProperty, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -25,6 +26,7 @@ public enum ProfileState {
   case updateContent
   case updateMealGokChallengeHistoryDate([Date])
   case updateTargetDayMealGokChallengeContent([MealGokChallengeProperty])
+  case showHistoryContent(MealGokChallengeProperty)
 }
 
 // MARK: - ProfileViewModelRepresentable
@@ -66,8 +68,13 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
       }
       .map { ProfileState.updateTargetDayMealGokChallengeContent($0) }
 
+    let showHistoryContent = input
+      .showHistoryContent
+      .map { ProfileState.showHistoryContent($0) }
+      .eraseToAnyPublisher()
+
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState.merge(with: updateHistoryDate, updateDate).eraseToAnyPublisher()
+    return initialState.merge(with: updateHistoryDate, updateDate, showHistoryContent).eraseToAnyPublisher()
   }
 }

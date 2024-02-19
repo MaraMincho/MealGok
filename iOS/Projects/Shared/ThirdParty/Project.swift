@@ -10,7 +10,7 @@ let project = Project.makeModule(
       .Realm,
       .RealmSwift,
       .imageManager,
-      .commonExtensions
+      .commonExtensions,
     ],
     resources: "Resources/**"
   )
