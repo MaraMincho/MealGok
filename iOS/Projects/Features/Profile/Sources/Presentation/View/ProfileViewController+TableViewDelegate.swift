@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import CommonExtensions
 import ImageManager
 import UIKit
 
@@ -18,15 +19,10 @@ extension ProfileViewController: UITableViewDelegate {
   func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard
       let snapShot = dataSource?.snapshot(),
-      let imageDataName = snapShot.itemIdentifiers[indexPath.row].imageDateURL
+      let item = snapShot.itemIdentifiers[safe: indexPath.row]
     else {
       return
     }
-    let item = snapShot.itemIdentifiers[indexPath.row]
-    let imageDataURL = MealGokCacher.url(fileName: imageDataName)
-    let vc = HistoryViewController(property: .init(date: item.challengeDate(), pictureURL: imageDataURL, title: item.mealTime()))
-    vc.modalTransitionStyle = .crossDissolve
-    vc.modalPresentationStyle = .overFullScreen
-    present(vc, animated: true)
+    requestHistoryContentViewController.send(item)
   }
 }

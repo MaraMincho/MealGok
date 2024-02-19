@@ -8,6 +8,7 @@
 
 import Combine
 import DesignSystem
+import ImageManager
 import UIKit
 
 // MARK: - ProfileViewControllerProperty
@@ -30,6 +31,7 @@ final class ProfileViewController: UIViewController {
 
   private let didChangeDate: PassthroughSubject<DateComponents, Never> = .init()
   private let requestMealGokHistory: PassthroughSubject<Void, Never> = .init()
+  let requestHistoryContentViewController: PassthroughSubject<MealGokChallengeProperty, Never> = .init()
 
   var decorations = Set<Date?>()
 
@@ -310,22 +312,40 @@ private extension ProfileViewController {
   func bind() {
     let output = viewModel.transform(input: .init(
       didChangeDate: didChangeDate.eraseToAnyPublisher(),
-      fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher()
+      fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher(),
+      showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher()
     ))
 
-    output.sink { [weak self] state in
-      switch state {
-      case .updateContent:
-        break
-      case let .updateMealGokChallengeHistoryDate(date):
-        self?.updateDecoration(challengeDate: date)
-      case let .updateTargetDayMealGokChallengeContent(property):
-        self?.updateTableView(with: property)
-      case .idle:
-        break
+    output
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] state in
+        switch state {
+        case .updateContent:
+          break
+        case let .updateMealGokChallengeHistoryDate(date):
+          self?.updateDecoration(challengeDate: date)
+        case let .updateTargetDayMealGokChallengeContent(property):
+          self?.updateTableView(with: property)
+        case let .showHistoryContent(property):
+          self?.presentHistoryContentViewController(property)
+        case .idle:
+          break
+        }
       }
+      .store(in: &subscriptions)
+  }
+
+  func presentHistoryContentViewController(_ property: MealGokChallengeProperty) {
+    guard
+      let imageDataName = property.imageDateURL
+    else {
+      return
     }
-    .store(in: &subscriptions)
+    let imageDataURL = MealGokCacher.url(fileName: imageDataName)
+    let vc = HistoryViewController(property: .init(date: property.challengeDate(), pictureURL: imageDataURL, title: property.mealTime()))
+    vc.modalTransitionStyle = .crossDissolve
+    vc.modalPresentationStyle = .overFullScreen
+    present(vc, animated: true)
   }
 
   func updateDecoration(challengeDate: [Date]) {

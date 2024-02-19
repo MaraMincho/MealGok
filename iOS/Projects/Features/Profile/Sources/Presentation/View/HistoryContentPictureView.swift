@@ -41,6 +41,8 @@ final class HistoryContentPictureView: UIStackView {
   private lazy var descriptionImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.contentMode = .scaleAspectFit
+    imageView.clipsToBounds = true
+    imageView.backgroundColor = .red
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
@@ -62,8 +64,14 @@ final class HistoryContentPictureView: UIStackView {
     addArrangedSubview(descriptionImageView)
     addArrangedSubview(descriptionTitleLabel)
 
-    descriptionImageView.setImage(url: property.pictureURL, downSampleProperty: nil)
-    imageSubscription = descriptionImageView.publisher(for: \.image, options: .new)
+    imageSubscription = descriptionImageView
+      .publisher(for: \.image, options: .new)
+      .compactMap { [weak self] _ -> Void? in
+        if self?.descriptionImageView.frame.width == 0 {
+          return nil
+        }
+        return ()
+      }
       .sink { [weak self] _ in
         guard let self else { return }
         guard let imageSize = descriptionImageView.image?.size else {
@@ -72,7 +80,6 @@ final class HistoryContentPictureView: UIStackView {
         let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
         imageHeightConstraint?.constant = imageHeight
       }
-
     imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
     imageHeightConstraint?.isActive = true
   }
@@ -85,6 +92,14 @@ final class HistoryContentPictureView: UIStackView {
     setupLayout()
   }
 
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    descriptionImageView.setImage(
+      url: property.pictureURL,
+      downSampleProperty: DownSampleProperty(size: .init(width: frame.width, height: 0))
+    )
+  }
+
   func setupStyle() {
     let inset = Metrics.contentInset
 
@@ -92,7 +107,7 @@ final class HistoryContentPictureView: UIStackView {
     spacing = Metrics.contentInset
     isLayoutMarginsRelativeArrangement = true
     axis = .vertical
-    alignment = .center
+    alignment = .fill
     distribution = .equalSpacing
 
     layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
