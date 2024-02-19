@@ -12,15 +12,22 @@ import UserNotifications
 // MARK: - TimerLocalNotificationUseCaseRepresentable
 
 protocol TimerLocalNotificationUseCaseRepresentable {
-  func addChallengeCompleteNotification(identifier notificationIdentifier: String, timeInterval: Double)
+  func addChallengeCompleteNotification(identifier notificationIdentifier: String, completion: @escaping (Error?) -> Void)
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String)
 }
 
 // MARK: - TimerLocalNotificationUseCase
 
 final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable {
+  private let timeInterval: Double
+
+  init(minutes: Int, seconds: Int = 0) {
+    timeInterval = Double(minutes * 60) + Double(seconds)
+  }
+
   private var currentUserNotificationCenter = UNUserNotificationCenter.current()
-  func addChallengeCompleteNotification(identifier notificationIdentifier: String, timeInterval: Double) {
+
+  func addChallengeCompleteNotification(identifier notificationIdentifier: String, completion: @escaping (Error?) -> Void) {
     let content = UNMutableNotificationContent()
     content.title = "Lunch time"
     content.body = "Food is cooked... let's eat!"
@@ -29,8 +36,7 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
 
     let request = UNNotificationRequest(identifier: notificationIdentifier, content: content, trigger: trigger)
 
-    currentUserNotificationCenter.add(request) { _ in
-    }
+    currentUserNotificationCenter.add(request, withCompletionHandler: completion)
   }
 
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String) {
