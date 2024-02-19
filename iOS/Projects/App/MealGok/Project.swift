@@ -7,7 +7,7 @@ let project = Project.makeModule(
   name: ProjectEnvironment.default.appName,
   targets: .app(
     name: ProjectEnvironment.default.appName,
-    entitlements: nil,
+    entitlements: .file(path: .relativeToApp("MealGok/MealGok.entitlements")),
     dependencies: [
       .designSystem,
       .routerFactory,
