@@ -26,6 +26,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   var startTime: Date
 
   private let targetTimeOfMinutes: Int
+  private let targetTimeOfSeconds: Int
 
   func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: false)
@@ -35,8 +36,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   func build() -> UIViewController {
     let repository = SaveMealGokChalengeRepository()
 
-//    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: 0)
-//    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: 0)
+//    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
+//    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
     // 테스트 코드
     let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
     let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: 0, seconds: 10)
@@ -54,11 +55,18 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
     return viewController
   }
 
-  init(startTime: Date, parentRouter: Routing?, navigationController: UINavigationController?, targetTimeOfMinutes: Int) {
+  init(
+    startTime: Date,
+    parentRouter: Routing?,
+    navigationController: UINavigationController?,
+    targetTimeOfMinutes: Int,
+    targetTimeOfSeconds: Int = 0
+  ) {
     self.startTime = startTime
     self.parentRouter = parentRouter
     self.navigationController = navigationController
     self.targetTimeOfMinutes = targetTimeOfMinutes
+    self.targetTimeOfSeconds = targetTimeOfSeconds
   }
 }
 
