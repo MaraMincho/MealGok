@@ -44,13 +44,12 @@ final class TimerUseCase: TimerUseCasesRepresentable {
     self.repository = repository
     self.startTime = startTime
     self.timerLocalNotificationUseCase = timerLocalNotificationUseCase
+
+    addCompleteNotification()
   }
 
   private func addCompleteNotification() {
-    let completion: (Error?) -> Void = { [weak self] _ in
-      self?.isFinishPublisher.send(true)
-    }
-    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier.uuidString, completion: completion)
+    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier.uuidString)
   }
 
   func imageDataURL() -> URL? {

@@ -8,11 +8,12 @@
 
 import Foundation
 import UserNotifications
+import OSLog
 
 // MARK: - TimerLocalNotificationUseCaseRepresentable
 
 protocol TimerLocalNotificationUseCaseRepresentable {
-  func addChallengeCompleteNotification(identifier notificationIdentifier: String, completion: @escaping (Error?) -> Void)
+  func addChallengeCompleteNotification(identifier notificationIdentifier: String)
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String)
 }
 
@@ -27,16 +28,20 @@ final class TimerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresen
 
   private var currentUserNotificationCenter = UNUserNotificationCenter.current()
 
-  func addChallengeCompleteNotification(identifier notificationIdentifier: String, completion: @escaping (Error?) -> Void) {
+  func addChallengeCompleteNotification(identifier notificationIdentifier: String) {
     let content = UNMutableNotificationContent()
     content.title = "Lunch time"
     content.body = "Food is cooked... let's eat!"
 
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
 
     let request = UNNotificationRequest(identifier: notificationIdentifier, content: content, trigger: trigger)
-
-    currentUserNotificationCenter.add(request, withCompletionHandler: completion)
+    UNUserNotificationCenter.current().add(request) { error in
+      if let error {
+        Logger().error("\(error.localizedDescription)")
+      }
+      
+    }
   }
 
   func removeChallengeCompleteNotification(identifier notificationIdentifier: String) {
