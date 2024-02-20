@@ -32,8 +32,15 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
     let repository = TargetTimeRepository()
     let targetTimeUseCase = TargetTimeUseCase(repository: repository)
     let savePhotoUseCase = SavePhotoUseCase()
+    
+    let prevChallengeLoadRepository = PrevChallengeManagerRepository()
+    let prevChallengeLoadUseCase = PrevChallengeLoadUseCase(loader: prevChallengeLoadRepository)
 
-    let viewModel = MealGokHomeViewModel(targetTimeUseCase: targetTimeUseCase, savePhotoUseCase: savePhotoUseCase)
+    let viewModel = MealGokHomeViewModel(
+      targetTimeUseCase: targetTimeUseCase,
+      savePhotoUseCase: savePhotoUseCase,
+      prevChallengeLoadUseCase: prevChallengeLoadUseCase
+    )
     viewModel.router = self
     return MealGokHomeViewController(viewModel: viewModel)
   }

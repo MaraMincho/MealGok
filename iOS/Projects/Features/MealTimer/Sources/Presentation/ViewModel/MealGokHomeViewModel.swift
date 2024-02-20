@@ -17,6 +17,7 @@ public struct MealGokHomeViewModelInput {
   let startTimeScenePublisher: AnyPublisher<Data?, Never>
   let needUpdateTargetTimePublisher: AnyPublisher<Void, Never>
   let saveTargetTimePublisher: AnyPublisher<Int, Never>
+  let viewDidLoadPublisher: AnyPublisher<Void, Never>
 }
 
 public typealias MealGokHomeViewModelOutput = AnyPublisher<MealGokHomeState, Never>
@@ -44,10 +45,16 @@ final class MealGokHomeViewModel {
   weak var router: MealGokHomeFactoriable?
   private let targetTimeUseCase: TargetTimeUseCaseRepresentable
   private let savePhotoUseCase: SavePhotoUseCaseRepresentable
+  private let prevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable
 
-  init(targetTimeUseCase: TargetTimeUseCaseRepresentable, savePhotoUseCase: SavePhotoUseCaseRepresentable) {
+  init(
+    targetTimeUseCase: TargetTimeUseCaseRepresentable,
+    savePhotoUseCase: SavePhotoUseCaseRepresentable,
+    prevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable
+  ) {
     self.targetTimeUseCase = targetTimeUseCase
     self.savePhotoUseCase = savePhotoUseCase
+    self.prevChallengeLoadUseCase = prevChallengeLoadUseCase
   }
 }
 
@@ -56,6 +63,20 @@ final class MealGokHomeViewModel {
 extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
   public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
+    
+    input.viewDidLoadPublisher
+      .sink { [prevChallengeLoadUseCase, router] _ in
+        let state = prevChallengeLoadUseCase.checkPrevChallenge()
+        switch state {
+        case let .timer(totalSeconds, prevImageURL):
+          <#code#>
+        case .successChallenge:
+          <#code#>
+        case .idle:
+          break
+        }
+      }
+      .store(in: &subscriptions)
 
     input.startTimeScenePublisher
       .sink { [targetTimeUseCase, router, savePhotoUseCase] data in
