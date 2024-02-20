@@ -25,6 +25,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   var childRouters: [Routing] = []
   var startTime: Date
 
+  private let isLocalNotificationNeed: Bool
   private let targetTimeOfMinutes: Int
   private let targetTimeOfSeconds: Int
 
@@ -40,7 +41,7 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
 //    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
     // 테스트 코드
     let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
-    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: 0, seconds: 10)
+    let timerLocalNotificationUseCase = isLocalNotificationNeed ? TimerLocalNotificationUseCase(minutes: 0, seconds: 10) : nil
     let timerUseCase = TimerUseCase(
       startTime: startTime,
       customStringFormatter: customStringFormatter,
@@ -60,13 +61,15 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
     parentRouter: Routing?,
     navigationController: UINavigationController?,
     targetTimeOfMinutes: Int,
-    targetTimeOfSeconds: Int = 0
+    targetTimeOfSeconds: Int = 0,
+    isLocalNotificationNeed: Bool
   ) {
     self.startTime = startTime
     self.parentRouter = parentRouter
     self.navigationController = navigationController
     self.targetTimeOfMinutes = targetTimeOfMinutes
     self.targetTimeOfSeconds = targetTimeOfSeconds
+    self.isLocalNotificationNeed = isLocalNotificationNeed
   }
 }
 

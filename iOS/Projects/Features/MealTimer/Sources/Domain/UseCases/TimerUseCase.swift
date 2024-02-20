@@ -30,14 +30,14 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
-  private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable
+  private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?
 
   private let repository: SaveMealGokChalengeRepositoryRepresentable?
 
   init(
     startTime: Date,
     customStringFormatter: CustomTimeStringFormatter,
-    timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable,
+    timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?,
     repository: SaveMealGokChalengeRepositoryRepresentable?
   ) {
     self.customStringFormatter = customStringFormatter
@@ -49,8 +49,8 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   private func addCompleteNotification() {
-    timerLocalNotificationUseCase.removeChallengeCompleteNotification(identifier: notificationIdentifier)
-    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier)
+    timerLocalNotificationUseCase?.removeChallengeCompleteNotification(identifier: notificationIdentifier)
+    timerLocalNotificationUseCase?.addChallengeCompleteNotification(identifier: notificationIdentifier)
   }
 
   /// 시작시간을 통해서 imageDataURL을 리턴합니다.

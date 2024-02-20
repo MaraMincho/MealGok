@@ -12,7 +12,7 @@ import UIKit
 // MARK: - MealGokHomeFactoriable
 
 protocol MealGokHomeFactoriable: RouterFactoriable {
-  func startMealTimerScene(targetMinute: Int, startTime: Date)
+  func startMealTimerScene(targetMinute: Int, startTime: Date, isLocalNotificationNeed: Bool)
 }
 
 // MARK: - MealGokHomeRouterFactory
@@ -33,13 +33,15 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
     let targetTimeUseCase = TargetTimeUseCase(repository: repository)
     let savePhotoUseCase = SavePhotoUseCase()
 
-    let prevChallengeLoadRepository = PrevChallengeManagerRepository()
-    let prevChallengeLoadUseCase = PrevChallengeLoadUseCase(loader: prevChallengeLoadRepository)
+    let userDefaultsRepository = PrevChallengeManagerRepository()
+    let prevChallengeLoadUseCase = PrevChallengeLoadUseCase(loader: userDefaultsRepository)
+    let prevChallengeWriteUseCase = PrevChallengeWriteUseCase(prevChallengeWriteRepository: userDefaultsRepository)
 
     let viewModel = MealGokHomeViewModel(
       targetTimeUseCase: targetTimeUseCase,
       savePhotoUseCase: savePhotoUseCase,
-      prevChallengeLoadUseCase: prevChallengeLoadUseCase
+      prevChallengeLoadUseCase: prevChallengeLoadUseCase,
+      prevChallengeWriteUseCase: prevChallengeWriteUseCase
     )
     viewModel.router = self
     return MealGokHomeViewController(viewModel: viewModel)
@@ -54,12 +56,13 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
 // MARK: MealGokHomeFactoriable
 
 extension MealGokHomeRouterFactory: MealGokHomeFactoriable {
-  func startMealTimerScene(targetMinute: Int, startTime: Date) {
+  func startMealTimerScene(targetMinute: Int, startTime: Date, isLocalNotificationNeed: Bool = true) {
     let router = StartMealTimerSceneRouterFactory(
       startTime: startTime,
       parentRouter: self,
       navigationController: navigationController,
-      targetTimeOfMinutes: targetMinute
+      targetTimeOfMinutes: targetMinute,
+      isLocalNotificationNeed: isLocalNotificationNeed
     )
     childRouters.append(router)
     router.start(build: router.build())

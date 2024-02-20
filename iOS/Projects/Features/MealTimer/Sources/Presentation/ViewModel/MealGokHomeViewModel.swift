@@ -17,7 +17,7 @@ public struct MealGokHomeViewModelInput {
   let startTimeScenePublisher: AnyPublisher<Data?, Never>
   let needUpdateTargetTimePublisher: AnyPublisher<Void, Never>
   let saveTargetTimePublisher: AnyPublisher<Int, Never>
-  let viewDidLoadPublisher: AnyPublisher<Void, Never>
+  let viewDidAppearPublisher: AnyPublisher<Void, Never>
 }
 
 public typealias MealGokHomeViewModelOutput = AnyPublisher<MealGokHomeState, Never>
@@ -46,15 +46,18 @@ final class MealGokHomeViewModel {
   private let targetTimeUseCase: TargetTimeUseCaseRepresentable
   private let savePhotoUseCase: SavePhotoUseCaseRepresentable
   private let prevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable
+  private let prevChallengeWriteUseCase: PrevChallengeWriteUseCaseRepresentable
 
   init(
     targetTimeUseCase: TargetTimeUseCaseRepresentable,
     savePhotoUseCase: SavePhotoUseCaseRepresentable,
-    prevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable
+    prevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable,
+    prevChallengeWriteUseCase: PrevChallengeWriteUseCaseRepresentable
   ) {
     self.targetTimeUseCase = targetTimeUseCase
     self.savePhotoUseCase = savePhotoUseCase
     self.prevChallengeLoadUseCase = prevChallengeLoadUseCase
+    self.prevChallengeWriteUseCase = prevChallengeWriteUseCase
   }
 }
 
@@ -64,14 +67,14 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
   public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
 
-    input.viewDidLoadPublisher
+    input.viewDidAppearPublisher
       .sink { [prevChallengeLoadUseCase, router] _ in
         let state = prevChallengeLoadUseCase.checkPrevChallenge()
         switch state {
         case let .timer(targetMinutes, startDate):
-          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate)
+          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate, isLocalNotificationNeed: false)
         case let .successChallenge(targetMinutes, startDate):
-          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate)
+          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate, isLocalNotificationNeed: false)
         case .idle:
           break
         }
@@ -79,9 +82,12 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
       .store(in: &subscriptions)
 
     input.startTimeScenePublisher
-      .sink { [targetTimeUseCase, router, savePhotoUseCase] data in
-        let startTime = savePhotoUseCase.saveDataWithNowDescription(data)
-        router?.startMealTimerScene(targetMinute: targetTimeUseCase.targetTime(), startTime: startTime)
+      .sink { [targetTimeUseCase, router, savePhotoUseCase, prevChallengeWriteUseCase] data in
+        let startDate = savePhotoUseCase.saveDataWithNowDescription(data)
+        let targetMinute = targetTimeUseCase.targetTime()
+        prevChallengeWriteUseCase.setPrevChallengeStartDate(startDate)
+        prevChallengeWriteUseCase.setPrevChallengeTotalSeconds(targetMinute * 60)
+        router?.startMealTimerScene(targetMinute: targetMinute, startTime: startDate, isLocalNotificationNeed: true)
       }
       .store(in: &subscriptions)
 

@@ -30,6 +30,7 @@ final class MealGokHomeViewController: UIViewController {
   private let needUpdateTargetTimeSubject: PassthroughSubject<Void, Never> = .init()
   private let saveTargetTimeSubject: PassthroughSubject<Int, Never> = .init()
   private let startTimerSubject: PassthroughSubject<Data?, Never> = .init()
+  private let viewDidAppearPublisher: PassthroughSubject<Void, Never> = .init()
   @Published private var targetTime: Int = 20
 
   // MARK: UI Components
@@ -193,6 +194,7 @@ final class MealGokHomeViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     contentScrollView.contentSize = contentScrollViewContentSize
+    viewDidAppearPublisher.send()
   }
 }
 
@@ -271,7 +273,8 @@ private extension MealGokHomeViewController {
       didCameraButtonTouchPublisher: cameraButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
       startTimeScenePublisher: startTimerSubject.eraseToAnyPublisher(),
       needUpdateTargetTimePublisher: needUpdateTargetTimeSubject.eraseToAnyPublisher(),
-      saveTargetTimePublisher: saveTargetTimeSubject.eraseToAnyPublisher()
+      saveTargetTimePublisher: saveTargetTimeSubject.eraseToAnyPublisher(),
+      viewDidAppearPublisher: viewDidAppearPublisher.eraseToAnyPublisher()
     ))
 
     $targetTime.sink { [weak self] targetTime in
