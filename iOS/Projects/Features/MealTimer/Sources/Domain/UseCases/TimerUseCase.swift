@@ -53,6 +53,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
     timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier)
   }
 
+  /// 시작시간을 통해서 imageDataURL을 리턴합니다.
   func imageDataURL() -> URL? {
     let dateFormatter: DateFormatter = {
       let dateFormatter = DateFormatter()

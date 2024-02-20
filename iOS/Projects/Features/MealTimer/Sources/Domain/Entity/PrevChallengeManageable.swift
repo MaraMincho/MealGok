@@ -13,7 +13,6 @@ import Foundation
 protocol PrevChallengeLoadManageable {
   func prevChallengeStartDate() -> Date?
   func prevChallengeTotalSeconds() -> Int?
-  func prevChallengeURL() -> URL?
 }
 
 // MARK: - PrevChallengeWriteManageable
@@ -21,7 +20,6 @@ protocol PrevChallengeLoadManageable {
 protocol PrevChallengeWriteManageable {
   func setPrevChallengeStartDate(_ date: Date)
   func setPrevChallengeTotalSeconds(_ value: Int)
-  func setPrevChallengeImageURL(_ value: URL?)
 }
 
 typealias PrevChallengeManageable = PrevChallengeLoadManageable & PrevChallengeWriteManageable

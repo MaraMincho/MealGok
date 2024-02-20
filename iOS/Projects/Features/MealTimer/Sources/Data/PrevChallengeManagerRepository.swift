@@ -12,17 +12,14 @@ import Foundation
 struct PrevChallengeManagerRepository: PrevChallengeManageable {
   private let startDateKey: String
   private let totalSecondsKey: String
-  private let imageURLKey: String
   private let userDefaults = UserDefaults.standard
 
   init(
     startDateKey: String = Constants.startDateKey,
-    totalSecondsKey: String = Constants.totalSecondsKey,
-    imageURLKey: String = Constants.imageURLKey
+    totalSecondsKey: String = Constants.totalSecondsKey
   ) {
     self.startDateKey = startDateKey
     self.totalSecondsKey = totalSecondsKey
-    self.imageURLKey = imageURLKey
   }
 
   func prevChallengeStartDate() -> Date? {
@@ -34,10 +31,6 @@ struct PrevChallengeManagerRepository: PrevChallengeManageable {
     return totalSeconds == 0 ? nil : totalSeconds
   }
 
-  func prevChallengeURL() -> URL? {
-    return userDefaults.url(forKey: imageURLKey)
-  }
-
   func setPrevChallengeStartDate(_ date: Date) {
     userDefaults.set(date: date, forKey: startDateKey)
   }
@@ -46,13 +39,8 @@ struct PrevChallengeManagerRepository: PrevChallengeManageable {
     userDefaults.set(value, forKey: totalSecondsKey)
   }
 
-  func setPrevChallengeImageURL(_ value: URL?) {
-    userDefaults.set(value, forKey: imageURLKey)
-  }
-
   private enum Constants {
     static let startDateKey: String = "ChallengeStartDate"
     static let totalSecondsKey: String = "TargetTime"
-    static let imageURLKey: String = "ImageURLKey"
   }
 }

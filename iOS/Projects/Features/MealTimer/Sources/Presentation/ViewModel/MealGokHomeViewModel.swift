@@ -63,15 +63,15 @@ final class MealGokHomeViewModel {
 extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
   public func transform(input: MealGokHomeViewModelInput) -> MealGokHomeViewModelOutput {
     subscriptions.removeAll()
-    
+
     input.viewDidLoadPublisher
       .sink { [prevChallengeLoadUseCase, router] _ in
         let state = prevChallengeLoadUseCase.checkPrevChallenge()
         switch state {
-        case let .timer(totalSeconds, prevImageURL):
-          <#code#>
-        case .successChallenge:
-          <#code#>
+        case let .timer(targetMinutes, startDate):
+          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate)
+        case let .successChallenge(targetMinutes, startDate):
+          router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate)
         case .idle:
           break
         }

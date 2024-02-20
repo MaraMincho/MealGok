@@ -35,10 +35,11 @@ final class PrevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable {
     let subtractValue = now.timeIntervalSince(prevFinishDate)
 
     if subtractValue < 0 { // 아직 챌린지가 끝나지 않았다면
-      let prevChallengeURL = loader.prevChallengeURL()
-      return .timer(totalSeconds: totalSeconds, prevImageURL: prevChallengeURL)
+      let targetMinutes = totalSeconds / 60
+      return .timer(targetMinutes: targetMinutes, startDate: startDate)
     } else if subtractValue < 600 { // 챌린지가 끝났고, 10분 이내라면
-      return .successChallenge
+      let targetMinutes = totalSeconds / 60
+      return .successChallenge(targetMinutes: targetMinutes, startDate: startDate)
     } else { // 10분이 넘어 버린 경우
       return .idle
     }
@@ -48,7 +49,7 @@ final class PrevChallengeLoadUseCase: PrevChallengeLoadUseCaseRepresentable {
 // MARK: - PrevChallengeSupportState
 
 enum PrevChallengeSupportState {
-  case timer(totalSeconds: Int, prevImageURL: URL?)
-  case successChallenge
+  case timer(targetMinutes: Int, startDate: Date)
+  case successChallenge(targetMinutes: Int, startDate: Date)
   case idle
 }

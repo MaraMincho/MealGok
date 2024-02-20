@@ -32,7 +32,7 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
     let repository = TargetTimeRepository()
     let targetTimeUseCase = TargetTimeUseCase(repository: repository)
     let savePhotoUseCase = SavePhotoUseCase()
-    
+
     let prevChallengeLoadRepository = PrevChallengeManagerRepository()
     let prevChallengeLoadUseCase = PrevChallengeLoadUseCase(loader: prevChallengeLoadRepository)
 
