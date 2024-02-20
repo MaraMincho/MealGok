@@ -30,9 +30,9 @@ def set_version(short_version, build_version):
             content = file.read()
 
         target_name_index = content.find("""      "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",""")
-        new_short_version = f"""       "CFBundleShortVersionString": "{short_version}","""
-        new_build_version = f"""      "CFBundleVersion": "{build_version}","""
-        modified_content = content[:target_name_index] + f"{new_short_version}" + f"{new_build_version}" + content[target_name_index + 2:]
+        new_short_version = f"""       "CFBundleShortVersionString": "{short_version}",\n"""
+        new_build_version = f"""      "CFBundleVersion": "{build_version}",\n"""
+        modified_content = content[:target_name_index + 1] + f"{new_short_version}" + f"{new_build_version}" + content[target_name_index + 3:]
 
         # Write the modified content back to the file
         with open(file_path, 'w') as file:
