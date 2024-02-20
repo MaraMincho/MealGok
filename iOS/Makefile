@@ -13,3 +13,6 @@ shared:
 core:
 	python Scripts/TuistScript.py core
 	tuist edit
+
+archive:
+	python Scripts/EditArchiveVersion.py
