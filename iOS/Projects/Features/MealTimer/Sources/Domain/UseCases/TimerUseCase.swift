@@ -26,18 +26,18 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private var oneSecondsTimer = Timer.publish(every: 1, on: .main, in: .common)
 
   private var startTime: Date
-  private let notificationIdentifier = UUID()
+  private let notificationIdentifier = "MealGokChallengeLocalNotificationIdentifier"
   private let isFinishPublisher: CurrentValueSubject<Bool, Never> = .init(false)
 
   private let customStringFormatter: CustomTimeStringFormatter
-  private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable
+  private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?
 
   private let repository: SaveMealGokChalengeRepositoryRepresentable?
 
   init(
     startTime: Date,
     customStringFormatter: CustomTimeStringFormatter,
-    timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable,
+    timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?,
     repository: SaveMealGokChalengeRepositoryRepresentable?
   ) {
     self.customStringFormatter = customStringFormatter
@@ -49,9 +49,11 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   }
 
   private func addCompleteNotification() {
-    timerLocalNotificationUseCase.addChallengeCompleteNotification(identifier: notificationIdentifier.uuidString)
+    timerLocalNotificationUseCase?.removeChallengeCompleteNotification(identifier: notificationIdentifier)
+    timerLocalNotificationUseCase?.addChallengeCompleteNotification(identifier: notificationIdentifier)
   }
 
+  /// 시작시간을 통해서 imageDataURL을 리턴합니다.
   func imageDataURL() -> URL? {
     let dateFormatter: DateFormatter = {
       let dateFormatter = DateFormatter()

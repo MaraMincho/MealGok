@@ -21,8 +21,8 @@ public final class MealGokChallengePersistedObject: Object {
 
   /// init MealGokChallengePersistedObject
   /// - Parameters:
-  ///   - challengeDate: Date String of challenge
-  ///   - startTime: Start date of challenge. startDate must be formatted "yyyy-MM-dd"
+  ///   - challengeDateString: Date String of challenge. "yyyy-MM-dd"
+  ///   - startTime: Start date of challenge.
   ///   - endTime: End date of challenge
   ///   - imageDataURLString: Image URL that user take food or something, if nil no picture
   ///   - isSuccess: wether success

@@ -1,5 +1,5 @@
 //
-//  SaveMealGokChalengeRepository.swift
+//  SaveMealGokChallengeRepository.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 2/7/24.
@@ -11,9 +11,9 @@ import OSLog
 import RealmSwift
 import ThirdParty
 
-// MARK: - SaveMealGokChalengeRepository
+// MARK: - SaveMealGokChallengeRepository
 
-final class SaveMealGokChalengeRepository: PersistableRepository, SaveMealGokChalengeRepositoryRepresentable {
+final class SaveMealGokChallengeRepository: PersistableRepository, SaveMealGokChalengeRepositoryRepresentable {
   func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
     let persistableObject = dto.adaptPersistableObject()
     try realm.write {

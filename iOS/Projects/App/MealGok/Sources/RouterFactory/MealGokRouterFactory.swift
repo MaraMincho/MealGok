@@ -41,7 +41,7 @@ final class MealGokRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let navigationController = UINavigationController()
+    let navigationController = MealGokPushNotificationManager()
     navigationController.navigationBar.isHidden = true
     return navigationController
   }
