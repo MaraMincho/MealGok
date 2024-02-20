@@ -8,9 +8,14 @@
 
 import Foundation
 
-protocol PrevChallengeUserDefaultsManager {
+protocol PrevChallengeLoadManager {
   func prevChallengeStartDate() -> Date?
   func prevChallengeTotalSeconds() -> Int
+}
+
+protocol PrevChallengeWriteManager {
   func setPrevChallengeStartDate(_ date: Date)
   func setPrevChallengeTotalSeconds(_ value: Int)
 }
+
+typealias PrevChallengeManager = PrevChallengeWriteManager & PrevChallengeLoadManager

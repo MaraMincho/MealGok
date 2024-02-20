@@ -9,7 +9,7 @@
 import Foundation
 import CommonExtensions
 
-struct PrevChallengeManagerRepository: PrevChallengeUserDefaultsManager {
+struct PrevChallengeManagerRepository: PrevChallengeManager {
   private let startDateKey: String
   private let totalSecondsKey: String
   private let userDefaults = UserDefaults.standard
