@@ -1,5 +1,5 @@
 //
-//  PrevChallengeManagerRepositoryRepresentable.swift
+//  PrevChallengeManagerable.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 2/20/24.
@@ -8,14 +8,18 @@
 
 import Foundation
 
-protocol PrevChallengeLoadManager {
+// MARK: - PrevChallengeLoadManager
+
+protocol PrevChallengeLoadManageable {
   func prevChallengeStartDate() -> Date?
   func prevChallengeTotalSeconds() -> Int
 }
 
-protocol PrevChallengeWriteManager {
+// MARK: - PrevChallengeWriteManager
+
+protocol PrevChallengeWriteManageable {
   func setPrevChallengeStartDate(_ date: Date)
   func setPrevChallengeTotalSeconds(_ value: Int)
 }
 
-typealias PrevChallengeManager = PrevChallengeWriteManager & PrevChallengeLoadManager
+typealias PrevChallengeManageable = PrevChallengeLoadManageable & PrevChallengeWriteManageable
