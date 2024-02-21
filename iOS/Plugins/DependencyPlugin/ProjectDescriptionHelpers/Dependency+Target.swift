@@ -24,7 +24,7 @@ public extension TargetDependency {
   static let designSystem: TargetDependency = .project(target: "DesignSystem", path: .relativeToShared("DesignSystem"))
   static let routerFactory: TargetDependency = .project(target: "RouterFactory", path: .relativeToCore("RouterFactory"))
   static let combineCocoa: TargetDependency = .project(target: "CombineCocoa", path: .relativeToCore("CombineCocoa"))
-  static let imageManager: TargetDependency = .project(target: "ImageManager", path: .relativeToShared("ImageManager"))
+  static let MealGokCacher: TargetDependency = .project(target: "MealGokCacher", path: .relativeToShared("MealGokCacher"))
   static let sharedNotificationName: TargetDependency = .project(target: "SharedNotificationName", path: .relativeToCore("SharedNotificationName"))
   static let commonExtensions: TargetDependency = .project(target: "CommonExtensions", path: .relativeToShared("CommonExtensions"))
   static func feature(_ feature: Feature) -> TargetDependency {

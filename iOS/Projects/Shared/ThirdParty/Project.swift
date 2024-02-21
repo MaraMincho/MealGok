@@ -9,7 +9,7 @@ let project = Project.makeModule(
     dependencies: [
       .Realm,
       .RealmSwift,
-      .imageManager,
+      .MealGokCacher,
       .commonExtensions,
     ],
     resources: "Resources/**"
