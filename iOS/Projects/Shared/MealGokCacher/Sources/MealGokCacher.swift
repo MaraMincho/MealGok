@@ -19,7 +19,7 @@ public final class MealGokCacher {
     static let documentPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     static let imageDirPath = documentPath.appending(path: Constants.dirName)
 
-    static let sharedImageFileManagerProperty: ImageFileManagerProperty = .init(documentPath: imageDirPath)
+    static let sharedImageFileManagerProperty: ImageFileManager = .init(documentPath: imageDirPath)
     static let sharedLocalFileManager: LocalFileManager = .init(documentPath: imageDirPath)
   }
 }

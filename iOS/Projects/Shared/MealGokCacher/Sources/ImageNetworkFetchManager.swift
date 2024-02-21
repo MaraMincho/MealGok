@@ -15,7 +15,7 @@ actor ImageNetworkFetchManager {
   let queue = DispatchSerialQueue(label: "ImageQueue")
   private var subscription = Set<AnyCancellable>()
 
-  func dataTask(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> FetchDescriptionProperty {
+  func dataTask(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> FetchDescriptionCancellable {
     let dataTaskPublisher = URLSession.shared.dataTaskPublisher(for: url)
     let fetchStatusPublisher: CurrentValueSubject<FetchDescriptionStatus, Never> = .init(.fetching)
 
@@ -32,7 +32,7 @@ actor ImageNetworkFetchManager {
       } receiveValue: { (data: Data, _: URLResponse) in
         completion(.success(data))
       }
-    let property = FetchDescriptionProperty(fetchStatus: fetchStatusPublisher, fetchSubscription: publisher)
+    let property = FetchDescriptionCancellable(fetchStatus: fetchStatusPublisher, fetchSubscription: publisher)
 
     publisher.store(in: &subscription)
     return property

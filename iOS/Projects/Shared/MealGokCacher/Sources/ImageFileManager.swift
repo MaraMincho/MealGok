@@ -1,5 +1,5 @@
 //
-//  ImageFileManagerProperty.swift
+//  ImageFileManager.swift
 //  ImageManager
 //
 //  Created by MaraMincho on 2/18/24.
@@ -10,9 +10,9 @@ import Combine
 import OSLog
 import UIKit
 
-// MARK: - ImageFileManagerProperty
+// MARK: - ImageFileManager
 
-actor ImageFileManagerProperty {
+actor ImageFileManager {
   // MARK: - Property
 
   init(documentPath: URL) {
@@ -25,15 +25,17 @@ actor ImageFileManagerProperty {
 
   // MARK: - StoreProperty
 
-  private var targetViewAndFetchProperty: NSMapTable<AnyObject, FetchDescriptionProperty> = .weakToStrongObjects()
+  private var targetViewAndFetchProperty: NSMapTable<AnyObject, FetchDescriptionCancellable> = .weakToStrongObjects()
+  private var targetViewAndFetchTask: NSMapTable<AnyObject, FetchDescriptionTask> = .weakToStrongObjects()
+  private let imageCache: NSCache<AnyObject, AnyObject> = .init()
 
   // MARK: - Method
 
-  func setTargetViewAndFetchProperty(imageView: AnyObject, fetchDescriptionProperty: FetchDescriptionProperty) {
+  func setTargetViewAndFetchProperty(imageView: AnyObject, fetchDescriptionProperty: FetchDescriptionCancellable) {
     targetViewAndFetchProperty.setObject(fetchDescriptionProperty, forKey: imageView)
   }
 
-  func fetchProperty(forKey: AnyObject) -> FetchDescriptionProperty? {
+  func fetchProperty(forKey: AnyObject) -> FetchDescriptionCancellable? {
     return targetViewAndFetchProperty.object(forKey: forKey)
   }
 
@@ -47,6 +49,40 @@ actor ImageFileManagerProperty {
 
   func fetchStatusPublisher(forKey: AnyObject) -> AnyPublisher<FetchDescriptionStatus, Never>? {
     return fetchProperty(forKey: forKey)?.fetchStatusPublisher()
+  }
+
+  func loadImage(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
+    let imagePathURL = documentPath.appending(path: url.lastPathComponent)
+
+    let fetchDescriptionStatus = CurrentValueSubject<FetchDescriptionStatus, Never>(.fetching)
+    let fetchDescriptionTask = FetchDescriptionTask(fetchStatus: fetchDescriptionStatus, taskHandle: nil)
+    targetViewAndFetchTask.setObject(fetchDescriptionTask, forKey: target)
+
+    do {
+      // TODO: Memory에 url과 Image가 있다면 그것을 리턴합니다.
+      // if isExistImageInMemory { fetchFromMemory(url: url, target: target, completion: completion)}
+
+      // 만약 이미지 파일이 Dir에 존재 한다면 Netwrok요청을 하지 않습니다.
+      let isExistImage = try isExistImageInDirectory(url: imagePathURL)
+      if isExistImage {
+        let data = try fetchFromLocal(url: url, target: target)
+        completion(.success(data))
+        fetchDescriptionStatus.send(.finished)
+      }
+
+      // 네트워크를 통해 Image를 Fetch합니다.
+      let networkTask = Task<Data, Error> {
+        let fetchedData = try await fetchFromNetwork(url: url, target: target)
+        completion(.success(fetchedData))
+        fetchDescriptionStatus.send(.finished)
+        return fetchedData
+      }
+      fetchDescriptionTask.taskHandle = networkTask
+
+    } catch {
+      targetViewAndFetchTask.setObject(.init(fetchStatus: .init(.error(error)), taskHandle: nil), forKey: target)
+      completion(.failure(error))
+    }
   }
 
   func loadImage(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) async {
@@ -74,7 +110,7 @@ actor ImageFileManagerProperty {
   }
 }
 
-private extension ImageFileManagerProperty {
+private extension ImageFileManager {
   func isExistImageInDirectory(url: URL) throws -> Bool {
     // 만약 imageDirectory가 없다면 이미지 디렉토리를 생성합니다.
     if fileManager.fileExists(atPath: documentPath.path()) == false {
@@ -84,7 +120,13 @@ private extension ImageFileManagerProperty {
   }
 
   /// Local을 통해 Fetch 합니다
-  func fetchFromLocal(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
+  private func fetchFromLocal(url: URL, target _: AnyObject) throws -> Data {
+    let data = try Data(contentsOf: url)
+    return data
+  }
+
+  /// Local을 통해 Fetch 합니다
+  private func fetchFromLocal(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     do {
       try completion(.success(Data(contentsOf: url)))
       targetViewAndFetchProperty.setObject(.init(fetchStatus: .init(.finished), fetchSubscription: nil), forKey: target)
@@ -92,6 +134,11 @@ private extension ImageFileManagerProperty {
       completion(.failure(error))
       targetViewAndFetchProperty.setObject(.init(fetchStatus: .init(.error(error)), fetchSubscription: nil), forKey: target)
     }
+  }
+
+  private func fetchFromNetwork(url: URL, target _: AnyObject) async throws -> Data {
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return data
   }
 
   /// 네트워크를 통해서 Fetch합니다.
