@@ -12,12 +12,12 @@ import Foundation
 public extension MealGokCacher {
   /// 도큐먼트 폴더에 파일 이름을 추가한 URL을 리턴합니다.
   static func url(fileName: String) -> URL {
-    return Constants.sharedImageFileManagerProperty.url(fileName: fileName)
+    return Constants.sharedLocalFileManager.url(fileName: fileName)
   }
 
   /// 도큐먼트 폴더에 파일 이름을 추가한 URL이 현재 존재하는지 확인합니다.
   static func isExistURL(fileName: String) -> Bool {
-    return Constants.sharedImageFileManagerProperty.isExistURL(fileName: fileName)
+    return Constants.sharedLocalFileManager.isExistURL(fileName: fileName)
   }
 
   /// 도큐먼트 폴더에 파일 이름을 추가한 URL을 통해 Data를 저장합니다.
@@ -25,6 +25,6 @@ public extension MealGokCacher {
   /// Data가 nil일 경우 어떠한 작업도 시행하지 않습니다.
   static func save(fileName: String, data: Data?) {
     guard let data else { return }
-    return Constants.sharedImageFileManagerProperty.save(fileName: fileName, data: data)
+    return Constants.sharedLocalFileManager.save(fileName: fileName, data: data)
   }
 }

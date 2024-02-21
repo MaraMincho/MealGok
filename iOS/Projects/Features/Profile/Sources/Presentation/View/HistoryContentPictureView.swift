@@ -16,7 +16,6 @@ import UIKit
 
 final class HistoryContentPictureView: UIStackView {
   private let property: HistoryContentPictureViewProperty
-  private var imageSubscription: AnyCancellable?
   private var imageHeightConstraint: NSLayoutConstraint?
 
   private var portraitImageHeight: CGFloat {
@@ -63,23 +62,11 @@ final class HistoryContentPictureView: UIStackView {
     addArrangedSubview(descriptionImageView)
     addArrangedSubview(descriptionTitleLabel)
 
-    imageSubscription = descriptionImageView
-      .publisher(for: \.image, options: .new)
-      .compactMap { [weak self] _ -> Void? in
-        if self?.descriptionImageView.frame.width == 0 {
-          return nil
-        }
-        return ()
-      }
-      .sink { [weak self] _ in
-        guard let self else { return }
-        guard let imageSize = descriptionImageView.image?.size else {
-          return
-        }
-        let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
-        imageHeightConstraint?.constant = imageHeight
-      }
-    imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: landScapeImageHeight)
+    guard let imageSize = descriptionImageView.image?.size else {
+      return
+    }
+    let imageHeight = imageSize.height > imageSize.width ? portraitImageHeight : landScapeImageHeight
+    imageHeightConstraint = descriptionImageView.heightAnchor.constraint(equalToConstant: imageHeight)
     imageHeightConstraint?.isActive = true
   }
 
@@ -93,10 +80,6 @@ final class HistoryContentPictureView: UIStackView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    descriptionImageView.setImage(
-      url: property.pictureURL,
-      downSampleProperty: DownSampleProperty(size: .init(width: frame.width, height: 0))
-    )
   }
 
   func setupStyle() {
@@ -117,6 +100,10 @@ final class HistoryContentPictureView: UIStackView {
     layer.cornerRadius = 8
     layer.backgroundColor = DesignSystemColor.secondaryBackground.cgColor
     layer.cornerCurve = .continuous
+  }
+
+  func setImage(image: UIImage?) {
+    descriptionImageView.image = image
   }
 
   @available(*, unavailable)
@@ -146,9 +133,6 @@ final class HistoryContentPictureView: UIStackView {
 struct HistoryContentPictureViewProperty {
   /// yyyy. mm. dd 형식의 날짜 String
   let date: String
-
-  /// 컨텐츠의 이미지 입니다.
-  let pictureURL: URL?
 
   /// 먹은 시간에 대한 표시를 위한 Property 입니다.
   let title: String

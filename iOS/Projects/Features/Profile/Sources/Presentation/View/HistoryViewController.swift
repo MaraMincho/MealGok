@@ -16,23 +16,21 @@ final class HistoryViewController: UIViewController {
   private let property: HistoryContentPictureViewProperty
   private var subscription: Set<AnyCancellable> = .init()
 
-  private var contentWidth: CGFloat {
-    guard let screenWidth = view.window?.screen.bounds.width else {
-      return 345
-    }
-    return screenWidth - 24 + 2
-  }
-
-  init(property: HistoryContentPictureViewProperty) {
+  init(property: HistoryContentPictureViewProperty, contentImage: UIImage?) {
     self.property = property
     super.init(nibName: nil, bundle: nil)
 
-    setup()
+    contentView.setImage(image: contentImage)
   }
 
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("cant use this moethod")
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    setup()
   }
 
   private lazy var contentView: HistoryContentPictureView = {

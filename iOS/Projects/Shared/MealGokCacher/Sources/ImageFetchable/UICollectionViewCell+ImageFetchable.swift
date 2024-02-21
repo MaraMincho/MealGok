@@ -10,6 +10,6 @@ import UIKit
 
 extension UICollectionViewCell: ImageFetchable {
   public func setImage(downSampledImage: UIImage?) {
-    self.largeContentImage = downSampledImage
+    largeContentImage = downSampledImage
   }
 }
