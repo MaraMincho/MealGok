@@ -73,80 +73,16 @@ final class ProfileViewController: UIViewController {
     return stackView
   }()
 
-  private let profileImageView: UIImageView = {
-    let image = UIImage(systemName: "person.fill")
-    let imageView = UIImageView(image: image)
-    imageView.layer.cornerRadius = Metrics.imageViewWidthAndHeight / 2
-    imageView.layer.masksToBounds = false
-    imageView.layer.cornerCurve = .continuous
-    imageView.layer.borderColor = DesignSystemColor.main01.cgColor
-    imageView.layer.borderWidth = Metrics.imageViewBorderWidth
-
-    imageView.clipsToBounds = true
-
-    imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-    imageView.translatesAutoresizingMaskIntoConstraints = false
-    return imageView
-  }()
-
-  private let profileNameLabel: UILabel = {
-    let label = UILabel()
-    label.font = .preferredFont(forTextStyle: .title1)
-    label.text = Constants.profileNameLabelDfeaultText
-    label.textColor = DesignSystemColor.primaryText
-
-    label.translatesAutoresizingMaskIntoConstraints = false
-    return label
-  }()
-
-  private lazy var profileAndNameStackView: UIStackView = {
-    let stackView = UIStackView(arrangedSubviews: [
-      self.profileImageView,
-      self.profileNameLabel,
-    ])
-    stackView.axis = .horizontal
-    stackView.alignment = .center
-    stackView.spacing = Metrics.profileAndNameLabelSpacing
-
-    stackView.translatesAutoresizingMaskIntoConstraints = false
-    return stackView
-  }()
-
-  private let profileDescriptionLabel: UILabel = {
-    let label = UILabel()
-    label.font = .preferredFont(forTextStyle: .body, weight: .medium)
-    label.text = "안녕하세요 좋은 아침"
-    label.textColor = DesignSystemColor.primaryText
-    label.numberOfLines = 4
-
-    label.translatesAutoresizingMaskIntoConstraints = false
-    return label
-  }()
-
-  private lazy var headerStackView: UIStackView = {
-    let stackView = UIStackView(arrangedSubviews: [
-      self.profileAndNameStackView,
-      self.profileDescriptionLabel,
-    ])
-    stackView.axis = .vertical
-    stackView.alignment = .fill
-    stackView.spacing = Metrics.profileAndDescriptionLabelSpacing
-    let leftAndRightMargin = Metrics.headerStackViewLeftAndRightMargin
-    stackView.layoutMargins = .init(
-      top: Metrics.headerStackViewTopMargin,
-      left: leftAndRightMargin,
-      bottom: Metrics.headerStackViewBottomMargin,
-      right: leftAndRightMargin
+  private let headerStackView: ProfileContentHeaderView = {
+    let property = ProfileContentHeaderViewProperty(
+      profileNameText: Constants.profileNameLabelDfeaultText,
+      profileDescriptionText: "안녕하세요 좋은 아침",
+      profileImageData: Data()
     )
-    stackView.isLayoutMarginsRelativeArrangement = true
-    stackView.backgroundColor = DesignSystemColor.secondaryBackground
+    let view = ProfileContentHeaderView(profileContentHeaderViewProperty: property)
 
-    stackView.layer.cornerRadius = Metrics.headerCornerRadius
-    stackView.layer.cornerCurve = .continuous
-    stackView.addShadow()
-
-    stackView.translatesAutoresizingMaskIntoConstraints = false
-    return stackView
+    view.translatesAutoresizingMaskIntoConstraints = false
+    return view
   }()
 
   lazy var calendarView: UICalendarView = {
@@ -299,9 +235,6 @@ private extension ProfileViewController {
     contentStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
     contentStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
 
-    profileImageView.widthAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
-    profileImageView.heightAnchor.constraint(equalToConstant: Metrics.imageViewWidthAndHeight).isActive = true
-
     mealGokChallengeTableView.heightAnchor.constraint(equalToConstant: 300).isActive = true
   }
 
@@ -423,17 +356,7 @@ private extension ProfileViewController {
 
     static let headerCornerRadius: CGFloat = 8
 
-    static let headerStackViewTopSpacing: CGFloat = 12
-    static let headerStackViewLeftAndRightMargin: CGFloat = 12
-    static let headerStackViewTopMargin: CGFloat = 12
-    static let headerStackViewBottomMargin: CGFloat = 24
-
     static let calendarMargin: CGFloat = 12
-
-    static let imageViewWidthAndHeight: CGFloat = 72
-    static let imageViewBorderWidth: CGFloat = 2
-    static let profileAndNameLabelSpacing: CGFloat = 12
-    static let profileAndDescriptionLabelSpacing: CGFloat = 12
 
     static let leadingAndTrailingSpace: CGFloat = 24
     static let calendarViewTopSpacing: CGFloat = 36
