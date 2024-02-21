@@ -3,9 +3,9 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-  name: "ImageManager",
+  name: "MealGokCacher",
   targets: .custom(
-    name: "ImageManager",
+    name: "MealGokCacher",
     product: .framework
   )
 )

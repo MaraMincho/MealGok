@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ImageManager
+import MealGokCacher
 
 // MARK: - SavePhotoUseCaseRepresentable
 

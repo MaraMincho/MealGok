@@ -8,7 +8,7 @@
 
 import Combine
 import Foundation
-import ImageManager
+import MealGokCacher
 import OSLog
 
 // MARK: - TimerUseCasesRepresentable
