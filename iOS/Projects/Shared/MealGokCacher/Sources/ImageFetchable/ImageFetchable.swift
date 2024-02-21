@@ -14,8 +14,8 @@ import UIKit
 public protocol ImageFetchable {
   func setImage(url: URL?, downSampleProperty property: DownSampleProperty?)
   func cancelFetch()
-  func fetchPublisher() -> AnyPublisher<FetchDescriptionStatus, Never>?
-  func fetchStatus() -> FetchDescriptionStatus?
+  func fetchPublisher() async -> AnyPublisher<FetchDescriptionStatus, Never>?
+  func fetchStatus() async -> FetchDescriptionStatus?
   func applyDownSampling(data: Data, downSampleProperty property: DownSampleProperty?)
   func setImage(downSampledImage: UIImage?)
 }
@@ -36,12 +36,12 @@ public extension ImageFetchable where Self: AnyObject {
     MealGokCacher.cancelFetch(target: self)
   }
 
-  func fetchPublisher() -> AnyPublisher<FetchDescriptionStatus, Never>? {
-    return MealGokCacher.fetchPublisher(target: self)
+  func fetchPublisher() async -> AnyPublisher<FetchDescriptionStatus, Never>? {
+    return await MealGokCacher.fetchPublisher(target: self)
   }
 
-  func fetchStatus() -> FetchDescriptionStatus? {
-    return MealGokCacher.fetchStatus(target: self)
+  func fetchStatus() async -> FetchDescriptionStatus? {
+    return await MealGokCacher.fetchStatus(target: self)
   }
 
   func applyDownSampling(data: Data, downSampleProperty property: DownSampleProperty?) {

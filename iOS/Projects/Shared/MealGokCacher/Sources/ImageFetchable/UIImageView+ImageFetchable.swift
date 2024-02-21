@@ -15,4 +15,3 @@ extension UIImageView: ImageFetchable {
     self.image = image
   }
 }
-

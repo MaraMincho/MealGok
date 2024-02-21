@@ -11,11 +11,8 @@ import Foundation
 
 // MARK: - FetchManager
 
-final class ImageNetworkFetchManager {
-  private enum LoadImageProperty {
-    static let queue = DispatchSerialQueue(label: "ImageQueue")
-  }
-
+actor ImageNetworkFetchManager {
+  let queue = DispatchSerialQueue(label: "ImageQueue")
   private var subscription = Set<AnyCancellable>()
 
   func dataTask(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> FetchDescriptionProperty {
@@ -23,7 +20,7 @@ final class ImageNetworkFetchManager {
     let fetchStatusPublisher: CurrentValueSubject<FetchDescriptionStatus, Never> = .init(.fetching)
 
     let publisher = dataTaskPublisher
-      .receive(on: LoadImageProperty.queue)
+      .receive(on: queue)
       .sink { complete in
         switch complete {
         case .finished:

@@ -342,7 +342,30 @@ private extension ProfileViewController {
       return
     }
     let imageDataURL = MealGokCacher.url(fileName: imageDataName)
-    let vc = HistoryViewController(property: .init(date: property.challengeDate(), pictureURL: imageDataURL, title: property.mealTime()))
+
+    let imageView = UIImageView()
+    imageView.setImage(url: imageDataURL, downSampleProperty: .init(size: .init(width: 500, height: 0)))
+
+    Task {
+      await imageView.fetchPublisher()?.sink { [weak self] status in
+        switch status {
+        case .finished:
+          self?.presentHistoryContentViewController(
+            image: imageView.image,
+            property: .init(date: property.challengeDateString, title: property.mealTime())
+          )
+        default:
+          break
+        }
+      }
+    }
+  }
+
+  func presentHistoryContentViewController(image: UIImage?, property: HistoryContentPictureViewProperty) {
+    let vc = HistoryViewController(
+      property: property,
+      contentImage: image
+    )
     vc.modalTransitionStyle = .crossDissolve
     vc.modalPresentationStyle = .overFullScreen
     present(vc, animated: true)
