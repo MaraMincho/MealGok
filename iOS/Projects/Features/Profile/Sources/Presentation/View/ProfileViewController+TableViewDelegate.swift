@@ -7,7 +7,7 @@
 //
 
 import CommonExtensions
-import ImageManager
+import MealGokCacher
 import UIKit
 
 extension ProfileViewController: UITableViewDelegate {

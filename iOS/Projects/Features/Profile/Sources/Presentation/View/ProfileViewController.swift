@@ -8,7 +8,7 @@
 
 import Combine
 import DesignSystem
-import ImageManager
+import MealGokCacher
 import UIKit
 
 // MARK: - ProfileViewControllerProperty
