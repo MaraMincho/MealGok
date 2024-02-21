@@ -7,7 +7,7 @@ import UIKit
 public extension MealGokCacher {
   // MARK: - Method
 
-  static func loadImage(url: URL?, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
+  static func loadImage(url: URL?, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     guard let url else {
       completion(.failure(MealGokCacherError.invalidURL))
       return
@@ -15,15 +15,15 @@ public extension MealGokCacher {
     Constants.sharedImageFileManagerProperty.loadImage(url: url, target: target, completion: completion)
   }
 
-  static func cancelFetch(target: UIImageView) {
+  static func cancelFetch(target: AnyObject) {
     Constants.sharedImageFileManagerProperty.cancelFetch(forKey: target)
   }
 
-  static func fetchPublisher(target: UIImageView) -> AnyPublisher<FetchDescriptionStatus, Never>? {
+  static func fetchPublisher(target: AnyObject) -> AnyPublisher<FetchDescriptionStatus, Never>? {
     return Constants.sharedImageFileManagerProperty.fetchStatusPublisher(forKey: target)
   }
 
-  static func fetchStatus(target: UIImageView) -> FetchDescriptionStatus? {
+  static func fetchStatus(target: AnyObject) -> FetchDescriptionStatus? {
     return Constants.sharedImageFileManagerProperty.fetchStatus(forKey: target)
   }
 }

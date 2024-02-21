@@ -26,31 +26,31 @@ final class ImageFileManagerProperty {
 
   // MARK: - StoreProperty
 
-  private var targetViewAndFetchProperty: NSMapTable<UIImageView, FetchDescriptionProperty> = .weakToStrongObjects()
+  private var targetViewAndFetchProperty: NSMapTable<AnyObject, FetchDescriptionProperty> = .weakToStrongObjects()
 
   // MARK: - Method
 
-  func setTargetViewAndFetchProperty(imageView: UIImageView, fetchDescriptionProperty: FetchDescriptionProperty) {
+  func setTargetViewAndFetchProperty(imageView: AnyObject, fetchDescriptionProperty: FetchDescriptionProperty) {
     targetViewAndFetchProperty.setObject(fetchDescriptionProperty, forKey: imageView)
   }
 
-  func fetchProperty(forKey: UIImageView) -> FetchDescriptionProperty? {
+  func fetchProperty(forKey: AnyObject) -> FetchDescriptionProperty? {
     return targetViewAndFetchProperty.object(forKey: forKey)
   }
 
-  func cancelFetch(forKey: UIImageView) {
+  func cancelFetch(forKey: AnyObject) {
     fetchProperty(forKey: forKey)?.cancelFetch()
   }
 
-  func fetchStatus(forKey: UIImageView) -> FetchDescriptionStatus? {
+  func fetchStatus(forKey: AnyObject) -> FetchDescriptionStatus? {
     return fetchProperty(forKey: forKey)?.currentFetchStatus()
   }
 
-  func fetchStatusPublisher(forKey: UIImageView) -> AnyPublisher<FetchDescriptionStatus, Never>? {
+  func fetchStatusPublisher(forKey: AnyObject) -> AnyPublisher<FetchDescriptionStatus, Never>? {
     return fetchProperty(forKey: forKey)?.fetchStatusPublisher()
   }
 
-  func loadImage(url: URL, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
+  func loadImage(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     let imagePathURL = imageDirPath.appending(path: url.lastPathComponent)
     do {
       // 만약 이미지 파일이 Dir에 존재 한다면 Netwrok요청을 하지 않습니다.
@@ -111,7 +111,7 @@ private extension ImageFileManagerProperty {
   }
 
   /// Local을 통해 Fetch 합니다
-  func fetchFromLocal(url: URL, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
+  func fetchFromLocal(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     do {
       try completion(.success(Data(contentsOf: url)))
       targetViewAndFetchProperty.setObject(.init(fetchStatus: .init(.finished), fetchSubscription: nil), forKey: target)
@@ -122,7 +122,7 @@ private extension ImageFileManagerProperty {
   }
 
   /// 네트워크를 통해서 Fetch합니다.
-  private func fetchFromNetwork(url: URL, target: UIImageView, completion: @escaping (Result<Data, Error>) -> Void) {
+  private func fetchFromNetwork(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     let description = imageNetworkFetchManager.dataTask(url: url, completion: completion)
     targetViewAndFetchProperty.setObject(description, forKey: target)
   }
