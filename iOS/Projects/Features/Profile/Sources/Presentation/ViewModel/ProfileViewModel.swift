@@ -15,6 +15,7 @@ public struct ProfileViewModelInput {
   let didChangeDate: AnyPublisher<DateComponents, Never>
   let fetchMealGokHistory: AnyPublisher<Void, Never>
   let showHistoryContent: AnyPublisher<MealGokChallengeProperty, Never>
+  let didTapSettingButton: AnyPublisher<Void, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -74,6 +75,13 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
       .showHistoryContent
       .map { ProfileState.showHistoryContent($0) }
       .eraseToAnyPublisher()
+
+    input
+      .didTapSettingButton
+      .sink { [router] _ in
+        router?.pushSettingScene()
+      }
+      .store(in: &subscriptions)
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

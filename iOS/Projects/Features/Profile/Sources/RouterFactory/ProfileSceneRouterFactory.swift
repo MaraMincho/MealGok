@@ -9,9 +9,13 @@
 import RouterFactory
 import UIKit
 
+// MARK: - ProfileSceneRouterable
+
 protocol ProfileSceneRouterable: AnyObject {
   func pushSettingScene()
 }
+
+// MARK: - ProfileSceneRouterFactory
 
 public final class ProfileSceneRouterFactory: RouterFactoriable {
   public weak var parentRouter: Routing?
@@ -42,11 +46,12 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
   }
 }
 
+// MARK: ProfileSceneRouterable
+
 extension ProfileSceneRouterFactory: ProfileSceneRouterable {
   func pushSettingScene() {
     let settingRouterFactory = SettingSceneRouterFactory(parentRouter: self, navigationController: navigationController)
     childRouters.append(settingRouterFactory)
     settingRouterFactory.start(build: settingRouterFactory.build())
   }
-    
 }

@@ -7,8 +7,8 @@
 //
 
 import Combine
-import RouterFactory
 import Foundation
+import RouterFactory
 
 // MARK: - SettingViewModelInput
 

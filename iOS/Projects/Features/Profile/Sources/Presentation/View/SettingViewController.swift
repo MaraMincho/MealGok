@@ -27,7 +27,7 @@ final class SettingViewController: UITableViewController {
 
   private var subscriptions: Set<AnyCancellable> = []
 
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  override func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
     return Metrics.cellHeight
   }
 
@@ -68,7 +68,7 @@ private extension SettingViewController {
       configure.text = itemIdentifier.titleText
       configure.image = UIImage(systemName: itemIdentifier.imageSystemName)
       cell.contentConfiguration = configure
-      
+
       return cell
     }
   }

@@ -246,7 +246,8 @@ private extension ProfileViewController {
     let output = viewModel.transform(input: .init(
       didChangeDate: didChangeDate.eraseToAnyPublisher(),
       fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher(),
-      showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher()
+      showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher(),
+      didTapSettingButton: settingButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
     ))
 
     output
