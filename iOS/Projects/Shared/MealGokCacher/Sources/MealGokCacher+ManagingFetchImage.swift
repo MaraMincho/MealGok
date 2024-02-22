@@ -15,6 +15,33 @@ public extension MealGokCacher {
     Constants.sharedImageFileManagerProperty.loadImage(url: url, target: target, completion: completion)
   }
 
+  static func loadImagePublisher(url: URL?, target: AnyObject) -> AnyPublisher<Result<Data, Error>, Never> {
+    guard let url else {
+      return Just(.failure(MealGokCacherError.invalidURL)).eraseToAnyPublisher()
+    }
+    return Future { promise in
+      Constants.sharedImageFileManagerProperty.loadImage(url: url, target: target) { result in
+        switch result {
+        case let .success(data):
+          promise(.success(.success(data)))
+        case let .failure(error):
+          promise(.success(.failure(error)))
+        }
+      }
+    }.eraseToAnyPublisher()
+  }
+  
+  static func loadImagePublisher(url: URL?, target: AnyObject) async -> Result<Data,Error> {
+    guard let url else {
+      return .failure(MealGokCacherError.invalidURL)
+    }
+    return await withCheckedContinuation { continuation in
+      Constants.sharedImageFileManagerProperty.loadImage(url: url, target: target) { result in
+        continuation.resume(returning: result)
+      }
+    }
+  }
+
   static func cancelFetch(target: AnyObject) {
     Constants.sharedImageFileManagerProperty.cancelFetch(forKey: target)
   }

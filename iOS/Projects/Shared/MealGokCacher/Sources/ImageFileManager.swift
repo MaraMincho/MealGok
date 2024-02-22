@@ -86,16 +86,16 @@ private extension ImageFileManager {
     }
     return fileManager.fileExists(atPath: url.path())
   }
-  
+
   /// fetchDescription을 target과 연결 짓습니다.
-  func setFetchDescription(target: AnyObject) -> CurrentValueSubject<FetchDescriptionStatus, Never>{
+  func setFetchDescription(target: AnyObject) -> CurrentValueSubject<FetchDescriptionStatus, Never> {
     let fetchDescriptionStatus = CurrentValueSubject<FetchDescriptionStatus, Never>(.fetching)
     let fetchDescriptionTask = FetchDescriptionTask(fetchStatus: fetchDescriptionStatus, taskHandle: nil)
     targetViewAndFetchTask.setObject(fetchDescriptionTask, forKey: target)
-    
+
     return fetchDescriptionStatus
   }
-  
+
   /// Local을 통해 Fetch 합니다
   func fetchFromLocal(url: URL) throws -> Data {
     let data = try Data(contentsOf: url)
