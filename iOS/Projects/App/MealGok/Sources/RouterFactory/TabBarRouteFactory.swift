@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import MealGokCacher
 import MealTimerFeature
 import OSLog
 import ProfileFeature
@@ -30,6 +31,10 @@ public final class TabBarRouteFactory: RouterFactoriable {
   public func start(build: UIViewController) {
     navigationController?.setViewControllers([build], animated: false)
     navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
+    // mealgokcacher에 default사진들 메모리에 저장
+    setDefaultSetting()
+    MealGokCacher.storeMemory(with: Constants.url)
   }
 
   public func build() -> UIViewController {
@@ -38,6 +43,16 @@ public final class TabBarRouteFactory: RouterFactoriable {
     tabBarController.tabBar.tintColor = DesignSystemColor.main01
 
     return tabBarController
+  }
+  
+  private func setDefaultSetting() {
+    if UserDefaults.standard.bool(forKey: Constants.mealGokMember) == false {
+      let configure: UIImage.SymbolConfiguration = .init(font: .systemFont(ofSize: 15))
+      let image = UIImage(systemName: "person.fill", withConfiguration: configure)
+      image?.withTintColor(DesignSystemColor.main01)
+      UserDefaults.setValue(image?.pngData(), forKey: Constants.profileImage)
+    }
+    
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
@@ -64,6 +79,15 @@ public final class TabBarRouteFactory: RouterFactoriable {
       vc.tabBarItem.image = type.image
       return vc
     }
+  }
+
+  private enum Constants {
+    static let mealGokMember: String = "MealGokMember"
+    static let profileImage: String = "MealGokProfileImage"
+    static let url: [URL] = [
+      UserDefaults.standard.url(forKey: profileImage),
+    ]
+    .compactMap { $0 }
   }
 
   // MARK: - TabBarScreenType
