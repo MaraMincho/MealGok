@@ -20,7 +20,6 @@ final class CustomTimeStringFormatter {
     return formatter
   }()
 
-  
   /// Time Interval을 Minute과 seconds로 리턴해줍니다.
   /// - Parameter from: 현재 시간혹은 구하고자 하는 시간을 초기값으로 설정합니다.
   /// - Returns: init할때 정한 totalSeconds에서 from의 시간의 차를 리턴합니다. 만약 리턴값이 음수일경우 nil을 리턴합니다.
