@@ -6,6 +6,9 @@ import UIKit
 
 public extension MealGokCacher {
   // MARK: - Method
+  static func storeMemory(with url: [URL]){
+    Constants.sharedImageFileManagerProperty.storeMemory(with: url)
+  }
 
   static func loadImage(url: URL?, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     guard let url else {

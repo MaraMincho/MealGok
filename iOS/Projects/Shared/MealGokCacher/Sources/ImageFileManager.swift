@@ -29,7 +29,7 @@ final class ImageFileManager {
 
   // MARK: - Method
   
-  func loadMemory(url: [URL]) {
+  func storeMemory(with url: [URL]) {
     url
       .map{imageDirURL.appending(path: $0.lastPathComponent)}
       .forEach{ path in
