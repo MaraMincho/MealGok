@@ -37,11 +37,7 @@ final class SettingViewController: UITableViewController {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
-
-  deinit {
-    print(Self.self, "deinit")
-  }
-
+  
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
