@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import MealGokCacher
 import UIKit
 
 // MARK: - ProfileContentHeaderViewProperty
@@ -87,6 +88,12 @@ final class ProfileContentHeaderView: UIStackView {
   func setup() {
     setupStackViewProperty()
     setupLayout()
+    loadImageView()
+  }
+
+  func loadImageView() {
+    let url = MealGokCacher.url(fileName: "MealGokProfileImage")
+    profileImageView.setImage(url: url, downSampleProperty: .init(size: .init(width: 25, height: 25)))
   }
 
   func setupStackViewProperty() {

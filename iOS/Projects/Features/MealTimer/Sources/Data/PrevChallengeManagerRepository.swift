@@ -39,6 +39,14 @@ struct PrevChallengeManagerRepository: PrevChallengeManageable {
     userDefaults.set(value, forKey: totalSecondsKey)
   }
 
+  func deletePrevChallengeStartDate() {
+    userDefaults.removeObject(forKey: Constants.startDateKey)
+  }
+
+  func deletePrevChallengeTotalSeconds() {
+    userDefaults.removeObject(forKey: Constants.totalSecondsKey)
+  }
+
   private enum Constants {
     static let startDateKey: String = "ChallengeStartDate"
     static let totalSecondsKey: String = "TargetTime"

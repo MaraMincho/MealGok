@@ -32,18 +32,21 @@ final class TimerUseCase: TimerUseCasesRepresentable {
   private let customStringFormatter: CustomTimeStringFormatter
   private let timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?
 
-  private let repository: SaveMealGokChalengeRepositoryRepresentable?
+  private let prevChallengeDeleteRepository: PrevChallengeDeletable?
+  private let saveCurrentChallengeRepository: SaveMealGokChallengeRepositoryRepresentable?
 
   init(
     startTime: Date,
     customStringFormatter: CustomTimeStringFormatter,
     timerLocalNotificationUseCase: TimerLocalNotificationUseCaseRepresentable?,
-    repository: SaveMealGokChalengeRepositoryRepresentable?
+    saveCurrentChallengeRepository: SaveMealGokChallengeRepositoryRepresentable?,
+    prevChallengeDeleteRepository: PrevChallengeDeletable
   ) {
     self.customStringFormatter = customStringFormatter
-    self.repository = repository
+    self.saveCurrentChallengeRepository = saveCurrentChallengeRepository
     self.startTime = startTime
     self.timerLocalNotificationUseCase = timerLocalNotificationUseCase
+    self.prevChallengeDeleteRepository = prevChallengeDeleteRepository
 
     addCompleteNotification()
   }
@@ -86,6 +89,7 @@ final class TimerUseCase: TimerUseCasesRepresentable {
         if entity == nil {
           isFinishPublisher.send(true)
           saveSuccessData()
+          prevChallengeDeleteRepository?.deletePrevChallenge()
         }
         return entity
       }.eraseToAnyPublisher()
@@ -95,7 +99,8 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   private func saveSuccessData() {
     do {
-      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: imageDataURL()))
+      try saveCurrentChallengeRepository?
+        .save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: imageDataURL()))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
     } catch {
       // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.
@@ -106,7 +111,10 @@ final class TimerUseCase: TimerUseCasesRepresentable {
 
   func cancelChallenge() {
     do {
-      try repository?.save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: false, imageDataURL: imageDataURL()))
+      prevChallengeDeleteRepository?.deletePrevChallenge()
+      timerLocalNotificationUseCase?.removeChallengeCompleteNotification(identifier: notificationIdentifier)
+      try saveCurrentChallengeRepository?
+        .save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: false, imageDataURL: imageDataURL()))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
     } catch {
       // TODO: 만약 Realm의 저장이 실패할 경우 로직을 세워야 한다.

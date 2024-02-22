@@ -35,7 +35,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let repository = SaveMealGokChallengeRepository()
+    let saveCurrentChallengeRepository = SaveMealGokChallengeRepository()
+    let deleteRepository = PrevChallengeManagerRepository()
 
 //    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
 //    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
@@ -46,7 +47,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
       startTime: startTime,
       customStringFormatter: customStringFormatter,
       timerLocalNotificationUseCase: timerLocalNotificationUseCase,
-      repository: repository
+      saveCurrentChallengeRepository: saveCurrentChallengeRepository,
+      prevChallengeDeleteRepository: deleteRepository
     )
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)

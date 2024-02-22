@@ -30,17 +30,14 @@ final class LocalFileManager {
 
   func save(fileName: String, data: Data) {
     let imagePathURL = imageDirURL.appending(path: fileName)
-
     do {
       if fileManager.fileExists(atPath: imageDirURL.path()) == false {
         try fileManager.createDirectory(at: imageDirURL, withIntermediateDirectories: true)
       }
-      let path = imageDirURL.path
-      Logger().debug("\(path)")
-      try data.write(to: imageDirURL)
+      try data.write(to: imagePathURL)
     } catch {
       Logger().error("\(error.localizedDescription)")
-      Logger().error("error(Cant make ImageFileManagerProperty, \(#function)")
+      Logger().error("Cant make ImageFileManagerProperty, \(#function)")
     }
   }
 }
