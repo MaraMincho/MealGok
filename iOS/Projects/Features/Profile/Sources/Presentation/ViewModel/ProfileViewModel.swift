@@ -41,11 +41,13 @@ final class ProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
+  private weak var router: ProfileSceneRouterable?
 
   private let mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase
 
-  init(mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase) {
+  init(mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase, profileSceneRouterable router: ProfileSceneRouterable) {
     self.mealGokHistoryFetchUseCase = mealGokHistoryFetchUseCase
+    self.router = router
   }
 }
 

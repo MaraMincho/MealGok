@@ -9,6 +9,10 @@
 import RouterFactory
 import UIKit
 
+protocol ProfileSceneRouterable: AnyObject {
+  func pushSettingScene()
+}
+
 public final class ProfileSceneRouterFactory: RouterFactoriable {
   public weak var parentRouter: Routing?
 
@@ -23,7 +27,10 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
   public func build() -> UIViewController {
     let mealGokHistoryFetchRepository = MealGokHistoryFetchRepository()
     let mealGokHistoryFetchUseCase = MealGokHistoryFetchUseCase(fetchRepository: mealGokHistoryFetchRepository)
-    let viewModel = ProfileViewModel(mealGokHistoryFetchUseCase: mealGokHistoryFetchUseCase)
+    let viewModel = ProfileViewModel(
+      mealGokHistoryFetchUseCase: mealGokHistoryFetchUseCase,
+      profileSceneRouterable: self
+    )
     let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date!
     let property: ProfileViewControllerProperty = .init(startDate: initDate, endDate: Date.now)
     return ProfileViewController(viewModel: viewModel, property: property)
@@ -33,4 +40,13 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
   }
+}
+
+extension ProfileSceneRouterFactory: ProfileSceneRouterable {
+  func pushSettingScene() {
+    let settingRouterFactory = SettingSceneRouterFactory(parentRouter: self, navigationController: navigationController)
+    childRouters.append(settingRouterFactory)
+    settingRouterFactory.start(build: settingRouterFactory.build())
+  }
+    
 }
