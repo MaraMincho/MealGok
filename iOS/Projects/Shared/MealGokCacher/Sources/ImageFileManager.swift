@@ -15,11 +15,11 @@ import UIKit
 final class ImageFileManager {
   // MARK: - Property
 
-  init(documentPath: URL) {
-    self.documentPath = documentPath
+  init(imageDirURL: URL) {
+    self.imageDirURL = imageDirURL
   }
 
-  private let documentPath: URL
+  private let imageDirURL: URL
   private let fileManager = FileManager.default
 
   // MARK: - StoreProperty
@@ -42,7 +42,7 @@ final class ImageFileManager {
   }
 
   func loadImage(url: URL, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
-    let imagePathURL = documentPath.appending(path: url.lastPathComponent)
+    let imagePathURL = imageDirURL.appending(path: url.lastPathComponent)
 
     let fetchDescriptionStatus = setFetchDescription(target: target)
 
@@ -81,8 +81,8 @@ final class ImageFileManager {
 private extension ImageFileManager {
   func isExistImageInDirectory(url: URL) throws -> Bool {
     // 만약 imageDirectory가 없다면 이미지 디렉토리를 생성합니다.
-    if fileManager.fileExists(atPath: documentPath.path()) == false {
-      try? fileManager.createDirectory(at: documentPath, withIntermediateDirectories: true)
+    if fileManager.fileExists(atPath: imageDirURL.path()) == false {
+      try? fileManager.createDirectory(at: imageDirURL, withIntermediateDirectories: true)
     }
     return fileManager.fileExists(atPath: url.path())
   }

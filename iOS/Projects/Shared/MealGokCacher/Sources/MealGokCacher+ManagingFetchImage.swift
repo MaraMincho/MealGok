@@ -30,8 +30,8 @@ public extension MealGokCacher {
       }
     }.eraseToAnyPublisher()
   }
-  
-  static func loadImage(url: URL?, target: AnyObject) async -> Result<Data,Error> {
+
+  static func loadImage(url: URL?, target: AnyObject) async -> Result<Data, Error> {
     guard let url else {
       return .failure(MealGokCacherError.invalidURL)
     }
