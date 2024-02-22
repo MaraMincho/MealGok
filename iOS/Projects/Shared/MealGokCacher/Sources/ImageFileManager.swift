@@ -25,9 +25,19 @@ final class ImageFileManager {
   // MARK: - StoreProperty
 
   private var targetViewAndFetchTask: NSMapTable<AnyObject, FetchDescriptionTask> = .weakToStrongObjects()
-  private let imageCache: NSCache<AnyObject, AnyObject> = .init()
+  private let imageCache: NSCache<NSString, NSData> = .init()
 
   // MARK: - Method
+  
+  func loadMemory(url: [URL]) {
+    url
+      .map{imageDirURL.appending(path: $0.lastPathComponent)}
+      .forEach{ path in
+        if let data = try? Data(contentsOf: path) {
+          imageCache.setObject(data as NSData, forKey: path.path() as NSString)
+        }
+      }
+  }
 
   func cancelFetch(forKey: AnyObject) {
     targetViewAndFetchTask.object(forKey: forKey)?.taskHandle?.cancel()
@@ -47,8 +57,12 @@ final class ImageFileManager {
     let fetchDescriptionStatus = setFetchDescription(target: target)
 
     do {
-      // TODO: Memory에 url과 Image가 있다면 그것을 리턴합니다.
-      // if isExistImageInMemory { fetchFromMemory(url: url, target: target, completion: completion)}
+      // Memory에 url과 Image가 있다면 그것을 리턴합니다.
+      if let imageData = imageInMemory(url: url) {
+        completion(.success(imageData))
+        fetchDescriptionStatus.send(.finished)
+        return
+      }
 
       // 만약 이미지 파일이 Dir에 존재 한다면 Netwrok요청을 하지 않습니다.
       let isExistImage = try isExistImageInDirectory(url: imagePathURL)
@@ -79,6 +93,15 @@ final class ImageFileManager {
 }
 
 private extension ImageFileManager {
+  func configureNSCache() {
+    imageCache.totalCostLimit = 10 * 1024 * 1024
+  }
+  
+  func imageInMemory(url: URL) -> Data? {
+    let nsURL = url.path() as NSString
+    return imageCache.object(forKey: nsURL) as? Data
+  }
+  
   func isExistImageInDirectory(url: URL) throws -> Bool {
     // 만약 imageDirectory가 없다면 이미지 디렉토리를 생성합니다.
     if fileManager.fileExists(atPath: imageDirURL.path()) == false {
