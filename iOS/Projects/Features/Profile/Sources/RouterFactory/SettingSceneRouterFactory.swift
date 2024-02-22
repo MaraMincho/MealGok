@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import UIKit
 
@@ -22,10 +23,9 @@ final class SettingSceneRouterFactory: RouterFactoriable {
   }
 
   weak var parentRouter: Routing?
-
   weak var navigationController: UINavigationController?
-
   var childRouters: [Routing] = []
+  var popSubscription: Cancellable?
 
   func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: true)

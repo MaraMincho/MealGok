@@ -38,6 +38,10 @@ final class SettingViewController: UITableViewController {
     super.init(nibName: nil, bundle: nil)
   }
 
+  deinit {
+    print(Self.self, "deinit")
+  }
+
   @available(*, unavailable)
   required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -75,7 +79,7 @@ private extension SettingViewController {
 
   func setupStyles() {
     view.backgroundColor = DesignSystemColor.primaryBackground
-    title = Constants.titleText
+    navigationItem.title = Constants.titleText
   }
 
   func bind() {

@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import DesignSystem
 import MealGokCacher
 import MealTimerFeature
@@ -27,6 +28,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
   public var navigationController: UINavigationController?
 
   public var childRouters: [Routing] = []
+  public var popSubscription: Cancellable?
 
   public func start(build: UIViewController) {
     navigationController?.setViewControllers([build], animated: false)

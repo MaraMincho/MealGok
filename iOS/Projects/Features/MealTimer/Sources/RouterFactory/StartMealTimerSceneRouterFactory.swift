@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import UIKit
 
@@ -19,11 +20,11 @@ protocol StartMealTimerSceneRouterFactoriable: RouterFactoriable {
 
 final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   weak var parentRouter: Routing?
-
   weak var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
   var startTime: Date
+  var popSubscription: Cancellable?
 
   private let isLocalNotificationNeed: Bool
   private let targetTimeOfMinutes: Int
