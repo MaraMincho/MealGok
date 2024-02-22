@@ -31,8 +31,13 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
   public func build() -> UIViewController {
     let mealGokHistoryFetchRepository = MealGokHistoryFetchRepository()
     let mealGokHistoryFetchUseCase = MealGokHistoryFetchUseCase(fetchRepository: mealGokHistoryFetchRepository)
+    
+    let profileFetchRepository = ProfileFetchRepository()
+    let profileFetchUseCase = ProfileFetchUseCase(profileFetchRepository: profileFetchRepository)
+    
     let viewModel = ProfileViewModel(
       mealGokHistoryFetchUseCase: mealGokHistoryFetchUseCase,
+      profileFetchUseCase: profileFetchUseCase,
       profileSceneRouterable: self
     )
     let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date!

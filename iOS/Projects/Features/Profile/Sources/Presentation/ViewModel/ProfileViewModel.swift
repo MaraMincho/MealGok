@@ -45,9 +45,15 @@ final class ProfileViewModel {
   private weak var router: ProfileSceneRouterable?
 
   private let mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase
+  private let profileFetchUseCase: ProfileFetchUseCaseRepresentable
 
-  init(mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase, profileSceneRouterable router: ProfileSceneRouterable) {
+  init(
+    mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase,
+    profileFetchUseCase: ProfileFetchUseCaseRepresentable,
+    profileSceneRouterable router: ProfileSceneRouterable
+  ) {
     self.mealGokHistoryFetchUseCase = mealGokHistoryFetchUseCase
+    self.profileFetchUseCase = profileFetchUseCase
     self.router = router
   }
 }
