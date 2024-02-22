@@ -37,11 +37,11 @@ public extension ImageFetchable where Self: AnyObject {
   }
 
   func fetchPublisher() async -> AnyPublisher<FetchDescriptionStatus, Never>? {
-    return await MealGokCacher.fetchPublisher(target: self)
+    return MealGokCacher.fetchPublisher(target: self)
   }
 
   func fetchStatus() async -> FetchDescriptionStatus? {
-    return await MealGokCacher.fetchStatus(target: self)
+    return MealGokCacher.fetchStatus(target: self)
   }
 
   func applyDownSampling(data: Data, downSampleProperty property: DownSampleProperty?) {
