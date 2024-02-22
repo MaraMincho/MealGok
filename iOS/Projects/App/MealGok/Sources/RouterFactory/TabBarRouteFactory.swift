@@ -44,15 +44,14 @@ public final class TabBarRouteFactory: RouterFactoriable {
 
     return tabBarController
   }
-  
+
   private func setDefaultSetting() {
-    if UserDefaults.standard.bool(forKey: Constants.mealGokMember) == false {
-      let configure: UIImage.SymbolConfiguration = .init(font: .systemFont(ofSize: 15))
-      let image = UIImage(systemName: "person.fill", withConfiguration: configure)
-      image?.withTintColor(DesignSystemColor.main01)
-      UserDefaults.setValue(image?.pngData(), forKey: Constants.profileImage)
-    }
-    
+    let configure: UIImage.SymbolConfiguration = .init(font: .systemFont(ofSize: 15))
+    let image = UIImage(systemName: "person.fill", withConfiguration: configure)
+    image?.withTintColor(DesignSystemColor.main01)
+    let data = image?.pngData()!
+    MealGokCacher.save(fileName: Constants.profileImage, data: data)
+    UserDefaults.standard.set(true, forKey: Constants.mealGokMember)
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
