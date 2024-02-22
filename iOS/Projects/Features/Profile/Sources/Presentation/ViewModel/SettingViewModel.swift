@@ -12,7 +12,9 @@ import RouterFactory
 
 // MARK: - SettingViewModelInput
 
-public struct SettingViewModelInput {}
+public struct SettingViewModelInput {
+  let backButtonDidTap: AnyPublisher<Void, Never>
+}
 
 public typealias SettingViewModelOutput = AnyPublisher<SettingState, Never>
 
@@ -43,8 +45,15 @@ final class SettingViewModel {
 // MARK: SettingViewModelRepresentable
 
 extension SettingViewModel: SettingViewModelRepresentable {
-  public func transform(input _: SettingViewModelInput) -> SettingViewModelOutput {
+  public func transform(input: SettingViewModelInput) -> SettingViewModelOutput {
     subscriptions.removeAll()
+
+    input
+      .backButtonDidTap
+      .sink { [router] _ in
+        router?.goBack()
+      }
+      .store(in: &subscriptions)
 
     let initialState: SettingViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

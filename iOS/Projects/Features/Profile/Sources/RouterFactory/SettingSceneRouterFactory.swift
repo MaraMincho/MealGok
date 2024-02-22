@@ -12,7 +12,9 @@ import UIKit
 
 // MARK: - SettingViewModelRouterable
 
-protocol SettingViewModelRouterable: RouterFactoriable {}
+protocol SettingViewModelRouterable: RouterFactoriable {
+  func goBack()
+}
 
 // MARK: - SettingSceneRouterFactory
 
@@ -40,4 +42,9 @@ final class SettingSceneRouterFactory: RouterFactoriable {
 
 // MARK: SettingViewModelRouterable
 
-extension SettingSceneRouterFactory: SettingViewModelRouterable {}
+extension SettingSceneRouterFactory: SettingViewModelRouterable {
+  func goBack() {
+    navigationController?.popViewController(animated: true)
+    popRouter()
+  }
+}

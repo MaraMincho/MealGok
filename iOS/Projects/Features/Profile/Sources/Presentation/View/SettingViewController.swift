@@ -160,7 +160,9 @@ private extension SettingViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
+    let output = viewModel.transform(input: .init(
+      backButtonDidTap: backButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+    ))
     output
       .subscribe(on: RunLoop.main)
       .sink { state in
