@@ -16,6 +16,7 @@ public struct ProfileViewModelInput {
   let fetchMealGokHistory: AnyPublisher<Void, Never>
   let showHistoryContent: AnyPublisher<MealGokChallengeProperty, Never>
   let didTapSettingButton: AnyPublisher<Void, Never>
+  let updateProfile: AnyPublisher<Void, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -28,6 +29,7 @@ public enum ProfileState {
   case updateMealGokChallengeHistoryDate([Date])
   case updateTargetDayMealGokChallengeContent([MealGokChallengeProperty])
   case showHistoryContent(MealGokChallengeProperty)
+  case updateProfile(name: String, imageUrl: URL?, biography: String)
 }
 
 // MARK: - ProfileViewModelRepresentable
@@ -63,6 +65,16 @@ final class ProfileViewModel {
 extension ProfileViewModel: ProfileViewModelRepresentable {
   public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
+    
+    let updateName = input
+      .updateProfile
+      .map {[profileFetchUseCase] _ in
+        let name = profileFetchUseCase.loadUserName()
+        let profileImageURL = profileFetchUseCase.loadUserImageURL()
+        let biography = profileFetchUseCase.loadUserBiography()
+        return ProfileState.updateProfile(name: name, imageUrl: profileImageURL, biography: biography)
+      }
+      
 
     let updateHistoryDate = input.fetchMealGokHistory
       .compactMap { [weak self] _ in self?.mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents() }

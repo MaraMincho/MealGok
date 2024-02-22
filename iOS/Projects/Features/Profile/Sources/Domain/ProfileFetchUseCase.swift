@@ -9,14 +9,18 @@
 import Foundation
 
 protocol ProfileFetchUseCaseRepresentable {
+  func loadUserName() -> String 
   
+  func loadUserImageURL() -> URL?
+  
+  func loadUserBiography() -> String
 }
 
 final class ProfileFetchUseCase: ProfileFetchUseCaseRepresentable {
   private let profileFetchRepository: ProfileFetchRepositoryRepresentable
   
   func loadUserName() -> String {
-    return profileFetchRepository.userName() ?? ""
+    return profileFetchRepository.userName() ?? "꼭꼭이"
   }
   
   func loadUserImageURL() -> URL? {
@@ -24,7 +28,7 @@ final class ProfileFetchUseCase: ProfileFetchUseCaseRepresentable {
   }
   
   func loadUserBiography() -> String {
-    return profileFetchRepository.userBiography() ?? ""
+    return profileFetchRepository.userBiography() ?? "안녕하세요 좋은 아침"
   }
   
   init(profileFetchRepository: ProfileFetchRepositoryRepresentable) {

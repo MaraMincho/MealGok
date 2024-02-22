@@ -10,19 +10,10 @@ import DesignSystem
 import MealGokCacher
 import UIKit
 
-// MARK: - ProfileContentHeaderViewProperty
-
-struct ProfileContentHeaderViewProperty {
-  let profileNameText: String
-  let profileDescriptionText: String
-  let profileImageData: Data
-}
-
 // MARK: - ProfileContentHeaderView
 
 final class ProfileContentHeaderView: UIStackView {
-  init(profileContentHeaderViewProperty property: ProfileContentHeaderViewProperty) {
-    viewProperty = property
+  override init(frame: CGRect) {
     super.init(frame: .zero)
     setup()
   }
@@ -34,10 +25,8 @@ final class ProfileContentHeaderView: UIStackView {
 
   // MARK: - Property
 
-  private let viewProperty: ProfileContentHeaderViewProperty
-
-  private lazy var profileImageView: UIImageView = {
-    let imageView = UIImageView(image: .init(data: viewProperty.profileImageData))
+  lazy var profileImageView: UIImageView = {
+    let imageView = UIImageView()
     imageView.layer.cornerRadius = Metrics.imageViewWidthAndHeight / 2
     imageView.layer.masksToBounds = false
     imageView.layer.cornerCurve = .continuous
@@ -51,10 +40,10 @@ final class ProfileContentHeaderView: UIStackView {
     return imageView
   }()
 
-  private lazy var profileNameLabel: UILabel = {
+  lazy var profileNameLabel: UILabel = {
     let label = UILabel()
     label.font = .preferredFont(forTextStyle: .title1)
-    label.text = viewProperty.profileNameText
+    label.text = " "
     label.textColor = DesignSystemColor.primaryText
 
     label.translatesAutoresizingMaskIntoConstraints = false
@@ -74,10 +63,10 @@ final class ProfileContentHeaderView: UIStackView {
     return stackView
   }()
 
-  private lazy var profileDescriptionLabel: UILabel = {
+  lazy var profileDescriptionLabel: UILabel = {
     let label = UILabel()
     label.font = .preferredFont(forTextStyle: .body, weight: .medium)
-    label.text = viewProperty.profileDescriptionText
+    label.text = " "
     label.textColor = DesignSystemColor.primaryText
     label.numberOfLines = 4
 

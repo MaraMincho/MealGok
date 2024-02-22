@@ -13,6 +13,7 @@ import UIKit
 
 // MARK: - ProfileViewControllerProperty
 
+/// 선택 가능한 날짜를 보여주는 기능을 합니다.
 struct ProfileViewControllerProperty {
   let startDate: Date
   let endDate: Date
@@ -32,6 +33,7 @@ final class ProfileViewController: UIViewController {
   private let didChangeDate: PassthroughSubject<DateComponents, Never> = .init()
   private let requestMealGokHistory: PassthroughSubject<Void, Never> = .init()
   let requestHistoryContentViewController: PassthroughSubject<MealGokChallengeProperty, Never> = .init()
+  private let updateProfileSubject: PassthroughSubject<Void, Never> = .init()
 
   var decorations = Set<Date?>()
 
@@ -74,12 +76,7 @@ final class ProfileViewController: UIViewController {
   }()
 
   private let headerStackView: ProfileContentHeaderView = {
-    let property = ProfileContentHeaderViewProperty(
-      profileNameText: Constants.profileNameLabelDfeaultText,
-      profileDescriptionText: "안녕하세요 좋은 아침",
-      profileImageData: Data()
-    )
-    let view = ProfileContentHeaderView(profileContentHeaderViewProperty: property)
+    let view = ProfileContentHeaderView(frame: .zero)
 
     view.translatesAutoresizingMaskIntoConstraints = false
     return view
@@ -247,7 +244,8 @@ private extension ProfileViewController {
       didChangeDate: didChangeDate.eraseToAnyPublisher(),
       fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher(),
       showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher(),
-      didTapSettingButton: settingButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+      didTapSettingButton: settingButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      updateProfile: updateProfileSubject.eraseToAnyPublisher()
     ))
 
     output
@@ -262,6 +260,9 @@ private extension ProfileViewController {
           self?.updateTableView(with: property)
         case let .showHistoryContent(property):
           self?.presentHistoryContentViewController(property)
+        case let .updateProfile(name, imageURL, biography) :
+          self?.updateProfile(name: name, profileImageURL: imageURL, biography: biography
+          )
         case .idle:
           break
         }
@@ -318,6 +319,14 @@ private extension ProfileViewController {
     }
 
     calendarView.reloadDecorations(forDateComponents: challengeDateComponents, animated: true)
+  }
+  
+  func updateProfile(name: String, profileImageURL: URL?, biography: String) {
+    headerStackView.profileNameLabel.text = name
+    headerStackView.profileDescriptionLabel.text = biography
+    headerStackView
+      .profileImageView
+      .setImage(url: profileImageURL, downSampleProperty: .init(size: .init(width: 30, height: 0)))
   }
 
   func updateTableView(with property: [MealGokChallengeProperty]) {
