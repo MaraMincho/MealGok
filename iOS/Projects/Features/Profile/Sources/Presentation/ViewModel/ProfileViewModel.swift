@@ -15,6 +15,8 @@ public struct ProfileViewModelInput {
   let didChangeDate: AnyPublisher<DateComponents, Never>
   let fetchMealGokHistory: AnyPublisher<Void, Never>
   let showHistoryContent: AnyPublisher<MealGokChallengeProperty, Never>
+  let didTapSettingButton: AnyPublisher<Void, Never>
+  let updateProfile: AnyPublisher<Void, Never>
 }
 
 public typealias ProfileViewModelOutput = AnyPublisher<ProfileState, Never>
@@ -27,6 +29,7 @@ public enum ProfileState {
   case updateMealGokChallengeHistoryDate([Date])
   case updateTargetDayMealGokChallengeContent([MealGokChallengeProperty])
   case showHistoryContent(MealGokChallengeProperty)
+  case updateProfile(name: String, imageUrl: URL?, biography: String)
 }
 
 // MARK: - ProfileViewModelRepresentable
@@ -41,11 +44,19 @@ final class ProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
+  private weak var router: ProfileSceneRouterable?
 
   private let mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase
+  private let profileFetchUseCase: ProfileFetchUseCaseRepresentable
 
-  init(mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase) {
+  init(
+    mealGokHistoryFetchUseCase: MealGokHistoryFetchUseCase,
+    profileFetchUseCase: ProfileFetchUseCaseRepresentable,
+    profileSceneRouterable router: ProfileSceneRouterable
+  ) {
     self.mealGokHistoryFetchUseCase = mealGokHistoryFetchUseCase
+    self.profileFetchUseCase = profileFetchUseCase
+    self.router = router
   }
 }
 
@@ -54,6 +65,15 @@ final class ProfileViewModel {
 extension ProfileViewModel: ProfileViewModelRepresentable {
   public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
+
+    let updateName = input
+      .updateProfile
+      .map { [profileFetchUseCase] _ in
+        let name = profileFetchUseCase.loadUserName()
+        let profileImageURL = profileFetchUseCase.loadUserImageURL()
+        let biography = profileFetchUseCase.loadUserBiography()
+        return ProfileState.updateProfile(name: name, imageUrl: profileImageURL, biography: biography)
+      }
 
     let updateHistoryDate = input.fetchMealGokHistory
       .compactMap { [weak self] _ in self?.mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents() }
@@ -73,8 +93,15 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
       .map { ProfileState.showHistoryContent($0) }
       .eraseToAnyPublisher()
 
+    input
+      .didTapSettingButton
+      .sink { [router] _ in
+        router?.pushSettingScene()
+      }
+      .store(in: &subscriptions)
+
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState.merge(with: updateHistoryDate, updateDate, showHistoryContent).eraseToAnyPublisher()
+    return initialState.merge(with: updateHistoryDate, updateDate, showHistoryContent, updateName).eraseToAnyPublisher()
   }
 }

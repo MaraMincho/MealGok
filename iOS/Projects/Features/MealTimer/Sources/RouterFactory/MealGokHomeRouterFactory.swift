@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import UIKit
 
@@ -23,6 +24,7 @@ public final class MealGokHomeRouterFactory: RouterFactoriable {
   public weak var navigationController: UINavigationController?
 
   public var childRouters: [Routing] = []
+  public var popSubscription: Cancellable?
 
   public func start(build: UIViewController) {
     navigationController?.pushViewController(build, animated: true)

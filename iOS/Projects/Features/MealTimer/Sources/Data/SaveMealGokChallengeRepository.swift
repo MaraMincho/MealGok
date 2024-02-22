@@ -13,7 +13,7 @@ import ThirdParty
 
 // MARK: - SaveMealGokChallengeRepository
 
-final class SaveMealGokChallengeRepository: PersistableRepository, SaveMealGokChalengeRepositoryRepresentable {
+final class SaveMealGokChallengeRepository: PersistableRepository, SaveMealGokChallengeRepositoryRepresentable {
   func save(mealGokChallengeDTO dto: MealGokChallengeDTO) throws {
     let persistableObject = dto.adaptPersistableObject()
     try realm.write {

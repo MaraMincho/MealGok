@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import SharedNotificationName
 import UIKit
@@ -18,6 +19,7 @@ final class MealGokRouterFactory: RouterFactoriable {
   var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
+  var popSubscription: Cancellable?
 
   func start(window: UIWindow?) {
     let build = build()

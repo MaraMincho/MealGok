@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import UIKit
 
@@ -19,11 +20,11 @@ protocol StartMealTimerSceneRouterFactoriable: RouterFactoriable {
 
 final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   weak var parentRouter: Routing?
-
   weak var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
   var startTime: Date
+  var popSubscription: Cancellable?
 
   private let isLocalNotificationNeed: Bool
   private let targetTimeOfMinutes: Int
@@ -35,7 +36,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let repository = SaveMealGokChallengeRepository()
+    let saveCurrentChallengeRepository = SaveMealGokChallengeRepository()
+    let deleteRepository = PrevChallengeManagerRepository()
 
 //    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
 //    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
@@ -46,7 +48,8 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
       startTime: startTime,
       customStringFormatter: customStringFormatter,
       timerLocalNotificationUseCase: timerLocalNotificationUseCase,
-      repository: repository
+      saveCurrentChallengeRepository: saveCurrentChallengeRepository,
+      prevChallengeDeleteRepository: deleteRepository
     )
 
     let viewModel = TimerSceneViewModel(timerUseCase: timerUseCase)

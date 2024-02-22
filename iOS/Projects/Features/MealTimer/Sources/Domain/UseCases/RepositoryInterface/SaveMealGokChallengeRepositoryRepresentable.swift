@@ -1,5 +1,5 @@
 //
-//  SaveMealGokChalengeRepositoryRepresentable.swift
+//  SaveMealGokChallengeRepositoryRepresentable.swift
 //  MealTimerFeature
 //
 //  Created by MaraMincho on 2/7/24.
@@ -10,6 +10,6 @@ import Foundation
 
 // MARK: - SaveMealGokChalengeRepositoryRepresentable
 
-protocol SaveMealGokChalengeRepositoryRepresentable {
+protocol SaveMealGokChallengeRepositoryRepresentable {
   func save(mealGokChallengeDTO: MealGokChallengeDTO) throws
 }

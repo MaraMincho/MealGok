@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import RouterFactory
 import SharedNotificationName
 import UIKit
@@ -24,6 +25,7 @@ final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
   weak var navigationController: UINavigationController?
 
   var childRouters: [Routing] = []
+  var popSubscription: Cancellable?
 
   init(router: Routing, navigationController: UINavigationController?) {
     parentRouter = router

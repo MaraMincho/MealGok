@@ -6,6 +6,7 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
+import Combine
 import DesignSystem
 import MealGokCacher
 import MealTimerFeature
@@ -27,6 +28,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
   public var navigationController: UINavigationController?
 
   public var childRouters: [Routing] = []
+  public var popSubscription: Cancellable?
 
   public func start(build: UIViewController) {
     navigationController?.setViewControllers([build], animated: false)
@@ -44,13 +46,24 @@ public final class TabBarRouteFactory: RouterFactoriable {
 
     return tabBarController
   }
-  
+
+  // MARK: TabBarRouterFactory가 하는 일은 아니지만 splash 생기기 이전
+  // TODO: spalsh화면으로 역할 이전
   private func setDefaultSetting() {
-    if UserDefaults.standard.bool(forKey: Constants.mealGokMember) == false {
+    let userDefaults = UserDefaults.standard
+    if userDefaults.bool(forKey: Constants.mealGokMember) == false {
+      // 기본 이미지 생성
       let configure: UIImage.SymbolConfiguration = .init(font: .systemFont(ofSize: 15))
       let image = UIImage(systemName: "person.fill", withConfiguration: configure)
       image?.withTintColor(DesignSystemColor.main01)
-      UserDefaults.setValue(image?.pngData(), forKey: Constants.profileImage)
+      let data = image?.pngData()
+      MealGokCacher.save(fileName: Constants.profileImage, data: data)
+
+      // 기본 이름 설정
+      userDefaults.set("밀꼭꼭이", forKey: "MealGokName")
+      userDefaults.set("안녕하세요 오늘도 좋은 하루 보내세요", forKey: "MealGokBiography")
+
+      userDefaults.set(true, forKey: Constants.mealGokMember)
     }
     
   }
