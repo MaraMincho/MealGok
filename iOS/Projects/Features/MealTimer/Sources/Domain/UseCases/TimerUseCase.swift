@@ -133,6 +133,8 @@ private extension TimerUseCase {
 
   private func saveSuccessData() {
     do {
+      prevChallengeDeleteRepository?.deletePrevChallenge()
+      timerLocalNotificationUseCase?.removeChallengeCompleteNotification(identifier: notificationIdentifier)
       try saveCurrentChallengeRepository?
         .save(mealGokChallengeDTO: .init(startTime: startTime, endTime: .now, isSuccess: true, imageDataURL: imageDataURL()))
       Logger().debug("정보를 정상적으로 저장하는 것에 성공 했습니다.")
