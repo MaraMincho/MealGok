@@ -22,4 +22,18 @@ protocol PrevChallengeWriteManageable {
   func setPrevChallengeTotalSeconds(_ value: Int)
 }
 
-typealias PrevChallengeManageable = PrevChallengeLoadManageable & PrevChallengeWriteManageable
+// MARK: - PrevChallengeDeletable
+
+protocol PrevChallengeDeletable {
+  func deletePrevChallengeStartDate()
+  func deletePrevChallengeTotalSeconds()
+}
+
+extension PrevChallengeDeletable {
+  func deletePrevChallenge() {
+    deletePrevChallengeStartDate()
+    deletePrevChallengeTotalSeconds()
+  }
+}
+
+typealias PrevChallengeManageable = PrevChallengeDeletable & PrevChallengeLoadManageable & PrevChallengeWriteManageable

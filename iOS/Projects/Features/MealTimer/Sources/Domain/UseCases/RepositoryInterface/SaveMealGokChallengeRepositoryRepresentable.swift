@@ -10,6 +10,6 @@ import Foundation
 
 // MARK: - SaveMealGokChalengeRepositoryRepresentable
 
-protocol SaveMealGokChalengeRepositoryRepresentable {
+protocol SaveMealGokChallengeRepositoryRepresentable {
   func save(mealGokChallengeDTO: MealGokChallengeDTO) throws
 }
