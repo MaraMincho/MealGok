@@ -65,16 +65,15 @@ final class ProfileViewModel {
 extension ProfileViewModel: ProfileViewModelRepresentable {
   public func transform(input: ProfileViewModelInput) -> ProfileViewModelOutput {
     subscriptions.removeAll()
-    
+
     let updateName = input
       .updateProfile
-      .map {[profileFetchUseCase] _ in
+      .map { [profileFetchUseCase] _ in
         let name = profileFetchUseCase.loadUserName()
         let profileImageURL = profileFetchUseCase.loadUserImageURL()
         let biography = profileFetchUseCase.loadUserBiography()
         return ProfileState.updateProfile(name: name, imageUrl: profileImageURL, biography: biography)
       }
-      
 
     let updateHistoryDate = input.fetchMealGokHistory
       .compactMap { [weak self] _ in self?.mealGokHistoryFetchUseCase.fetchAllHistoryDateComponents() }
@@ -103,6 +102,6 @@ extension ProfileViewModel: ProfileViewModelRepresentable {
 
     let initialState: ProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState.merge(with: updateHistoryDate, updateDate, showHistoryContent).eraseToAnyPublisher()
+    return initialState.merge(with: updateHistoryDate, updateDate, showHistoryContent, updateName).eraseToAnyPublisher()
   }
 }

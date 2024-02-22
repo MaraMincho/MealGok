@@ -203,7 +203,9 @@ private extension ProfileViewController {
     bind()
     setupTableViewDataSource()
     selectToday()
+
     requestMealGokHistory.send()
+    updateProfileSubject.send()
   }
 
   func setupTableViewDataSource() {
@@ -260,9 +262,8 @@ private extension ProfileViewController {
           self?.updateTableView(with: property)
         case let .showHistoryContent(property):
           self?.presentHistoryContentViewController(property)
-        case let .updateProfile(name, imageURL, biography) :
-          self?.updateProfile(name: name, profileImageURL: imageURL, biography: biography
-          )
+        case let .updateProfile(name, imageURL, biography):
+          self?.updateProfile(name: name, profileImageURL: imageURL, biography: biography)
         case .idle:
           break
         }
@@ -320,7 +321,7 @@ private extension ProfileViewController {
 
     calendarView.reloadDecorations(forDateComponents: challengeDateComponents, animated: true)
   }
-  
+
   func updateProfile(name: String, profileImageURL: URL?, biography: String) {
     headerStackView.profileNameLabel.text = name
     headerStackView.profileDescriptionLabel.text = biography

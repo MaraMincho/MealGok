@@ -31,10 +31,10 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
   public func build() -> UIViewController {
     let mealGokHistoryFetchRepository = MealGokHistoryFetchRepository()
     let mealGokHistoryFetchUseCase = MealGokHistoryFetchUseCase(fetchRepository: mealGokHistoryFetchRepository)
-    
+
     let profileFetchRepository = ProfileFetchRepository()
     let profileFetchUseCase = ProfileFetchUseCase(profileFetchRepository: profileFetchRepository)
-    
+
     let viewModel = ProfileViewModel(
       mealGokHistoryFetchUseCase: mealGokHistoryFetchUseCase,
       profileFetchUseCase: profileFetchUseCase,
