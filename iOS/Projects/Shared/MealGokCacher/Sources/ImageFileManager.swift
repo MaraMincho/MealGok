@@ -28,11 +28,11 @@ final class ImageFileManager {
   private let imageCache: NSCache<NSString, NSData> = .init()
 
   // MARK: - Method
-  
+
   func storeMemory(with url: [URL]) {
     url
-      .map{imageDirURL.appending(path: $0.lastPathComponent)}
-      .forEach{ path in
+      .map { imageDirURL.appending(path: $0.lastPathComponent) }
+      .forEach { path in
         if let data = try? Data(contentsOf: path) {
           imageCache.setObject(data as NSData, forKey: path.path() as NSString)
         }
@@ -96,12 +96,12 @@ private extension ImageFileManager {
   func configureNSCache() {
     imageCache.totalCostLimit = 10 * 1024 * 1024
   }
-  
+
   func imageInMemory(url: URL) -> Data? {
     let nsURL = url.path() as NSString
     return imageCache.object(forKey: nsURL) as? Data
   }
-  
+
   func isExistImageInDirectory(url: URL) throws -> Bool {
     // 만약 imageDirectory가 없다면 이미지 디렉토리를 생성합니다.
     if fileManager.fileExists(atPath: imageDirURL.path()) == false {

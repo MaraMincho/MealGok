@@ -6,10 +6,13 @@ import UIKit
 
 public extension MealGokCacher {
   // MARK: - Method
-  static func storeMemory(with url: [URL]){
+
+  /// 메모리 캐시에 url을 통해 데이터들을 저장합니다.
+  static func storeMemory(with url: [URL]) {
     Constants.sharedImageFileManagerProperty.storeMemory(with: url)
   }
 
+  /// ImageData를 completionHandler로 불러옵니다.
   static func loadImage(url: URL?, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
     guard let url else {
       completion(.failure(MealGokCacherError.invalidURL))
@@ -18,6 +21,7 @@ public extension MealGokCacher {
     Constants.sharedImageFileManagerProperty.loadImage(url: url, target: target, completion: completion)
   }
 
+  /// ImageData를 Publisher로 불러옵니다.
   static func loadImagePublisher(url: URL?, target: AnyObject) -> AnyPublisher<Result<Data, Error>, Never> {
     guard let url else {
       return Just(.failure(MealGokCacherError.invalidURL)).eraseToAnyPublisher()

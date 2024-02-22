@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import MealGokCacher
 import MealTimerFeature
 import OSLog
 import ProfileFeature
@@ -30,6 +31,9 @@ public final class TabBarRouteFactory: RouterFactoriable {
   public func start(build: UIViewController) {
     navigationController?.setViewControllers([build], animated: false)
     navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
+    // mealgokcacher에 default사진들 메모리에 저장
+    MealGokCacher.storeMemory(with: Constants.url)
   }
 
   public func build() -> UIViewController {
@@ -64,6 +68,13 @@ public final class TabBarRouteFactory: RouterFactoriable {
       vc.tabBarItem.image = type.image
       return vc
     }
+  }
+
+  private enum Constants {
+    static let url: [URL] = [
+      UserDefaults.standard.url(forKey: "MealGokProfileImage"),
+    ]
+    .compactMap { $0 }
   }
 
   // MARK: - TabBarScreenType
