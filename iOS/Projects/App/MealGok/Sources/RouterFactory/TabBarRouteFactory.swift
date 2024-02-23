@@ -48,6 +48,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
   }
 
   // MARK: TabBarRouterFactory가 하는 일은 아니지만 splash 생기기 이전
+
   // TODO: spalsh화면으로 역할 이전
   private func setDefaultSetting() {
     let userDefaults = UserDefaults.standard
@@ -65,7 +66,6 @@ public final class TabBarRouteFactory: RouterFactoriable {
 
       userDefaults.set(true, forKey: Constants.mealGokMember)
     }
-    
   }
 
   private func buildTabBarComponent() -> [UIViewController] {
