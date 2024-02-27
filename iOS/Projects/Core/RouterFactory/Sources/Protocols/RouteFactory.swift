@@ -13,6 +13,7 @@ import UIKit
 
 public protocol RouterFactoriable: Building & Routing {
   var popSubscription: Cancellable? { get set }
+  /// 만약 topViewController가 build해서 나온 UIViewController일 때 child Rotuer들을 해제 합니다.
   func releaseChildCoordinatorIfTopView(buildViewController: UIViewController)
 }
 
