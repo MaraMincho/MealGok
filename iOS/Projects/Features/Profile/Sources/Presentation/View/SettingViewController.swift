@@ -17,20 +17,6 @@ final class SettingViewController: UIViewController {
 
   private let viewModel: SettingViewModelRepresentable
   private var dataSource: UITableViewDiffableDataSource<Int, SettingTableViewProperty>?
-
-  private let cellRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, SettingTableViewProperty> =
-    .init { cell, _, itemIdentifier in
-      var configuration = UIListContentConfiguration.valueCell()
-      configuration.text = itemIdentifier.titleText
-      configuration.image = UIImage(systemName: itemIdentifier.imageSystemName)
-      cell.backgroundColor = DesignSystemColor.secondaryBackground
-      cell.accessories = [
-        .disclosureIndicator(displayed: .always),
-      ]
-
-      cell.contentConfiguration = configuration
-    }
-
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: - UIComponent
@@ -60,9 +46,11 @@ final class SettingViewController: UIViewController {
   }()
 
   private lazy var tableView: UITableView = {
-    let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    let tableView = UITableView(frame: .zero, style: .grouped)
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.identifier)
     tableView.delegate = self
+    tableView.tintColor = DesignSystemColor.main01
+    tableView.backgroundColor = .clear
 
     tableView.translatesAutoresizingMaskIntoConstraints = false
     return tableView
@@ -128,7 +116,9 @@ private extension SettingViewController {
       configure.image = UIImage(systemName: itemIdentifier.imageSystemName)
       configure.text = itemIdentifier.titleText
       cell.contentConfiguration = configure
-
+      
+      cell.accessoryType = .disclosureIndicator
+      
       return cell
     })
   }
