@@ -15,6 +15,7 @@ let project = Project.makeModule(
       .routerFactory,
       .sharedNotificationName,
       .thirdParty,
+      .feature(.profileHamburger)
     ],
     testDependencies: []
   )
