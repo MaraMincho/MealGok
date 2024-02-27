@@ -116,9 +116,9 @@ private extension SettingViewController {
       configure.image = UIImage(systemName: itemIdentifier.imageSystemName)
       configure.text = itemIdentifier.titleText
       cell.contentConfiguration = configure
-      
+
       cell.accessoryType = .disclosureIndicator
-      
+
       return cell
     })
   }

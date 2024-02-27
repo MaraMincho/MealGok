@@ -6,6 +6,6 @@ let project = Project.makeModule(
   name: "RouterFactory",
   targets: .custom(
     name: "RouterFactory",
-    product: .staticLibrary
+    product: .framework
   )
 )

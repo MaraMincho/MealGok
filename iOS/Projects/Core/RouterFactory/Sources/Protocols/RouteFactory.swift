@@ -27,9 +27,9 @@ public extension RouterFactoriable {
   }
 }
 
-// MARK: - RouterFactory
+// MARK: - RouterFactoryBase
 
-public class RouterFactory: RouterFactoriable {
+public class RouterFactoryBase: RouterFactoriable {
   public var popSubscription: Cancellable?
   public var parentRouter: Routing?
   public var navigationController: UINavigationController?
