@@ -28,3 +28,26 @@ public extension RouterFactoriable {
       }
   }
 }
+
+// MARK: - RouterFactory
+
+public class RouterFactory: RouterFactoriable {
+  public var popSubscription: Cancellable?
+  public var parentRouter: Routing?
+  public var navigationController: UINavigationController?
+  public var childRouters: [Routing] = []
+
+  public func build() -> UIViewController {
+    return UIViewController()
+  }
+
+  public func start(build viewController: UIViewController) {
+    releaseChildCoordinatorIfTopView(buildViewController: viewController)
+    navigationController?.pushViewController(viewController, animated: true)
+  }
+
+  init(parentRouter: Routing?, navigationController: UINavigationController?) {
+    self.parentRouter = parentRouter
+    self.navigationController = navigationController
+  }
+}
