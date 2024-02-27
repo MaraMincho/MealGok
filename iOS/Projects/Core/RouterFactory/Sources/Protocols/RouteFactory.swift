@@ -20,7 +20,7 @@ public protocol RouterFactoriable: Building & Routing {
 public extension RouterFactoriable {
   func releaseChildCoordinatorIfTopView(buildViewController viewController: UIViewController) {
     popSubscription = navigationController?.publisher(for: \.topViewController)
-      .filter{$0 === viewController}
+      .filter { $0 === viewController }
       .sink { [weak self] _ in
         self?.childRouters = []
       }
