@@ -27,6 +27,7 @@ public extension UIView {
     }
 
     public func receive<S>(subscriber: S) where S: Subscriber, Never == S.Failure, UIGestureRecognizer == S.Input {
+      targetView.isUserInteractionEnabled = true
       let subscription = GestureSubscription(subscriber: subscriber, gesture: gesture, targetView: targetView)
       subscriber.receive(subscription: subscription)
     }
