@@ -30,7 +30,7 @@ final class EditProfileViewController: UIViewController {
 
   private let titleLabel: UILabel = {
     let label = UILabel()
-    label.font = .preferredFont(forTextStyle: .title2)
+    label.font = .preferredFont(forTextStyle: .title2, weight: .bold)
     label.textColor = DesignSystemColor.primaryText
     label.text = Constants.titleText
     label.textAlignment = .center
@@ -72,11 +72,12 @@ final class EditProfileViewController: UIViewController {
     imageView.layer.cornerRadius = Metrics.editSymbolImageViewWidthAndHeight / 2
     imageView.layer.masksToBounds = false
     imageView.layer.cornerCurve = .continuous
-    imageView.layer.borderWidth = Metrics.imageViewBorderWidth
     imageView.clipsToBounds = true
+    imageView.tintColor = DesignSystemColor.primaryBackground
 
     imageView.image = UIImage(systemName: Constants.editImageViewSystemName)
     imageView.backgroundColor = DesignSystemColor.main01
+    imageView.contentMode = .scaleAspectFit
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
@@ -86,6 +87,7 @@ final class EditProfileViewController: UIViewController {
     let label = UILabel()
     label.font = .preferredFont(forTextStyle: .title3, weight: .bold)
     label.textColor = DesignSystemColor.primaryText
+    label.text = Constants.nickNameLabelText
 
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
@@ -104,7 +106,12 @@ final class EditProfileViewController: UIViewController {
   private let saveButton: UIButton = {
     let button = UIButton(configuration: .filled())
     var configure = button.configuration
-    configure?.attributedTitle = .init(stringLiteral: Constants.saveButtonTitleText)
+    configure?.attributedTitle = .init(
+      Constants.saveButtonTitleText,
+      attributes: .init([
+        .font: UIFont.preferredFont(forTextStyle: .title3),
+      ])
+    )
     configure?.attributedTitle?.font = .title2
     configure?.baseBackgroundColor = DesignSystemColor.main01
     button.configuration = configure
@@ -135,6 +142,10 @@ final class EditProfileViewController: UIViewController {
     super.viewDidLoad()
     setup()
   }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+  }
 }
 
 private extension EditProfileViewController {
@@ -151,6 +162,7 @@ private extension EditProfileViewController {
     saveButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
     saveButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
     saveButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: Metrics.saveButtonBottomSpacing).isActive = true
+    saveButton.heightAnchor.constraint(equalToConstant: Metrics.saveButtonHeight).isActive = true
 
     view.addSubview(contentScrollView)
     contentScrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
@@ -160,8 +172,8 @@ private extension EditProfileViewController {
 
     contentScrollView.addSubview(titleLabel)
     titleLabel.topAnchor.constraint(equalTo: contentScrollView.topAnchor, constant: 36).isActive = true
-    titleLabel.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor).isActive = true
-    titleLabel.trailingAnchor.constraint(equalTo: contentScrollView.trailingAnchor).isActive = true
+    titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    titleLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
 
     contentScrollView.addSubview(backButton)
     backButton.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor).isActive = true
@@ -186,6 +198,8 @@ private extension EditProfileViewController {
       .constraint(equalTo: contentScrollView.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
     nickNameLabel.trailingAnchor
       .constraint(equalTo: contentScrollView.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
+
+    contentScrollView.addSubview(nickNameTextField)
   }
 
   func setupStyles() {
@@ -205,6 +219,7 @@ private extension EditProfileViewController {
 
   enum Metrics {
     static let saveButtonBottomSpacing: CGFloat = 24
+    static let saveButtonHeight: CGFloat = 44
 
     static let contentScrollViewBottomMargin: CGFloat = 20
 
@@ -225,6 +240,8 @@ private extension EditProfileViewController {
     static let titleText: String = "프로필 수정"
     static let backButtonIconSystemName: String = "chevron.left"
     static let editImageViewSystemName: String = "pencil"
+
+    static let nickNameLabelText: String = "닉네임"
 
     static let nickNameTextFieldPlaceHolder: String = "닉네임을 입력하세요"
 
