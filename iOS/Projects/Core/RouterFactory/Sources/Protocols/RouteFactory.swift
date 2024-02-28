@@ -29,17 +29,17 @@ public extension RouterFactoriable {
 
 // MARK: - RouterFactoryBase
 
-public class RouterFactoryBase: RouterFactoriable {
-  public var popSubscription: Cancellable?
-  public var parentRouter: Routing?
-  public var navigationController: UINavigationController?
-  public var childRouters: [Routing] = []
+open class RouterFactoryBase: RouterFactoriable {
+  open var popSubscription: Cancellable?
+  open var parentRouter: Routing?
+  open var navigationController: UINavigationController?
+  open var childRouters: [Routing] = []
 
-  public func build() -> UIViewController {
+  open func build() -> UIViewController {
     return UIViewController()
   }
 
-  public func start(build viewController: UIViewController) {
+  open func start(build viewController: UIViewController) {
     releaseChildCoordinatorIfTopView(buildViewController: viewController)
     navigationController?.pushViewController(viewController, animated: true)
   }

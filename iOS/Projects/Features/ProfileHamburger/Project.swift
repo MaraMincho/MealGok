@@ -8,7 +8,13 @@ let project = Project.makeModule(
   targets: .feature(
     .profileHamburger,
     testingOptions: [.unitTest],
-    dependencies: [],
+    dependencies: [
+      .designSystem,
+      .combineCocoa,
+      .routerFactory,
+      .sharedNotificationName,
+      .thirdParty,
+    ],
     testDependencies: []
   )
 )
