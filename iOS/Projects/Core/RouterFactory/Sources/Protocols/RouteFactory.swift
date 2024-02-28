@@ -20,31 +20,31 @@ public protocol RouterFactoriable: Building & Routing {
 public extension RouterFactoriable {
   func releaseChildCoordinatorIfTopView(buildViewController viewController: UIViewController) {
     popSubscription = navigationController?.publisher(for: \.topViewController)
-      .filter{$0 === viewController}
+      .filter { $0 === viewController }
       .sink { [weak self] _ in
         self?.childRouters = []
       }
   }
 }
 
-// MARK: - RouterFactory
+// MARK: - RouterFactoryBase
 
-public class RouterFactory: RouterFactoriable {
-  public var popSubscription: Cancellable?
-  public var parentRouter: Routing?
-  public var navigationController: UINavigationController?
-  public var childRouters: [Routing] = []
+open class RouterFactoryBase: RouterFactoriable {
+  open var popSubscription: Cancellable?
+  open var parentRouter: Routing?
+  open var navigationController: UINavigationController?
+  open var childRouters: [Routing] = []
 
-  public func build() -> UIViewController {
+  open func build() -> UIViewController {
     return UIViewController()
   }
 
-  public func start(build viewController: UIViewController) {
+  open func start(build viewController: UIViewController) {
     releaseChildCoordinatorIfTopView(buildViewController: viewController)
     navigationController?.pushViewController(viewController, animated: true)
   }
 
-  init(parentRouter: Routing?, navigationController: UINavigationController?) {
+  public init(parentRouter: Routing?, navigationController: UINavigationController?) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
   }

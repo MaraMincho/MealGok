@@ -7,6 +7,7 @@
 //
 
 import Combine
+import ProfileHamburgerFeature
 import RouterFactory
 import UIKit
 
@@ -14,6 +15,7 @@ import UIKit
 
 protocol SettingViewModelRouterable: RouterFactoriable {
   func goBack()
+  func pushEditProfile()
 }
 
 // MARK: - SettingSceneRouterFactory
@@ -43,6 +45,12 @@ final class SettingSceneRouterFactory: RouterFactoriable {
 // MARK: SettingViewModelRouterable
 
 extension SettingSceneRouterFactory: SettingViewModelRouterable {
+  func pushEditProfile() {
+    let editProfileRouterFactory = EditProfileRouterFactory(parentRouter: self, navigationController: navigationController)
+    childRouters.append(editProfileRouterFactory)
+    editProfileRouterFactory.start(build: editProfileRouterFactory.build())
+  }
+
   func goBack() {
     navigationController?.popViewController(animated: true)
     popRouter()

@@ -13,6 +13,7 @@ public enum Feature: String {
   case writeBoard
   case mealTimer
   case profile
+  case profileHamburger
   public var targetName: String {
     return rawValue.prefix(1).capitalized + rawValue.dropFirst()
   }

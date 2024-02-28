@@ -4,10 +4,9 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-  name: "ProfileFeature",
+  name: "ProfileHamburgerFeature",
   targets: .feature(
-    .profile,
-    product: .framework,
+    .profileHamburger,
     testingOptions: [.unitTest],
     dependencies: [
       .designSystem,
@@ -15,7 +14,6 @@ let project = Project.makeModule(
       .routerFactory,
       .sharedNotificationName,
       .thirdParty,
-      .feature(.profileHamburger),
     ],
     testDependencies: []
   )

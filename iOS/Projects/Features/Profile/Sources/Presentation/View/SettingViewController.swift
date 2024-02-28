@@ -16,21 +16,9 @@ final class SettingViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: SettingViewModelRepresentable
-  private var dataSource: UICollectionViewDiffableDataSource<Int, SettingTableViewProperty>?
+  private var dataSource: UITableViewDiffableDataSource<Int, SettingTableViewProperty>?
 
-  private let cellRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, SettingTableViewProperty> =
-    .init { cell, _, itemIdentifier in
-      var configuration = UIListContentConfiguration.valueCell()
-      configuration.text = itemIdentifier.titleText
-      configuration.image = UIImage(systemName: itemIdentifier.imageSystemName)
-      cell.backgroundColor = DesignSystemColor.secondaryBackground
-      cell.accessories = [
-        .disclosureIndicator(displayed: .always),
-      ]
-
-      cell.contentConfiguration = configuration
-    }
-
+  private let didTapCellPublisher: PassthroughSubject<SettingTableViewProperty, Never> = .init()
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: - UIComponent
@@ -59,12 +47,15 @@ final class SettingViewController: UIViewController {
     return button
   }()
 
-  private lazy var contentCollectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeCompositionalLayout())
-    collectionView.backgroundColor = .clear
+  private lazy var tableView: UITableView = {
+    let tableView = UITableView(frame: .zero, style: .grouped)
+    tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.identifier)
+    tableView.delegate = self
+    tableView.tintColor = DesignSystemColor.main01
+    tableView.backgroundColor = .clear
 
-    collectionView.translatesAutoresizingMaskIntoConstraints = false
-    return collectionView
+    tableView.translatesAutoresizingMaskIntoConstraints = false
+    return tableView
   }()
 
   // MARK: - Initializations
@@ -88,14 +79,6 @@ final class SettingViewController: UIViewController {
 }
 
 private extension SettingViewController {
-  func makeCompositionalLayout() -> UICollectionViewCompositionalLayout {
-    return UICollectionViewCompositionalLayout { _, environment in
-      let configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-      let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment)
-      return section
-    }
-  }
-
   func setup() {
     setupDataSource()
     setupViewHierarchyAndConstraints()
@@ -127,13 +110,19 @@ private extension SettingViewController {
   }
 
   func setupDataSource() {
-    dataSource = .init(collectionView: contentCollectionView) { [weak self] collectionView, indexPath, itemIdentifier in
-      guard let self else {
-        return nil
+    dataSource = .init(tableView: tableView, cellProvider: { tableView, _, itemIdentifier in
+      guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifier) else {
+        return UITableViewCell()
       }
-      let cell = collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+      var configure = cell.defaultContentConfiguration()
+      configure.image = UIImage(systemName: itemIdentifier.imageSystemName)
+      configure.text = itemIdentifier.titleText
+      cell.contentConfiguration = configure
+
+      cell.accessoryType = .disclosureIndicator
+
       return cell
-    }
+    })
   }
 
   func setupViewHierarchyAndConstraints() {
@@ -148,11 +137,11 @@ private extension SettingViewController {
     backButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
     backButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
 
-    view.addSubview(contentCollectionView)
-    contentCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.tableViewTopSpacing).isActive = true
-    contentCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-    contentCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
-    contentCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    view.addSubview(tableView)
+    tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.tableViewTopSpacing).isActive = true
+    tableView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+    tableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+    tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
   }
 
   func setupStyles() {
@@ -161,7 +150,8 @@ private extension SettingViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      backButtonDidTap: backButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+      backButtonDidTap: backButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTapCell: didTapCellPublisher.eraseToAnyPublisher()
     ))
     output
       .subscribe(on: RunLoop.main)
@@ -194,5 +184,15 @@ private extension SettingViewController {
 extension SettingViewController: UITableViewDelegate {
   func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
     return Metrics.cellHeight
+  }
+
+  func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard
+      let sectionItems = dataSource?.snapshot().itemIdentifiers(inSection: indexPath.section),
+      let item = sectionItems[safe: indexPath.row]
+    else {
+      return
+    }
+    didTapCellPublisher.send(item)
   }
 }
