@@ -6,8 +6,8 @@
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
-import UIKit
 import RouterFactory
+import UIKit
 
 public final class EditProfileRouterFactory: RouterFactoryBase {
   override public func build() -> UIViewController {
@@ -15,7 +15,8 @@ public final class EditProfileRouterFactory: RouterFactoryBase {
     let viewController = EditProfileViewController(viewModel: viewModel)
     return viewController
   }
-  public override func start(build viewController: UIViewController) {
+
+  override public func start(build viewController: UIViewController) {
     navigationController?.pushViewController(viewController, animated: true)
   }
 }

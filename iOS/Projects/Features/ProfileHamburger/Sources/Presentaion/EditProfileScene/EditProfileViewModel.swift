@@ -1,4 +1,4 @@
-// 
+//
 //  EditProfileViewModel.swift
 //  ProfileHamburgerFeature
 //
@@ -27,17 +27,19 @@ protocol EditProfileViewModelRepresentable {
   func transform(input: EditProfileViewModelInput) -> EditProfileViewModelOutput
 }
 
-final class EditProfileViewModel {
+// MARK: - EditProfileViewModel
 
+final class EditProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
 }
 
-extension EditProfileViewModel: EditProfileViewModelRepresentable {
-  public func transform(input: EditProfileViewModelInput) -> EditProfileViewModelOutput {
-    subscriptions.removeAll()
+// MARK: EditProfileViewModelRepresentable
 
+extension EditProfileViewModel: EditProfileViewModelRepresentable {
+  public func transform(input _: EditProfileViewModelInput) -> EditProfileViewModelOutput {
+    subscriptions.removeAll()
 
     let initialState: EditProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 

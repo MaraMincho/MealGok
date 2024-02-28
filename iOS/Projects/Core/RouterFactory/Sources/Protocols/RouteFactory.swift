@@ -44,7 +44,7 @@ open class RouterFactoryBase: RouterFactoriable {
     navigationController?.pushViewController(viewController, animated: true)
   }
 
-  init(parentRouter: Routing?, navigationController: UINavigationController?) {
+  public init(parentRouter: Routing?, navigationController: UINavigationController?) {
     self.parentRouter = parentRouter
     self.navigationController = navigationController
   }

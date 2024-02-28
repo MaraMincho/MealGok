@@ -17,6 +17,8 @@ final class SettingViewController: UIViewController {
 
   private let viewModel: SettingViewModelRepresentable
   private var dataSource: UITableViewDiffableDataSource<Int, SettingTableViewProperty>?
+
+  private let didTapCellPublisher: PassthroughSubject<SettingTableViewProperty, Never> = .init()
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: - UIComponent
@@ -148,7 +150,8 @@ private extension SettingViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      backButtonDidTap: backButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+      backButtonDidTap: backButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTapCell: didTapCellPublisher.eraseToAnyPublisher()
     ))
     output
       .subscribe(on: RunLoop.main)
@@ -181,5 +184,15 @@ private extension SettingViewController {
 extension SettingViewController: UITableViewDelegate {
   func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
     return Metrics.cellHeight
+  }
+
+  func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard
+      let sectionItems = dataSource?.snapshot().itemIdentifiers(inSection: indexPath.section),
+      let item = sectionItems[safe: indexPath.row]
+    else {
+      return
+    }
+    didTapCellPublisher.send(item)
   }
 }

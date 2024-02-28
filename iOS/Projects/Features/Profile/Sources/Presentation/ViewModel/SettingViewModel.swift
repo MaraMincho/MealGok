@@ -14,6 +14,7 @@ import RouterFactory
 
 public struct SettingViewModelInput {
   let backButtonDidTap: AnyPublisher<Void, Never>
+  let didTapCell: AnyPublisher<SettingTableViewProperty, Never>
 }
 
 public typealias SettingViewModelOutput = AnyPublisher<SettingState, Never>
@@ -52,6 +53,13 @@ extension SettingViewModel: SettingViewModelRepresentable {
       .backButtonDidTap
       .sink { [router] _ in
         router?.goBack()
+      }
+      .store(in: &subscriptions)
+
+    input
+      .didTapCell
+      .sink { [router] _ in
+        router?.pushEditProfile()
       }
       .store(in: &subscriptions)
 
