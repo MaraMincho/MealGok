@@ -15,4 +15,7 @@ public final class EditProfileRouterFactory: RouterFactoryBase {
     let viewController = EditProfileViewController(viewModel: viewModel)
     return viewController
   }
+  public override func start(build viewController: UIViewController) {
+    navigationController?.pushViewController(viewController, animated: true)
+  }
 }
