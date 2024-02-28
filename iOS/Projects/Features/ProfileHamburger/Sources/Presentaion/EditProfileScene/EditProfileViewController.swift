@@ -200,6 +200,10 @@ private extension EditProfileViewController {
       .constraint(equalTo: contentScrollView.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
 
     contentScrollView.addSubview(nickNameTextField)
+    nickNameTextField.topAnchor.constraint(equalTo: nickNameLabel.bottomAnchor, constant: Metrics.nickNameTextFieldTopSpacing).isActive = true
+    nickNameTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
+    nickNameTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
+    nickNameTextField.heightAnchor.constraint(equalToConstant: Metrics.nickNameTextFieldHeight).isActive = true
   }
 
   func setupStyles() {
@@ -218,7 +222,7 @@ private extension EditProfileViewController {
   }
 
   enum Metrics {
-    static let saveButtonBottomSpacing: CGFloat = 24
+    static let saveButtonBottomSpacing: CGFloat = -24
     static let saveButtonHeight: CGFloat = 44
 
     static let contentScrollViewBottomMargin: CGFloat = 20
@@ -231,6 +235,7 @@ private extension EditProfileViewController {
 
     static let nickNameLabelTopSpacing: CGFloat = 30
     static let nickNameTextFieldTopSpacing: CGFloat = 9
+    static let nickNameTextFieldHeight: CGFloat = 46
 
     static let leadingAndTrailingGuide: CGFloat = 24
   }
