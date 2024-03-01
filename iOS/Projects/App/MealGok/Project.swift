@@ -21,7 +21,7 @@ let project = Project.makeModule(
       "CFBundleShortVersionString": "0.2.0",
       "CFBundleVersion": "0.2.0",
       "UIUserInterfaceStyle": "Light",
-      "ITSAppUsesNonExemptEncryption" : "No"
+      "ITSAppUsesNonExemptEncryption": "No",
     ]
   ),
   packages: []
