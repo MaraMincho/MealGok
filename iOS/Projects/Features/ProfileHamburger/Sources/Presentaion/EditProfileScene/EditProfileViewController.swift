@@ -9,6 +9,8 @@
 import Combine
 import CombineCocoa
 import DesignSystem
+import MealGokCacher
+import PhotosUI
 import UIKit
 
 // MARK: - EditProfileViewController
@@ -270,8 +272,16 @@ private extension EditProfileViewController {
       didTapProfileEditButton: profileImageView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
     )
 
+    backButton.touchupInsidePublisher()
+      .sink { [weak self] _ in
+        self?.navigationController?.popViewController(animated: true)
+      }
+      .store(in: &subscriptions)
+
     let output = viewModel.transform(input: input)
+    
     output
+      .receive(on: DispatchQueue.main)
       .sink { [weak self] state in
         guard let self else {
           return
@@ -293,6 +303,10 @@ private extension EditProfileViewController {
           emptyNickname()
         case .pushPictureChoiceTypeSheet:
           presentPictureChoiceTypeSheet()
+        case let .profileImageData(data):
+          profileImageView.image = UIImage(data: data)
+        case let .isEnableSaveButton(bool) :
+          saveButton.isEnabled = bool
         }
       }
       .store(in: &subscriptions)
@@ -304,27 +318,36 @@ private extension EditProfileViewController {
       message: Constants.actionSheetMessage,
       preferredStyle: .actionSheet
     )
-    let cameraAction = UIAlertAction(title: Constants.actionSheetCameraActionTitle, style: .default) { _ in }
-    let photoLibraryAction = UIAlertAction(title: Constants.actionSheetPhotsLibraryTitle, style: .default) { _ in }
+    let cameraAction = UIAlertAction(title: Constants.actionSheetCameraActionTitle, style: .default) { _ in
+    }
+    let photoLibraryAction = UIAlertAction(title: Constants.actionSheetPhotsLibraryTitle, style: .default) { [weak self] _ in
+      self?.pushPhotoLibrary()
+    }
     let cancelAction = UIAlertAction(title: Constants.actionSheetCancelActionTitle, style: .cancel)
     [cameraAction, photoLibraryAction, cancelAction].forEach { sheet.addAction($0) }
 
     present(sheet, animated: true)
   }
 
+  func pushPhotoLibrary() {
+    var configuration = PHPickerConfiguration(photoLibrary: .shared())
+    configuration.filter = .images
+    configuration.selectionLimit = 1
+    let photoPickerViewController = PHPickerViewController(configuration: configuration)
+    photoPickerViewController.delegate = self
+    present(photoPickerViewController, animated: true)
+  }
+
   func emptyNickname() {
-    saveButton.isEnabled = false
     nicknameWarningLabel.text = " "
   }
 
   func invalidNickname(text: String) {
-    saveButton.isEnabled = false
     nicknameWarningLabel.text = text
     nicknameWarningLabel.textColor = UIColor.red
   }
 
   func validNickname() {
-    saveButton.isEnabled = true
     nicknameWarningLabel.text = " "
   }
 
@@ -366,5 +389,27 @@ private extension EditProfileViewController {
     static let actionSheetCameraActionTitle = "카메라로 촬영"
     static let actionSheetPhotsLibraryTitle = "앨범에서 불러오기"
     static let actionSheetCancelActionTitle = "취소"
+  }
+}
+
+// MARK: PHPickerViewControllerDelegate
+
+extension EditProfileViewController: PHPickerViewControllerDelegate {
+  func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    picker.dismiss(animated: true)
+    guard let itemProvider = results.first?.itemProvider else {
+      return
+    }
+    if itemProvider.canLoadObject(ofClass: UIImage.self) {
+      itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+        guard
+          error == nil,
+          let profileImageData = (image as? UIImage)?.downSampleImage(downSampleProperty: .init(size: .init(width: 1024, height: 0)))
+        else {
+          return
+        }
+        self?.editImagePublisher.send(profileImageData)
+      }
+    }
   }
 }
