@@ -9,9 +9,16 @@
 import Foundation
 
 protocol ProfileEditCheckUseCaseRepresentable {
-  
+  func checkNewNickName(with nickName: String) -> Bool
 }
 
 final class ProfileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable {
   let nickNameRegex = /^[\w|\-|\_|가-힣]{2,12}$/
+  
+  func checkNewNickName(with nickName: String) -> Bool{
+    guard let matchString = nickName.firstMatch(of: nickNameRegex) else {
+      return false
+    }
+    return true
+  }
 }
