@@ -33,6 +33,16 @@ final class EditProfileViewModel {
   // MARK: - Properties
 
   private var subscriptions: Set<AnyCancellable> = []
+  private let profileEditUseCase: ProfileEditUseCaseRepresentable
+  private let ProfileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
+
+  init(
+    profileEditUseCase: ProfileEditUseCaseRepresentable,
+    ProfileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
+  ) {
+    self.profileEditUseCase = profileEditUseCase
+    self.ProfileEditCheckUseCase = ProfileEditCheckUseCase
+  }
 }
 
 // MARK: EditProfileViewModelRepresentable

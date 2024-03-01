@@ -11,8 +11,17 @@ import UIKit
 
 public final class EditProfileRouterFactory: RouterFactoryBase {
   override public func build() -> UIViewController {
-    let viewModel = EditProfileViewModel()
+    let profileEditRepository = ProfileEditRepository()
+
+    let profileEditCheckUseCase = ProfileEditCheckUseCase()
+    let profileEditUseCase = ProfileEditUseCase(profileEditRepository: profileEditRepository)
+
+    let viewModel = EditProfileViewModel(
+      profileEditUseCase: profileEditUseCase,
+      ProfileEditCheckUseCase: profileEditCheckUseCase
+    )
     let viewController = EditProfileViewController(viewModel: viewModel)
+
     return viewController
   }
 
