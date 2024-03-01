@@ -12,4 +12,9 @@ protocol ProfileEditRepositoryRepresentable {
   func userName() -> String?
   func profileImageURL() -> URL?
   func userBiography() -> String?
+  
+  
+  func saveNickName(with name: String)
+  func saveUserImage(with data: Data)
+  func saveBioGraphy(with biography: String)
 }
