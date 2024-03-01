@@ -30,7 +30,7 @@ public enum EditProfileState {
   case biography(String)
   case invalidNickName(String)
   case validNickname
-  case emptyNickName
+  case emptyNickname
 }
 
 // MARK: - EditProfileViewModelRepresentable
@@ -86,7 +86,7 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
     let validNickName: EditProfileViewModelOutput = input.editNickName
       .map { [profileEditCheckUseCase] text in
         if text == "" {
-          return EditProfileState.emptyNickName
+          return EditProfileState.emptyNickname
         }
         
         let isValid = profileEditCheckUseCase.checkNewNickname(with: text)
