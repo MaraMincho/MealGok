@@ -210,6 +210,7 @@ private extension EditProfileViewController {
     setupStyles()
     setupHierarchyAndConstraints()
     bind()
+    loadProfileInformation.send()
   }
 
   func setupStyles() {
