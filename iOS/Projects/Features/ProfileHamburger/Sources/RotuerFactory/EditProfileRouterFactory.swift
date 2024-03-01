@@ -18,7 +18,7 @@ public final class EditProfileRouterFactory: RouterFactoryBase {
 
     let viewModel = EditProfileViewModel(
       profileEditUseCase: profileEditUseCase,
-      ProfileEditCheckUseCase: profileEditCheckUseCase
+      profileEditCheckUseCase: profileEditCheckUseCase
     )
     let viewController = EditProfileViewController(viewModel: viewModel)
 

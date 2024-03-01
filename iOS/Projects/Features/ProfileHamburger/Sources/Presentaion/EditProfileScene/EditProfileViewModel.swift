@@ -25,6 +25,12 @@ public typealias EditProfileViewModelOutput = AnyPublisher<EditProfileState, Nev
 
 public enum EditProfileState {
   case idle
+  case nickName(String)
+  case profileImage(URL)
+  case biography(String)
+  case invalidNickName(String)
+  case validNickname
+  case emptyNickName
 }
 
 // MARK: - EditProfileViewModelRepresentable
@@ -40,25 +46,61 @@ final class EditProfileViewModel {
 
   private var subscriptions: Set<AnyCancellable> = []
   private let profileEditUseCase: ProfileEditUseCaseRepresentable
-  private let ProfileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
+  private let profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
 
   init(
     profileEditUseCase: ProfileEditUseCaseRepresentable,
-    ProfileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
+    profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
   ) {
     self.profileEditUseCase = profileEditUseCase
-    self.ProfileEditCheckUseCase = ProfileEditCheckUseCase
+    self.profileEditCheckUseCase = profileEditCheckUseCase
   }
 }
 
 // MARK: EditProfileViewModelRepresentable
 
 extension EditProfileViewModel: EditProfileViewModelRepresentable {
-  public func transform(input _: EditProfileViewModelInput) -> EditProfileViewModelOutput {
+  public func transform(input: EditProfileViewModelInput) -> EditProfileViewModelOutput {
     subscriptions.removeAll()
+
+    let userName: EditProfileViewModelOutput = input
+      .loadProfileInformation
+      .map { [profileEditUseCase] _ in
+        let userName = profileEditUseCase.loadUserName()
+        return EditProfileState.nickName(userName)
+      }
+      .eraseToAnyPublisher()
+
+    let profileImage: EditProfileViewModelOutput = input.loadProfileInformation
+      .compactMap { [profileEditUseCase] _ in profileEditUseCase.loadUserImageURL() }
+      .map { url in return EditProfileState.profileImage(url) }
+      .eraseToAnyPublisher()
+
+    let biography: EditProfileViewModelOutput = input.loadProfileInformation
+      .map { [profileEditUseCase] _ in
+        let biography = profileEditUseCase.loadUserBiography()
+        return EditProfileState.biography(biography)
+      }
+      .eraseToAnyPublisher()
+
+    let validNickName: EditProfileViewModelOutput = input.editNickName
+      .map { [profileEditCheckUseCase] text in
+        if text == "" {
+          return EditProfileState.emptyNickName
+        }
+        
+        let isValid = profileEditCheckUseCase.checkNewNickname(with: text)
+        if isValid {
+          return EditProfileState.validNickname
+        } else {
+          let message = profileEditCheckUseCase.invalidNicknameMessage(with: text)
+          return EditProfileState.invalidNickName(message)
+        }
+      }
+      .eraseToAnyPublisher()
 
     let initialState: EditProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState
+    return initialState.merge(with: userName, profileImage, biography, validNickName).eraseToAnyPublisher()
   }
 }

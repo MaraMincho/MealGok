@@ -9,8 +9,8 @@
 import Combine
 import UIKit
 
-extension UIButton {
+public extension UIButton {
   func touchupInsidePublisher() -> AnyPublisher<Void, Never> {
-    self.publisher(event: .touchUpInside).map{ _ in return }.eraseToAnyPublisher()
+    publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
   }
 }

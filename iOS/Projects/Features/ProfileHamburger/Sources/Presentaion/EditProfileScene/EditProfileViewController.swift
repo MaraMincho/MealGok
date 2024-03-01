@@ -7,9 +7,9 @@
 //
 
 import Combine
+import CombineCocoa
 import DesignSystem
 import UIKit
-import CombineCocoa
 
 // MARK: - EditProfileViewController
 
@@ -22,7 +22,7 @@ final class EditProfileViewController: UIViewController {
   private let editNickNamePublisher: PassthroughSubject<String, Never> = .init()
   private let editImagePublisher: PassthroughSubject<Data, Never> = .init()
   private let editBiographyPublisher: PassthroughSubject<String, Never> = .init()
-  
+
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: UI Components
@@ -109,6 +109,37 @@ final class EditProfileViewController: UIViewController {
     return tf
   }()
 
+  private let nicknameWarningLabel: UILabel = {
+    let label = UILabel()
+    label.text = " "
+    label.textColor = DesignSystemColor.primaryText
+    label.textAlignment = .left
+    label.font = .preferredFont(forTextStyle: .caption1)
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let biographyLabel: UILabel = {
+    let label = UILabel()
+    label.font = .preferredFont(forTextStyle: .title3, weight: .bold)
+    label.textColor = DesignSystemColor.primaryText
+    label.text = Constants.nickNameLabelText
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let biographyTextView: UITextField = {
+    let tf = UITextField()
+    tf.placeholder = Constants.nickNameTextFieldPlaceHolder
+    tf.borderStyle = .roundedRect
+    tf.textColor = DesignSystemColor.primaryText
+
+    tf.translatesAutoresizingMaskIntoConstraints = false
+    return tf
+  }()
+
   private let saveButton: UIButton = {
     let button = UIButton(configuration: .filled())
     var configure = button.configuration
@@ -125,6 +156,7 @@ final class EditProfileViewController: UIViewController {
     button.layer.cornerRadius = 8
     button.layer.cornerCurve = .continuous
     button.layer.masksToBounds = true
+    button.isEnabled = false
 
     button.translatesAutoresizingMaskIntoConstraints = false
     return button
@@ -179,6 +211,14 @@ final class EditProfileViewController: UIViewController {
     nickNameTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
     nickNameTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
     nickNameTextField.heightAnchor.constraint(equalToConstant: Metrics.nickNameTextFieldHeight).isActive = true
+
+    contentScrollView.addSubview(nicknameWarningLabel)
+    nicknameWarningLabel.topAnchor
+      .constraint(equalTo: nickNameTextField.bottomAnchor, constant: Metrics.nicknameWarningLabelTopSpacing).isActive = true
+    nicknameWarningLabel.leadingAnchor
+      .constraint(equalTo: nickNameTextField.leadingAnchor).isActive = true
+    nicknameWarningLabel.trailingAnchor
+      .constraint(equalTo: nickNameTextField.trailingAnchor).isActive = true
   }
 
   // MARK: Initializations
@@ -218,20 +258,56 @@ private extension EditProfileViewController {
   }
 
   func bind() {
+    subscriptions.forEach { $0.cancel() }
+
     let input = EditProfileViewModelInput(
       loadProfileInformation: loadProfileInformation.eraseToAnyPublisher(),
-      editNickName: editNickNamePublisher.eraseToAnyPublisher(),
+      editNickName: nickNameTextField.textPublisher(),
       editImage: editImagePublisher.eraseToAnyPublisher(),
       editBiography: editBiographyPublisher.eraseToAnyPublisher(),
-      didTapSaveButton: saveButton.publisher(event: .touchUpInside).map{_ in return }.eraseToAnyPublisher())
+      didTapSaveButton: saveButton.touchupInsidePublisher()
+    )
+
     let output = viewModel.transform(input: input)
-    output.sink { state in
-      switch state {
-      case .idle:
-        break
+    output
+      .sink { [weak self] state in
+        guard let self else {
+          return
+        }
+        switch state {
+        case .idle:
+          break
+        case let .nickName(str):
+          nickNameTextField.placeholder = str
+        case let .profileImage(url):
+          profileImageView.setImage(url: url, downSampleProperty: .init(size: .init(width: Metrics.imageViewWidthAndHeight, height: 0)))
+        case let .biography(str):
+          biographyTextView.text = str
+        case let .invalidNickName(warningText):
+          invalidNickname(text: warningText)
+        case .validNickname:
+          validNickname()
+        case .emptyNickname:
+          emptyNickname()
+        }
       }
-    }
-    .store(in: &subscriptions)
+      .store(in: &subscriptions)
+  }
+  
+  func emptyNickname() {
+    saveButton.isEnabled = false
+    nicknameWarningLabel.text = " "
+  }
+
+  func invalidNickname(text: String) {
+    saveButton.isEnabled = false
+    nicknameWarningLabel.text = text
+    nicknameWarningLabel.textColor = UIColor.red
+  }
+
+  func validNickname() {
+    saveButton.isEnabled = true
+    nicknameWarningLabel.text = " "
   }
 
   enum Metrics {
@@ -251,6 +327,8 @@ private extension EditProfileViewController {
     static let nickNameTextFieldHeight: CGFloat = 46
 
     static let leadingAndTrailingGuide: CGFloat = 24
+
+    static let nicknameWarningLabelTopSpacing: CGFloat = 6
   }
 
   enum Constants {
