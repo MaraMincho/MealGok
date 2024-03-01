@@ -11,7 +11,13 @@ import Foundation
 
 // MARK: - EditProfileViewModelInput
 
-public struct EditProfileViewModelInput {}
+public struct EditProfileViewModelInput {
+  let loadProfileInformation: AnyPublisher<Void, Never>
+  let editNickName: AnyPublisher<String, Never>
+  let editImage: AnyPublisher<Data, Never>
+  let editBiography: AnyPublisher<String, Never>
+  let didTapSaveButton: AnyPublisher<Void, Never>
+}
 
 public typealias EditProfileViewModelOutput = AnyPublisher<EditProfileState, Never>
 

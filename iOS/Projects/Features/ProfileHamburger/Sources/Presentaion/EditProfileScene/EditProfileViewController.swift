@@ -9,6 +9,7 @@
 import Combine
 import DesignSystem
 import UIKit
+import CombineCocoa
 
 // MARK: - EditProfileViewController
 
@@ -17,6 +18,11 @@ final class EditProfileViewController: UIViewController {
 
   private let viewModel: EditProfileViewModelRepresentable
 
+  private let loadProfileInformation: PassthroughSubject<Void, Never> = .init()
+  private let editNickNamePublisher: PassthroughSubject<String, Never> = .init()
+  private let editImagePublisher: PassthroughSubject<Data, Never> = .init()
+  private let editBiographyPublisher: PassthroughSubject<String, Never> = .init()
+  
   private var subscriptions: Set<AnyCancellable> = []
 
   // MARK: UI Components
@@ -211,7 +217,13 @@ private extension EditProfileViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
+    let input = EditProfileViewModelInput(
+      loadProfileInformation: loadProfileInformation.eraseToAnyPublisher(),
+      editNickName: editNickNamePublisher.eraseToAnyPublisher(),
+      editImage: editImagePublisher.eraseToAnyPublisher(),
+      editBiography: editBiographyPublisher.eraseToAnyPublisher(),
+      didTapSaveButton: saveButton.publisher(event: .touchUpInside).map{_ in return }.eraseToAnyPublisher())
+    let output = viewModel.transform(input: input)
     output.sink { state in
       switch state {
       case .idle:
