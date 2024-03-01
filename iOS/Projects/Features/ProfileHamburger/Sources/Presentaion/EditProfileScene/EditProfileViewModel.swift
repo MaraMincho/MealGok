@@ -17,6 +17,7 @@ public struct EditProfileViewModelInput {
   let editImage: AnyPublisher<Data, Never>
   let editBiography: AnyPublisher<String, Never>
   let didTapSaveButton: AnyPublisher<Void, Never>
+  let didTapProfileEditButton: AnyPublisher<Void, Never>
 }
 
 public typealias EditProfileViewModelOutput = AnyPublisher<EditProfileState, Never>
@@ -31,6 +32,7 @@ public enum EditProfileState {
   case invalidNickName(String)
   case validNickname
   case emptyNickname
+  case pushPictureChoiceTypeSheet
 }
 
 // MARK: - EditProfileViewModelRepresentable
@@ -88,7 +90,7 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
         if text == "" {
           return EditProfileState.emptyNickname
         }
-        
+
         let isValid = profileEditCheckUseCase.checkNewNickname(with: text)
         if isValid {
           return EditProfileState.validNickname
@@ -99,8 +101,13 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
       }
       .eraseToAnyPublisher()
 
+    let pushPictureChoiceType: EditProfileViewModelOutput = input
+      .didTapProfileEditButton
+      .map { _ in return EditProfileState.pushPictureChoiceTypeSheet }
+      .eraseToAnyPublisher()
+
     let initialState: EditProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState.merge(with: userName, profileImage, biography, validNickName).eraseToAnyPublisher()
+    return initialState.merge(with: userName, profileImage, biography, validNickName, pushPictureChoiceType).eraseToAnyPublisher()
   }
 }

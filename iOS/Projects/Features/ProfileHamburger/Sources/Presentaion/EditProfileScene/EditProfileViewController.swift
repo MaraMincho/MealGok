@@ -78,12 +78,13 @@ final class EditProfileViewController: UIViewController {
     imageView.layer.cornerRadius = Metrics.editSymbolImageViewWidthAndHeight / 2
     imageView.layer.masksToBounds = false
     imageView.layer.cornerCurve = .continuous
-    imageView.clipsToBounds = true
     imageView.tintColor = DesignSystemColor.primaryBackground
 
-    imageView.image = UIImage(systemName: Constants.editImageViewSystemName)
+    let symbolConfiguration = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 2))
+    let image = UIImage(systemName: Constants.editImageViewSystemName, withConfiguration: symbolConfiguration)
+    imageView.image = image
     imageView.backgroundColor = DesignSystemColor.main01
-    imageView.contentMode = .scaleAspectFit
+    imageView.layer.masksToBounds = true
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
@@ -265,7 +266,8 @@ private extension EditProfileViewController {
       editNickName: nickNameTextField.textPublisher(),
       editImage: editImagePublisher.eraseToAnyPublisher(),
       editBiography: editBiographyPublisher.eraseToAnyPublisher(),
-      didTapSaveButton: saveButton.touchupInsidePublisher()
+      didTapSaveButton: saveButton.touchupInsidePublisher(),
+      didTapProfileEditButton: profileImageView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
     )
 
     let output = viewModel.transform(input: input)
@@ -289,11 +291,27 @@ private extension EditProfileViewController {
           validNickname()
         case .emptyNickname:
           emptyNickname()
+        case .pushPictureChoiceTypeSheet:
+          presentPictureChoiceTypeSheet()
         }
       }
       .store(in: &subscriptions)
   }
-  
+
+  func presentPictureChoiceTypeSheet() {
+    let sheet = UIAlertController(
+      title: Constants.actionSheetTitle,
+      message: Constants.actionSheetMessage,
+      preferredStyle: .actionSheet
+    )
+    let cameraAction = UIAlertAction(title: Constants.actionSheetCameraActionTitle, style: .default) { _ in }
+    let photoLibraryAction = UIAlertAction(title: Constants.actionSheetPhotsLibraryTitle, style: .default) { _ in }
+    let cancelAction = UIAlertAction(title: Constants.actionSheetCancelActionTitle, style: .cancel)
+    [cameraAction, photoLibraryAction, cancelAction].forEach { sheet.addAction($0) }
+
+    present(sheet, animated: true)
+  }
+
   func emptyNickname() {
     saveButton.isEnabled = false
     nicknameWarningLabel.text = " "
@@ -342,5 +360,11 @@ private extension EditProfileViewController {
     static let nickNameTextFieldPlaceHolder: String = "닉네임을 입력하세요"
 
     static let saveButtonTitleText: String = "변경사항 저장하기"
+
+    static let actionSheetTitle = "불러오기 방식"
+    static let actionSheetMessage = "사진을 불러올 방법을 선택하세요"
+    static let actionSheetCameraActionTitle = "카메라로 촬영"
+    static let actionSheetPhotsLibraryTitle = "앨범에서 불러오기"
+    static let actionSheetCancelActionTitle = "취소"
   }
 }
