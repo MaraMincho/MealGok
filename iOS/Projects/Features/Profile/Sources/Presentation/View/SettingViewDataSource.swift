@@ -10,7 +10,7 @@ import UIKit
 
 // MARK: - SettingTableViewProperty
 
-struct SettingTableViewProperty: Hashable {
+public struct SettingTableViewProperty: Hashable {
   let titleText: String
   let imageSystemName: String
 }

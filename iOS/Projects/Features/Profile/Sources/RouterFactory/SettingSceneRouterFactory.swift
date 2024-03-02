@@ -36,7 +36,7 @@ final class SettingSceneRouterFactory: RouterFactoriable {
   }
 
   func build() -> UIViewController {
-    let viewModel = SettingViewModel(router: self)
+    let viewModel = SettingViewModel(router: self, settingTableViewProperties: Constants.settingTableViewProperties)
     let viewController = SettingViewController(viewModel: viewModel)
     return viewController
   }
@@ -54,5 +54,11 @@ extension SettingSceneRouterFactory: SettingViewModelRouterable {
   func goBack() {
     navigationController?.popViewController(animated: true)
     popRouter()
+  }
+
+  private enum Constants {
+    static let settingTableViewProperties: [SettingTableViewProperty] = [
+      .init(titleText: "프로필 수정", imageSystemName: "person.fill"),
+    ]
   }
 }
