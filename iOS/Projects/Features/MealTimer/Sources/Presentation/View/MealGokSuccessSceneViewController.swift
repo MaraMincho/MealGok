@@ -72,7 +72,7 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   private lazy var buttonStackView: UIStackView = {
     let stackView = UIStackView(arrangedSubviews: [
-      //shareButton, 차후에 글쓰기 기능이 생긴다면 추가 예정
+      // shareButton, 차후에 글쓰기 기능이 생긴다면 추가 예정
       goHomeButton,
     ])
     stackView.axis = .vertical
