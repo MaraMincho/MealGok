@@ -12,23 +12,14 @@ import UIKit
 
 // MARK: - ProfileSceneRouterable
 
-protocol ProfileSceneRouterable: AnyObject {
+protocol ProfileSceneRouterable: Routing {
   func pushSettingScene()
 }
 
 // MARK: - ProfileSceneRouterFactory
 
-public final class ProfileSceneRouterFactory: RouterFactoriable {
-  public weak var parentRouter: Routing?
-  public weak var navigationController: UINavigationController?
-  public var childRouters: [Routing] = []
-  public var popSubscription: Cancellable?
-
-  public func start(build: UIViewController) {
-    navigationController?.pushViewController(build, animated: true)
-  }
-
-  public func build() -> UIViewController {
+public final class ProfileSceneRouterFactory: RouterFactoryBase {
+  override public func build() -> UIViewController {
     let mealGokHistoryFetchRepository = MealGokHistoryFetchRepository()
     let mealGokHistoryFetchUseCase = MealGokHistoryFetchUseCase(fetchRepository: mealGokHistoryFetchRepository)
 
@@ -48,11 +39,6 @@ public final class ProfileSceneRouterFactory: RouterFactoriable {
     releaseChildCoordinatorIfTopView(buildViewController: viewController)
 
     return viewController
-  }
-
-  public init(parentRouter: Routing?, navigationController: UINavigationController?) {
-    self.parentRouter = parentRouter
-    self.navigationController = navigationController
   }
 }
 

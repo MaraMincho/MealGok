@@ -246,7 +246,7 @@ private extension ProfileViewController {
       didChangeDate: didChangeDate.eraseToAnyPublisher(),
       fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher(),
       showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher(),
-      didTapSettingButton: settingButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTapSettingButton: settingButton.touchupInsidePublisher(),
       updateProfile: updateProfileSubject.eraseToAnyPublisher()
     ))
 
