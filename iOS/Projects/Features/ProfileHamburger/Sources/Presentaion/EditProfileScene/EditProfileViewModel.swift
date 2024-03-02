@@ -24,7 +24,7 @@ public typealias EditProfileViewModelOutput = AnyPublisher<EditProfileState, Nev
 
 // MARK: - EditProfileState
 
-public enum EditProfileState {
+public enum EditProfileState: Equatable {
   case idle
   case nickName(String)
   case profileImage(URL)
@@ -51,7 +51,12 @@ final class EditProfileViewModel {
   private var subscriptions: Set<AnyCancellable> = []
   private let profileEditUseCase: ProfileEditUseCaseRepresentable
   private let profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
-  
+
+  /// EditField에 대해서 필요한 Subject
+  private let editProfileImage: CurrentValueSubject<Data?, Never> = .init(nil)
+  private let editNickName: CurrentValueSubject<String?, Never> = .init(nil)
+  private let isValidNickname: CurrentValueSubject<Bool, Never> = .init(false)
+  private let checkEditField: PassthroughSubject<Void, Never> = .init()
   private let isEnableSaveButtonPublisher = CurrentValueSubject<Bool, Never>(false)
 
   init(
@@ -89,24 +94,21 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
       }
       .eraseToAnyPublisher()
 
-    let validNickName: EditProfileViewModelOutput = input.editNickName
-      .map { [profileEditCheckUseCase, weak self] text in
-        if text == "" {
-          self?.isEnableSaveButtonPublisher.send(false)
-          return EditProfileState.emptyNickname
-        }
-
-        let isValid = profileEditCheckUseCase.checkNewNickname(with: text)
-        if isValid {
-          self?.isEnableSaveButtonPublisher.send(true)
-          return EditProfileState.validNickname
-        } else {
-          let message = profileEditCheckUseCase.invalidNicknameMessage(with: text)
-          self?.isEnableSaveButtonPublisher.send(false)
-          return EditProfileState.invalidNickName(message)
-        }
+    input.editNickName
+      .sink { [weak self] text in
+        self?.editNickName.send(text)
+        self?.checkEditField.send()
       }
-      .eraseToAnyPublisher()
+      .store(in: &subscriptions)
+
+    let validNickName = checkEditField
+      .compactMap { [weak self] _ -> EditProfileState? in
+        guard let self else {
+          return nil
+        }
+        let editNickname = editNickName.value
+        return checkEditNickname(with: editNickname)
+      }
 
     let pushPictureChoiceType: EditProfileViewModelOutput = input
       .didTapProfileEditButton
@@ -115,13 +117,59 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
 
     let newProfileImage = input
       .editImage
-      .map { EditProfileState.profileImageData($0) }
+      .map { [weak self] data in
+        self?.checkEditField.send()
+        return EditProfileState.profileImageData(data)
+      }
       .eraseToAnyPublisher()
-    
-    let isEnableSaveButton = isEnableSaveButtonPublisher.map{EditProfileState.isEnableSaveButton($0)}
+
+    let isEnableSaveButton = isEnableSaveButtonPublisher.map { EditProfileState.isEnableSaveButton($0) }
+
+    // chcekEditField
+    checkEditField
+      .sink { [weak self] _ in
+        guard let self else {
+          self?.isEnableSaveButtonPublisher.send(false)
+          return
+        }
+        let nickname = editNickName.value
+        let editImage = editProfileImage.value
+        if
+          (isValidNickname(with: nickname) == true) ||
+          (editNickName.value == "" && editImage != nil) {
+          isEnableSaveButtonPublisher.send(true)
+          return
+        }
+        isEnableSaveButtonPublisher.send(false)
+      }
+      .store(in: &subscriptions)
 
     let initialState: EditProfileViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
     return initialState.merge(with: userName, prevProfileImage, biography, validNickName, pushPictureChoiceType, newProfileImage, isEnableSaveButton).eraseToAnyPublisher()
+  }
+}
+
+private extension EditProfileViewModel {
+  func checkEditNickname(with nickname: String?) -> EditProfileState? {
+    guard let nickname else { return nil }
+
+    if nickname == "" {
+      return .emptyNickname
+    }
+    if !profileEditCheckUseCase.checkNewNickname(with: nickname) {
+      let message = profileEditCheckUseCase.invalidNicknameMessage(with: nickname)
+      return .invalidNickName(message)
+    }
+
+    return .validNickname
+  }
+
+  func isValidNickname(with nickname: String?) -> Bool {
+    guard let nickname else { return false }
+    if !profileEditCheckUseCase.checkNewNickname(with: nickname) {
+      return false
+    }
+    return true
   }
 }

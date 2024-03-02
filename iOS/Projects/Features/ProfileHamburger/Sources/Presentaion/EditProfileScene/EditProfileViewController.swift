@@ -279,7 +279,7 @@ private extension EditProfileViewController {
       .store(in: &subscriptions)
 
     let output = viewModel.transform(input: input)
-    
+
     output
       .receive(on: DispatchQueue.main)
       .sink { [weak self] state in
@@ -305,7 +305,7 @@ private extension EditProfileViewController {
           presentPictureChoiceTypeSheet()
         case let .profileImageData(data):
           profileImageView.image = UIImage(data: data)
-        case let .isEnableSaveButton(bool) :
+        case let .isEnableSaveButton(bool):
           saveButton.isEnabled = bool
         }
       }
