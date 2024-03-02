@@ -38,7 +38,7 @@ final class ImageFileManager {
         }
       }
   }
-  
+
   func removeMemory(with url: [URL]) {
     url
       .map { imageDirURL.appending(path: $0.lastPathComponent) }
@@ -48,7 +48,7 @@ final class ImageFileManager {
         }
       }
   }
-  
+
   func removeAllCacheMemory() {
     imageCache.removeAllObjects()
   }
