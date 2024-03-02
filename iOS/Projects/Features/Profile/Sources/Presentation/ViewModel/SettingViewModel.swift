@@ -23,6 +23,7 @@ public typealias SettingViewModelOutput = AnyPublisher<SettingState, Never>
 
 public enum SettingState {
   case idle
+  case updateSettingViewProperties([SettingTableViewProperty])
 }
 
 // MARK: - SettingViewModelRepresentable
@@ -38,8 +39,10 @@ final class SettingViewModel {
 
   private var subscriptions: Set<AnyCancellable> = []
   private weak var router: SettingViewModelRouterable?
-  init(router: SettingViewModelRouterable? = nil) {
+  private let settingTableViewProperties: [SettingTableViewProperty]
+  init(router: SettingViewModelRouterable? = nil, settingTableViewProperties: [SettingTableViewProperty]) {
     self.router = router
+    self.settingTableViewProperties = settingTableViewProperties
   }
 }
 
@@ -63,8 +66,10 @@ extension SettingViewModel: SettingViewModelRepresentable {
       }
       .store(in: &subscriptions)
 
+    let updateSnapshot: SettingViewModelOutput = Just(.updateSettingViewProperties(settingTableViewProperties)).eraseToAnyPublisher()
+
     let initialState: SettingViewModelOutput = Just(.idle).eraseToAnyPublisher()
 
-    return initialState
+    return initialState.merge(with: updateSnapshot).eraseToAnyPublisher()
   }
 }

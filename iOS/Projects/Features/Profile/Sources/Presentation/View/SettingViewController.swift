@@ -84,29 +84,15 @@ private extension SettingViewController {
     setupViewHierarchyAndConstraints()
     setupStyles()
     bind()
-    setFakeDataSource()
   }
 
-  func setFakeDataSource() {
+  func updateSnapshotWith(settingTableViewProperties: [SettingTableViewProperty]) {
     guard var snapshot = dataSource?.snapshot() else {
       return
     }
     snapshot.appendSections([0])
-    let buttonData: [(titleText: String, imageSystemName: String)] = [
-      ("Home", "house.fill"),
-      ("Settings", "gearshape.fill"),
-      ("Profile", "person.fill"),
-      ("Camera", "camera.fill"),
-      ("Chat", "message.fill"),
-      ("Music", "music.note.fill"),
-      ("Map", "map.fill"),
-      ("Calendar", "calendar"),
-      ("Search", "magnifyingglass"),
-      ("Clock", "clock.fill"),
-      // 추가적으로 필요한 경우 계속해서 추가할 수 있습니다.
-    ]
-    snapshot.appendItems(buttonData.map { .init(titleText: $0.titleText, imageSystemName: $0.imageSystemName) })
-    dataSource?.apply(snapshot)
+    snapshot.appendItems(settingTableViewProperties)
+    dataSource?.apply(snapshot, animatingDifferences: false)
   }
 
   func setupDataSource() {
@@ -155,10 +141,12 @@ private extension SettingViewController {
     ))
     output
       .subscribe(on: RunLoop.main)
-      .sink { state in
+      .sink { [weak self] state in
         switch state {
         case .idle:
           break
+        case let .updateSettingViewProperties(properties):
+          self?.updateSnapshotWith(settingTableViewProperties: properties)
         }
       }
       .store(in: &subscriptions)
