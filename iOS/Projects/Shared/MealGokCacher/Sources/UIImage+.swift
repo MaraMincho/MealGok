@@ -1,23 +1,22 @@
 //
-//  UIImage+DownSample.swift
-//  ImageManager
+//  UIImage+.swift
+//  MealGokCacher
 //
-//  Created by MaraMincho on 2/15/24.
+//  Created by MaraMincho on 3/1/24.
 //  Copyright © 2024 com.maramincho. All rights reserved.
 //
 
 import UIKit
 
-public extension UIImageView {
-  func downsampleImage(scale: CGFloat = 1) {
-    guard let imageData = image?.jpegData(compressionQuality: 1) else {
-      return
+public extension UIImage {
+  func downSampleImage(downSampleProperty property: DownSampleProperty) -> Data? {
+    guard let imageData = pngData() else {
+      return nil
     }
-    let pointSize = bounds.size
     let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
     let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions)!
 
-    let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+    let maxDimensionInPixels = max(property.size.width, property.size.height) * property.scale
     let downsampleOptions = [
       kCGImageSourceCreateThumbnailFromImageAlways: true,
       kCGImageSourceShouldCacheImmediately: true,
@@ -26,9 +25,9 @@ public extension UIImageView {
     ] as CFDictionary
 
     guard let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions) else {
-      return
+      return nil
     }
 
-    image = UIImage(cgImage: downsampledImage)
+    return UIImage(cgImage: downsampledImage).pngData()
   }
 }

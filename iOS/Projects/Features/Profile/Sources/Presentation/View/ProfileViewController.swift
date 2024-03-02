@@ -246,7 +246,7 @@ private extension ProfileViewController {
       didChangeDate: didChangeDate.eraseToAnyPublisher(),
       fetchMealGokHistory: requestMealGokHistory.eraseToAnyPublisher(),
       showHistoryContent: requestHistoryContentViewController.eraseToAnyPublisher(),
-      didTapSettingButton: settingButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
+      didTapSettingButton: settingButton.touchupInsidePublisher(),
       updateProfile: updateProfileSubject.eraseToAnyPublisher()
     ))
 
@@ -327,7 +327,7 @@ private extension ProfileViewController {
     headerStackView.profileDescriptionLabel.text = biography
     headerStackView
       .profileImageView
-      .setImage(url: profileImageURL, downSampleProperty: .init(size: .init(width: 30, height: 0)))
+      .setImage(url: profileImageURL, downSampleProperty: .init(size: .init(width: 240, height: 0)))
   }
 
   func updateTableView(with property: [MealGokChallengeProperty]) {

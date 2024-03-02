@@ -7,7 +7,10 @@
 //
 
 import Combine
+import CombineCocoa
 import DesignSystem
+import MealGokCacher
+import PhotosUI
 import UIKit
 
 // MARK: - EditProfileViewController
@@ -16,6 +19,11 @@ final class EditProfileViewController: UIViewController {
   // MARK: Properties
 
   private let viewModel: EditProfileViewModelRepresentable
+
+  private let loadProfileInformation: PassthroughSubject<Void, Never> = .init()
+  private let editNickNamePublisher: PassthroughSubject<String, Never> = .init()
+  private let editImagePublisher: PassthroughSubject<Data, Never> = .init()
+  private let editBiographyPublisher: PassthroughSubject<String, Never> = .init()
 
   private var subscriptions: Set<AnyCancellable> = []
 
@@ -72,12 +80,13 @@ final class EditProfileViewController: UIViewController {
     imageView.layer.cornerRadius = Metrics.editSymbolImageViewWidthAndHeight / 2
     imageView.layer.masksToBounds = false
     imageView.layer.cornerCurve = .continuous
-    imageView.clipsToBounds = true
     imageView.tintColor = DesignSystemColor.primaryBackground
 
-    imageView.image = UIImage(systemName: Constants.editImageViewSystemName)
+    let symbolConfiguration = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 2))
+    let image = UIImage(systemName: Constants.editImageViewSystemName, withConfiguration: symbolConfiguration)
+    imageView.image = image
     imageView.backgroundColor = DesignSystemColor.main01
-    imageView.contentMode = .scaleAspectFit
+    imageView.layer.masksToBounds = true
 
     imageView.translatesAutoresizingMaskIntoConstraints = false
     return imageView
@@ -103,6 +112,37 @@ final class EditProfileViewController: UIViewController {
     return tf
   }()
 
+  private let nicknameWarningLabel: UILabel = {
+    let label = UILabel()
+    label.text = " "
+    label.textColor = DesignSystemColor.primaryText
+    label.textAlignment = .left
+    label.font = .preferredFont(forTextStyle: .caption1)
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let biographyLabel: UILabel = {
+    let label = UILabel()
+    label.font = .preferredFont(forTextStyle: .title3, weight: .bold)
+    label.textColor = DesignSystemColor.primaryText
+    label.text = Constants.nickNameLabelText
+
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+
+  private let biographyTextView: UITextField = {
+    let tf = UITextField()
+    tf.placeholder = Constants.nickNameTextFieldPlaceHolder
+    tf.borderStyle = .roundedRect
+    tf.textColor = DesignSystemColor.primaryText
+
+    tf.translatesAutoresizingMaskIntoConstraints = false
+    return tf
+  }()
+
   private let saveButton: UIButton = {
     let button = UIButton(configuration: .filled())
     var configure = button.configuration
@@ -119,41 +159,11 @@ final class EditProfileViewController: UIViewController {
     button.layer.cornerRadius = 8
     button.layer.cornerCurve = .continuous
     button.layer.masksToBounds = true
+    button.isEnabled = false
 
     button.translatesAutoresizingMaskIntoConstraints = false
     return button
   }()
-
-  // MARK: Initializations
-
-  init(viewModel: EditProfileViewModelRepresentable) {
-    self.viewModel = viewModel
-    super.init(nibName: nil, bundle: nil)
-  }
-
-  @available(*, unavailable)
-  required init?(coder _: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-  // MARK: Life Cycles
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    setup()
-  }
-
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-  }
-}
-
-private extension EditProfileViewController {
-  func setup() {
-    setupStyles()
-    setupHierarchyAndConstraints()
-    bind()
-  }
 
   func setupHierarchyAndConstraints() {
     let safeArea = view.safeAreaLayoutGuide
@@ -204,6 +214,46 @@ private extension EditProfileViewController {
     nickNameTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Metrics.leadingAndTrailingGuide).isActive = true
     nickNameTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -Metrics.leadingAndTrailingGuide).isActive = true
     nickNameTextField.heightAnchor.constraint(equalToConstant: Metrics.nickNameTextFieldHeight).isActive = true
+
+    contentScrollView.addSubview(nicknameWarningLabel)
+    nicknameWarningLabel.topAnchor
+      .constraint(equalTo: nickNameTextField.bottomAnchor, constant: Metrics.nicknameWarningLabelTopSpacing).isActive = true
+    nicknameWarningLabel.leadingAnchor
+      .constraint(equalTo: nickNameTextField.leadingAnchor).isActive = true
+    nicknameWarningLabel.trailingAnchor
+      .constraint(equalTo: nickNameTextField.trailingAnchor).isActive = true
+  }
+
+  // MARK: Initializations
+
+  init(viewModel: EditProfileViewModelRepresentable) {
+    self.viewModel = viewModel
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  @available(*, unavailable)
+  required init?(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  // MARK: Life Cycles
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    setup()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+  }
+}
+
+private extension EditProfileViewController {
+  func setup() {
+    setupStyles()
+    setupHierarchyAndConstraints()
+    bind()
+    loadProfileInformation.send()
   }
 
   func setupStyles() {
@@ -211,14 +261,94 @@ private extension EditProfileViewController {
   }
 
   func bind() {
-    let output = viewModel.transform(input: .init())
-    output.sink { state in
-      switch state {
-      case .idle:
-        break
+    subscriptions.forEach { $0.cancel() }
+
+    let input = EditProfileViewModelInput(
+      loadProfileInformation: loadProfileInformation.eraseToAnyPublisher(),
+      editNickName: nickNameTextField.textPublisher(),
+      editImage: editImagePublisher.eraseToAnyPublisher(),
+      editBiography: editBiographyPublisher.eraseToAnyPublisher(),
+      didTapSaveButton: saveButton.touchupInsidePublisher(),
+      didTapProfileEditButton: profileImageView.publisher(gesture: .tap).map { _ in return }.eraseToAnyPublisher()
+    )
+
+    backButton.touchupInsidePublisher()
+      .sink { [weak self] _ in
+        self?.navigationController?.popViewController(animated: true)
       }
+      .store(in: &subscriptions)
+
+    let output = viewModel.transform(input: input)
+
+    output
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] state in
+        guard let self else {
+          return
+        }
+        switch state {
+        case .idle:
+          break
+        case let .nickName(str):
+          nickNameTextField.placeholder = str
+        case let .profileImage(url):
+          profileImageView.setImage(url: url, downSampleProperty: .init(size: .init(width: Metrics.imageViewWidthAndHeight, height: 0)))
+        case let .biography(str):
+          biographyTextView.text = str
+        case let .invalidNickName(warningText):
+          invalidNickname(text: warningText)
+        case .validNickname:
+          validNickname()
+        case .emptyNickname:
+          emptyNickname()
+        case .pushPictureChoiceTypeSheet:
+          presentPictureChoiceTypeSheet()
+        case let .profileImageData(data):
+          profileImageView.image = UIImage(data: data)
+        case let .isEnableSaveButton(bool):
+          saveButton.isEnabled = bool
+        }
+      }
+      .store(in: &subscriptions)
+  }
+
+  func presentPictureChoiceTypeSheet() {
+    let sheet = UIAlertController(
+      title: Constants.actionSheetTitle,
+      message: Constants.actionSheetMessage,
+      preferredStyle: .actionSheet
+    )
+    let cameraAction = UIAlertAction(title: Constants.actionSheetCameraActionTitle, style: .default) { _ in
     }
-    .store(in: &subscriptions)
+    let photoLibraryAction = UIAlertAction(title: Constants.actionSheetPhotsLibraryTitle, style: .default) { [weak self] _ in
+      self?.pushPhotoLibrary()
+    }
+    let cancelAction = UIAlertAction(title: Constants.actionSheetCancelActionTitle, style: .cancel)
+    [cameraAction, photoLibraryAction, cancelAction].forEach { sheet.addAction($0) }
+
+    present(sheet, animated: true)
+  }
+
+  func pushPhotoLibrary() {
+    var configuration = PHPickerConfiguration(photoLibrary: .shared())
+    configuration.filter = .images
+    configuration.selectionLimit = 1
+    let photoPickerViewController = PHPickerViewController(configuration: configuration)
+    photoPickerViewController.delegate = self
+    present(photoPickerViewController, animated: true)
+  }
+
+  func emptyNickname() {
+    nicknameWarningLabel.text = " "
+  }
+
+  func invalidNickname(text: String) {
+    nicknameWarningLabel.text = text
+    nicknameWarningLabel.textColor = UIColor.red
+  }
+
+  func validNickname() {
+    nicknameWarningLabel.text = " "
   }
 
   enum Metrics {
@@ -238,6 +368,8 @@ private extension EditProfileViewController {
     static let nickNameTextFieldHeight: CGFloat = 46
 
     static let leadingAndTrailingGuide: CGFloat = 24
+
+    static let nicknameWarningLabelTopSpacing: CGFloat = 6
   }
 
   enum Constants {
@@ -251,5 +383,33 @@ private extension EditProfileViewController {
     static let nickNameTextFieldPlaceHolder: String = "닉네임을 입력하세요"
 
     static let saveButtonTitleText: String = "변경사항 저장하기"
+
+    static let actionSheetTitle = "불러오기 방식"
+    static let actionSheetMessage = "사진을 불러올 방법을 선택하세요"
+    static let actionSheetCameraActionTitle = "카메라로 촬영"
+    static let actionSheetPhotsLibraryTitle = "앨범에서 불러오기"
+    static let actionSheetCancelActionTitle = "취소"
+  }
+}
+
+// MARK: PHPickerViewControllerDelegate
+
+extension EditProfileViewController: PHPickerViewControllerDelegate {
+  func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    picker.dismiss(animated: true)
+    guard let itemProvider = results.first?.itemProvider else {
+      return
+    }
+    if itemProvider.canLoadObject(ofClass: UIImage.self) {
+      itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+        guard
+          error == nil,
+          let profileImageData = (image as? UIImage)?.downSampleImage(downSampleProperty: .init(size: .init(width: 1024, height: 0)))
+        else {
+          return
+        }
+        self?.editImagePublisher.send(profileImageData)
+      }
+    }
   }
 }

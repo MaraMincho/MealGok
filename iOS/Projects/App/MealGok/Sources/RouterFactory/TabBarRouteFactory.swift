@@ -25,7 +25,7 @@ public final class TabBarRouteFactory: RouterFactoriable {
 
   public weak var parentRouter: Routing?
 
-  public var navigationController: UINavigationController?
+  public weak var navigationController: UINavigationController?
 
   public var childRouters: [Routing] = []
   public var popSubscription: Cancellable?

@@ -31,8 +31,8 @@ public extension RouterFactoriable {
 
 open class RouterFactoryBase: RouterFactoriable {
   open var popSubscription: Cancellable?
-  open var parentRouter: Routing?
-  open var navigationController: UINavigationController?
+  open weak var parentRouter: Routing?
+  open weak var navigationController: UINavigationController?
   open var childRouters: [Routing] = []
 
   open func build() -> UIViewController {
