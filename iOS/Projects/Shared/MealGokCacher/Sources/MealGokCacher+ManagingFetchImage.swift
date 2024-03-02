@@ -11,6 +11,14 @@ public extension MealGokCacher {
   static func storeMemory(with url: [URL]) {
     Constants.sharedImageFileManagerProperty.storeMemory(with: url)
   }
+  
+  static func removeMemory(with url: [URL]) {
+    Constants.sharedImageFileManagerProperty.removeMemory(with: url)
+  }
+  
+  static func removeAllCacheMemory() {
+    Constants.sharedImageFileManagerProperty.removeAllCacheMemory()
+  }
 
   /// ImageData를 completionHandler로 불러옵니다.
   static func loadImage(url: URL?, target: AnyObject, completion: @escaping (Result<Data, Error>) -> Void) {
