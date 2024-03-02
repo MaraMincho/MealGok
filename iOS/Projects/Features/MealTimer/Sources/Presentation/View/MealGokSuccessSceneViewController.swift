@@ -72,7 +72,7 @@ final class MealGokSuccessSceneViewController: UIViewController {
 
   private lazy var buttonStackView: UIStackView = {
     let stackView = UIStackView(arrangedSubviews: [
-      shareButton,
+      //shareButton, 차후에 글쓰기 기능이 생긴다면 추가 예정
       goHomeButton,
     ])
     stackView.axis = .vertical
@@ -157,8 +157,8 @@ private extension MealGokSuccessSceneViewController {
 
   func bind() {
     let output = viewModel.transform(input: .init(
-      shareButtonDidTap: shareButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher(),
-      goHomeButtonDidTap: goHomeButton.publisher(event: .touchUpInside).map { _ in return }.eraseToAnyPublisher()
+      shareButtonDidTap: shareButton.touchupInsidePublisher(),
+      goHomeButtonDidTap: goHomeButton.touchupInsidePublisher()
     ))
     output.sink { state in
       switch state {
