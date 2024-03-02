@@ -39,6 +39,20 @@ final class ImageFileManager {
       }
   }
 
+  func removeMemory(with url: [URL]) {
+    url
+      .map { imageDirURL.appending(path: $0.lastPathComponent) }
+      .forEach { path in
+        if let data = try? Data(contentsOf: path) {
+          imageCache.removeObject(forKey: path.path() as NSString)
+        }
+      }
+  }
+
+  func removeAllCacheMemory() {
+    imageCache.removeAllObjects()
+  }
+
   func cancelFetch(forKey: AnyObject) {
     targetViewAndFetchTask.object(forKey: forKey)?.taskHandle?.cancel()
   }
