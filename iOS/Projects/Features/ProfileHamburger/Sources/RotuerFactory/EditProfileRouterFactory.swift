@@ -7,7 +7,17 @@
 //
 
 import RouterFactory
+import SharedNotificationName
 import UIKit
+
+// MARK: - EditProfileRoutable
+
+protocol EditProfileRoutable: Routing {
+  func popViewController()
+  func didEditAndSaveProfile()
+}
+
+// MARK: - EditProfileRouterFactory
 
 public final class EditProfileRouterFactory: RouterFactoryBase {
   override public func build() -> UIViewController {
@@ -18,7 +28,8 @@ public final class EditProfileRouterFactory: RouterFactoryBase {
 
     let viewModel = EditProfileViewModel(
       profileEditUseCase: profileEditUseCase,
-      profileEditCheckUseCase: profileEditCheckUseCase
+      profileEditCheckUseCase: profileEditCheckUseCase,
+      editProfileRoutable: self
     )
     let viewController = EditProfileViewController(viewModel: viewModel)
 
@@ -27,5 +38,18 @@ public final class EditProfileRouterFactory: RouterFactoryBase {
 
   override public func start(build viewController: UIViewController) {
     navigationController?.pushViewController(viewController, animated: true)
+  }
+}
+
+// MARK: EditProfileRoutable
+
+extension EditProfileRouterFactory: EditProfileRoutable {
+  func popViewController() {
+    popRouter()
+    navigationController?.popViewController(animated: true)
+  }
+
+  func didEditAndSaveProfile() {
+    NotificationCenter.default.post(name: .goHomeAndReBuild, object: nil)
   }
 }

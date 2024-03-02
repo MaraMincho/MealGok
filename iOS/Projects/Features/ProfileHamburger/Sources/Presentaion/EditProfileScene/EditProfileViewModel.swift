@@ -48,23 +48,27 @@ protocol EditProfileViewModelRepresentable {
 final class EditProfileViewModel {
   // MARK: - Properties
 
+  private weak var router: EditProfileRoutable?
   private var subscriptions: Set<AnyCancellable> = []
   private let profileEditUseCase: ProfileEditUseCaseRepresentable
   private let profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
 
-  /// EditField에 대해서 필요한 Subject
+  // MARK: - EditField에 대해서 필요한 Subject
+
   private let editProfileImage: CurrentValueSubject<Data?, Never> = .init(nil)
-  private let editNickName: CurrentValueSubject<String?, Never> = .init(nil)
+  private let editNickName: CurrentValueSubject<String, Never> = .init("")
   private let isValidNickname: CurrentValueSubject<Bool, Never> = .init(false)
   private let checkEditField: PassthroughSubject<Void, Never> = .init()
   private let isEnableSaveButtonPublisher = CurrentValueSubject<Bool, Never>(false)
 
   init(
     profileEditUseCase: ProfileEditUseCaseRepresentable,
-    profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable
+    profileEditCheckUseCase: ProfileEditCheckUseCaseRepresentable,
+    editProfileRoutable: EditProfileRoutable
   ) {
     self.profileEditUseCase = profileEditUseCase
     self.profileEditCheckUseCase = profileEditCheckUseCase
+    router = editProfileRoutable
   }
 }
 
@@ -74,6 +78,7 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
   public func transform(input: EditProfileViewModelInput) -> EditProfileViewModelOutput {
     subscriptions.removeAll()
 
+    // 유저의 닉네임을 불러옵니다.
     let userName: EditProfileViewModelOutput = input
       .loadProfileInformation
       .map { [profileEditUseCase] _ in
@@ -82,11 +87,13 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
       }
       .eraseToAnyPublisher()
 
+    // 유저의 프로필 이미지를 불러옵니다.
     let prevProfileImage: EditProfileViewModelOutput = input.loadProfileInformation
       .compactMap { [profileEditUseCase] _ in profileEditUseCase.loadUserImageURL() }
       .map { url in return EditProfileState.profileImage(url) }
       .eraseToAnyPublisher()
 
+    // 유저의 biography를 불러옵니다.
     let biography: EditProfileViewModelOutput = input.loadProfileInformation
       .map { [profileEditUseCase] _ in
         let biography = profileEditUseCase.loadUserBiography()
@@ -118,6 +125,7 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
     let newProfileImage = input
       .editImage
       .map { [weak self] data in
+        self?.editProfileImage.send(data)
         self?.checkEditField.send()
         return EditProfileState.profileImageData(data)
       }
@@ -135,12 +143,27 @@ extension EditProfileViewModel: EditProfileViewModelRepresentable {
         let nickname = editNickName.value
         let editImage = editProfileImage.value
         if
-          (isValidNickname(with: nickname) == true) ||
+          isValidNickname(with: nickname) == true ||
           (editNickName.value == "" && editImage != nil) {
           isEnableSaveButtonPublisher.send(true)
           return
         }
         isEnableSaveButtonPublisher.send(false)
+      }
+      .store(in: &subscriptions)
+
+    input
+      .didTapSaveButton
+      .sink { [weak self] _ in
+        guard let self else { return }
+        if editNickName.value != "" {
+          profileEditUseCase.saveNewNickName(with: editNickName.value)
+        }
+
+        if let imageData = editProfileImage.value {
+          profileEditUseCase.saveNewUserImage(with: imageData)
+        }
+        router?.didEditAndSaveProfile()
       }
       .store(in: &subscriptions)
 

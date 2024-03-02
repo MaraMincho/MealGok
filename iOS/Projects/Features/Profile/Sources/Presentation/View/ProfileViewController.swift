@@ -327,7 +327,7 @@ private extension ProfileViewController {
     headerStackView.profileDescriptionLabel.text = biography
     headerStackView
       .profileImageView
-      .setImage(url: profileImageURL, downSampleProperty: .init(size: .init(width: 30, height: 0)))
+      .setImage(url: profileImageURL, downSampleProperty: .init(size: .init(width: 240, height: 0)))
   }
 
   func updateTableView(with property: [MealGokChallengeProperty]) {
