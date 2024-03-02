@@ -278,6 +278,12 @@ private extension EditProfileViewController {
       }
       .store(in: &subscriptions)
 
+    view.publisher(gesture: .tap)
+      .sink { [weak self] _ in
+        self?.view.endEditing(true)
+      }
+      .store(in: &subscriptions)
+
     let output = viewModel.transform(input: input)
 
     output
