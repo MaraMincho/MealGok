@@ -48,7 +48,7 @@ def set_version():
         build_target_index = len(str(today))
         new_build_version = f'      "CFBundleVersion": "{today}{int(build_target_name_match.group(1)[build_target_index:]) + 1}",\n'
         
-        modified_content = content[:target_name_index - 2] + new_marketing_version + new_build_version + content[target_name_index: ]
+        modified_content = content[:marketing_target_name_match - 1] + new_marketing_version + new_build_version + content[marketing_target_name_match + 1: ]
 
         # Write the modified content back to the file
         with open(file_path, 'w') as file:
