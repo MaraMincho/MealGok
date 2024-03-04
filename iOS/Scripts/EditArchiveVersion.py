@@ -22,7 +22,7 @@ def print_current_version():
     except Exception as e:
         print(f"Error modifying the file: {e}")
 
-def set_version():
+def set_version(is_update_version):
     file_path = 'Projects/App/MealGok/Project.swift'
     try:
         # Read the content of the Swift file
@@ -32,6 +32,7 @@ def set_version():
         start_content = '''      "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",\n'''
         build_start_index = content.find(start_content)
         marketing_target_name_match = re.search(r'"CFBundleShortVersionString": "(\d)+\.(\d)+\.(\d)+"', content)
+        mid_num = int(marketing_target_name_match.group(2)) + 1 if is_update_version == 'y' else int(marketing_target_name_match.group(2))
         new_target_marketing_version = f'{marketing_target_name_match.group(1)}.{int(marketing_target_name_match.group(2)) + 1}.{marketing_target_name_match.group(3)}'
         new_marketing_version = f'      "CFBundleShortVersionString": "{new_target_marketing_version}",\n'
         
@@ -65,6 +66,8 @@ def check_version_regular_expression(version):
         return False
 
 if __name__ == "__main__":
+    is_new_version = input("버전을 올리시겠습니까? (y/n): ")
+    
     print_current_version()
 
-    set_version()
+    set_version(is_new_version)
