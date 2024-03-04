@@ -34,7 +34,7 @@ def set_version():
             target_name_index = marketing_target_name_match.start()
         else:
             raise ValueError("marketing_target_name_match name not found in file.")
-        new_target_marketing_version = f'{marketing_target_name_match.group(1)}.{float(marketing_target_name_match.group(2)) + 1}.{marketing_target_name_match.group(3)}'
+        new_target_marketing_version = f'{marketing_target_name_match.group(1)}.{int(marketing_target_name_match.group(2)) + 1}.{marketing_target_name_match.group(3)}'
         new_marketing_version = f'       "CFBundleShortVersionString": "{new_target_marketing_version}",\n'
         
         
