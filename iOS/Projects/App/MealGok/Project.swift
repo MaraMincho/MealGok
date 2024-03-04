@@ -18,8 +18,8 @@ let project = Project.makeModule(
     infoPlist: [
       "NSCameraUsageDescription": "카메라에 접근합니다",
       "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",
-      "CFBundleShortVersionString": "1.0.1",
-      "CFBundleVersion": "202403045",
+      "CFBundleShortVersionString": "1.1.1",
+      "CFBundleVersion": "202403046",
       "UIUserInterfaceStyle": "Light",
       "ITSAppUsesNonExemptEncryption": "No",
     ]

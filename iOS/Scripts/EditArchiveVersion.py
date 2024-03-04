@@ -29,26 +29,20 @@ def set_version():
         with open(file_path, 'r') as file:
             content = file.read()
 
+        start_content = '''      "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",\n'''
+        build_start_index = content.find(start_content)
         marketing_target_name_match = re.search(r'"CFBundleShortVersionString": "(\d)+\.(\d)+\.(\d)+"', content)
-        if marketing_target_name_match:
-            target_name_index = marketing_target_name_match.start()
-        else:
-            raise ValueError("marketing_target_name_match name not found in file.")
         new_target_marketing_version = f'{marketing_target_name_match.group(1)}.{int(marketing_target_name_match.group(2)) + 1}.{marketing_target_name_match.group(3)}'
-        new_marketing_version = f'       "CFBundleShortVersionString": "{new_target_marketing_version}",\n'
+        new_marketing_version = f'      "CFBundleShortVersionString": "{new_target_marketing_version}",\n'
         
         
         build_target_name_match = re.search(r'"CFBundleVersion": "(\d*)"', content)
-        if build_target_name_match:
-            target_name_index = build_target_name_match.start()
-        else:
-            raise ValueError("Build Target name not found in file.")
-        
         today = generate_date_number()
         build_target_index = len(str(today))
         new_build_version = f'      "CFBundleVersion": "{today}{int(build_target_name_match.group(1)[build_target_index:]) + 1}",\n'
         
-        modified_content = content[:marketing_target_name_match - 1] + new_marketing_version + new_build_version + content[marketing_target_name_match + 1: ]
+        next_inpolist_index = content.find('''      "UIUserInterfaceStyle": "Light",''')
+        modified_content = content[:build_start_index] + start_content + new_marketing_version + new_build_version + content[next_inpolist_index: ]
 
         # Write the modified content back to the file
         with open(file_path, 'w') as file:
