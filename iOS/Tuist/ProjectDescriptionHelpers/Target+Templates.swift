@@ -46,12 +46,12 @@ public extension [Target] {
           ],
         ],
       ],
-      "UIBackgroundModes": [
-        "fetch",
-        "location",
-        "processing",
-        "remote-notification",
-      ],
+//      "UIBackgroundModes": [
+//        "fetch",
+//        "location",
+//        "processing",
+//        "remote-notification",
+//      ],
     ].merging(infoPlist) { _, new in
       new
     }
