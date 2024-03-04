@@ -1,5 +1,6 @@
 import sys
 import re
+from datetime import datetime
 
 
 def print_current_version():
@@ -10,7 +11,7 @@ def print_current_version():
             content = file.read()
         # Extract version information using regular expressions
         short_version_match = re.search(r'"CFBundleShortVersionString": "(\d+\.\d+\.\d+)"', content)
-        build_version_match = re.search(r'"CFBundleVersion": "(\d+\.\d+\.\d+)"', content)
+        build_version_match = re.search(r'"CFBundleVersion": "(\d*)"', content)
         
         if short_version_match and build_version_match:
             current_short_version = short_version_match.group(1)
@@ -21,17 +22,33 @@ def print_current_version():
     except Exception as e:
         print(f"Error modifying the file: {e}")
 
-def set_version(short_version, build_version):
+def set_version():
     file_path = 'Projects/App/MealGok/Project.swift'
     try:
         # Read the content of the Swift file
         with open(file_path, 'r') as file:
             content = file.read()
 
-        target_name_index = content.find("""      "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",""")
-        new_short_version = f"""       "CFBundleShortVersionString": "{short_version}",\n"""
-        new_build_version = f"""      "CFBundleVersion": "{build_version}",\n"""
-        modified_content = content[:target_name_index + 1] + f"{new_short_version}" + f"{new_build_version}" + content[target_name_index + 3:]
+        marketing_target_name_match = re.search(r'"CFBundleShortVersionString": "(\d)+\.(\d)+\.(\d)+"', content)
+        if marketing_target_name_match:
+            target_name_index = marketing_target_name_match.start()
+        else:
+            raise ValueError("marketing_target_name_match name not found in file.")
+        new_target_marketing_version = f'{marketing_target_name_match.group(1)}.{float(marketing_target_name_match.group(2)) + 1}.{marketing_target_name_match.group(3)}'
+        new_marketing_version = f'       "CFBundleShortVersionString": "{new_target_marketing_version}",\n'
+        
+        
+        build_target_name_match = re.search(r'"CFBundleVersion": "(\d*)"', content)
+        if build_target_name_match:
+            target_name_index = build_target_name_match.start()
+        else:
+            raise ValueError("Build Target name not found in file.")
+        
+        today = generate_date_number()
+        build_target_index = len(str(today))
+        new_build_version = f'      "CFBundleVersion": "{today}{int(build_target_name_match.group(1)[build_target_index:]) + 1}",\n'
+        
+        modified_content = content[:target_name_index - 1] + new_marketing_version + new_build_version + content[target_name_index + 2: ]
 
         # Write the modified content back to the file
         with open(file_path, 'w') as file:
@@ -39,6 +56,11 @@ def set_version(short_version, build_version):
 
     except Exception as e:
         print(f"Error modifying the file: {e}")
+
+def generate_date_number():
+    today = datetime.now()
+    date_number = today.strftime("%Y%m%d")
+    return int(date_number)
 
 def check_version_regular_expression(version):
     target_regular_expression = r'^\d+\.\d+\.\d+$'
@@ -50,12 +72,5 @@ def check_version_regular_expression(version):
 
 if __name__ == "__main__":
     print_current_version()
-    short_version = input("shortVersion을 입력하세요: ")
-    build_version = input("buildVersion을 입력하세요: ")
 
-    if not check_version_regular_expression(short_version) or not check_version_regular_expression(build_version):
-        print("입력한 버전 형식이 올바르지 않습니다. 프로그램을 종료합니다.")
-        sys.exit(1)
-
-    set_version(short_version, build_version)
-    print("버전이 성공적으로 설정되었습니다.")
+    set_version()
