@@ -16,7 +16,7 @@ def print_current_version():
         if short_version_match and build_version_match:
             current_short_version = short_version_match.group(1)
             current_build_version = build_version_match.group(1)
-            print(f"현재 버전은 \n shortVersion {current_short_version} \n buildVersion{current_build_version}")
+            print(f"현재 버전은 \n shortVersion {current_short_version} \n buildVersion {current_build_version}")
         else:
             print("버전 정보를 찾을 수 없습니다.")
     except Exception as e:
