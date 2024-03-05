@@ -16,10 +16,10 @@ let project = Project.makeModule(
       .feature(.mealTimer),
     ],
     infoPlist: [
-      "NSCameraUsageDescription": "카메라에 접근합니다",
+      "NSCameraUsageDescription": "밀꼭이 사진 또는 카메라에 접근하여, 밀꼭 챌린지 기록 등 기능을 사용하기 위해 카메라에 접근하는 것을 허용합니다.",
       "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",
-      "CFBundleShortVersionString": "1.0.1",
-      "CFBundleVersion": "202403048",
+      "CFBundleShortVersionString": "1.1.1",
+      "CFBundleVersion": "202403049",
       "UIUserInterfaceStyle": "Light",
       "ITSAppUsesNonExemptEncryption": "No",
     ]
