@@ -17,6 +17,7 @@ let project = Project.makeModule(
       .thirdParty,
       .feature(.profileHamburger),
     ],
-    testDependencies: []
+    testDependencies: [],
+    resources: "Resources/**"
   )
 )
