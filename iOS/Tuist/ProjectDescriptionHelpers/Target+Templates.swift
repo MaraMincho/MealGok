@@ -31,6 +31,19 @@ public extension [Target] {
     testDependencies: [TargetDependency] = [],
     infoPlist: [String: Plist.Value] = [:]
   ) -> [Target] {
+    
+    // buildSettings의 코드 추가
+    // 에셋 리소스를 코드로 자동완성 해주는 옵션 활성화
+    let settings: Settings = .settings(
+      base: [
+        "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
+        "SWIFT_EMIT_LOC_STRINGS": "YES",
+      ],
+      configurations: [
+        .debug(name: .debug),
+        .release(name: .release),
+      ]
+    )
     let mergedInfoPlist: [String: Plist.Value] = [
       "BaseURL": "$(BASE_URL)",
       "SocketURL": "$(SOCKET_URL)",
@@ -68,7 +81,8 @@ public extension [Target] {
         resources: "Resources/**",
         entitlements: entitlements,
         scripts: [.swiftFormat, .swiftLint],
-        dependencies: dependencies
+        dependencies: dependencies,
+        settings: settings
       ),
     ]
 
@@ -124,9 +138,13 @@ public extension [Target] {
       new
     }
 
+    // buildSettings의 코드 추가
     // 에셋 리소스를 코드로 자동완성 해주는 옵션 활성화
     let settings: Settings = .settings(
-      base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
+      base: [
+        "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
+        "SWIFT_EMIT_LOC_STRINGS": "YES",
+      ],
       configurations: [
         .debug(name: .debug),
         .release(name: .release),
