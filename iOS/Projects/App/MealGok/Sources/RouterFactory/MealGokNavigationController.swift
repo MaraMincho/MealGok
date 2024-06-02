@@ -1,5 +1,5 @@
 //
-//  MealGokPushNotificationManager.swift
+//  MealGokNavigationController.swift
 //  MealGok
 //
 //  Created by MaraMincho on 2/19/24.
@@ -10,9 +10,9 @@ import OSLog
 import UIKit
 import UserNotifications
 
-// MARK: - MealGokPushNotificationManager
+// MARK: - MealGokNavigationController
 
-final class MealGokPushNotificationManager: UINavigationController {
+final class MealGokNavigationController: UINavigationController {
   init() {
     super.init(nibName: nil, bundle: nil)
     UNUserNotificationCenter.current().delegate = self
@@ -26,7 +26,8 @@ final class MealGokPushNotificationManager: UINavigationController {
 
 // MARK: UNUserNotificationCenterDelegate
 
-extension MealGokPushNotificationManager: UNUserNotificationCenterDelegate {
+extension MealGokNavigationController: UNUserNotificationCenterDelegate {
+  /// Add Push Notification Auth
   func requestNotificationAuth() {
     let authOptions = UNAuthorizationOptions(arrayLiteral: .alert, .badge, .sound)
 
@@ -39,6 +40,7 @@ extension MealGokPushNotificationManager: UNUserNotificationCenterDelegate {
       }
   }
 
+  /// Some Logic receive the message
   func userNotificationCenter(_: UNUserNotificationCenter, didReceive _: UNNotificationResponse) async {}
 
   func userNotificationCenter(_: UNUserNotificationCenter, willPresent _: UNNotification) async -> UNNotificationPresentationOptions {

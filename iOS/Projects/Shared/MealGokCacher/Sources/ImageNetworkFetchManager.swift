@@ -12,7 +12,7 @@ import Foundation
 // MARK: - FetchManager
 
 actor ImageNetworkFetchManager {
-  let queue = DispatchSerialQueue(label: "ImageQueue")
+  let queue = DispatchQueue(label: "ImageQueue")
   private var subscription = Set<AnyCancellable>()
 
   func dataTask(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> FetchDescriptionCancellable {

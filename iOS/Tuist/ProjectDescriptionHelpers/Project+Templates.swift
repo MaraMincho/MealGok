@@ -11,21 +11,30 @@ public extension Project {
     packages: [Package] = []
   ) -> Project {
     let settingConfiguration: [Configuration] =
-      if isCI { [.debug(name: .debug)] }
+    if isCI { [.debug(name: .debug)] }
     else { [.debug(name: .debug, xcconfig: Path.relativeToXCConfig("Server/Debug")),
             .release(name: .release, xcconfig: Path.relativeToXCConfig("Server/Release"))] }
-
+    
     let settings: Settings = .settings(
-      base: ["ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"],
+      base: [
+        "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
+        "SWIFT_EMIT_LOC_STRINGS": "YES",
+      ],
       configurations: settingConfiguration
     )
-
+    
     let schemes: [Scheme] = [.makeScheme(name: name)]
-
+    
     return Project(
       name: name,
       organizationName: ProjectEnvironment.default.prefixBundleID,
-      options: .options(automaticSchemesOptions: .disabled, disableBundleAccessors: true, disableSynthesizedResourceAccessors: true),
+      options: .options(
+        automaticSchemesOptions: .disabled,
+        defaultKnownRegions: ["en", "ko"],
+        developmentRegion: "ko",
+        disableBundleAccessors: true,
+        disableSynthesizedResourceAccessors: true
+      ),
       packages: packages,
       settings: settings,
       targets: targets,

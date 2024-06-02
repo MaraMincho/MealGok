@@ -381,7 +381,7 @@ private extension MealGokHomeViewController {
   }
 
   enum Constants {
-    static let titleLabelText: String = "밀꼭"
+    static let titleLabelText = "밀꼭"
     static let descriptionTitleText: String = "천천히 먹기: 가장 쉽고 빠른 다이어트"
 
     static let timerCenterDescriptionText: String = "탭 하여\n타이머 시작"
