@@ -16,6 +16,7 @@ let project = Project.makeModule(
       .sharedNotificationName,
       .thirdParty,
     ],
-    testDependencies: []
+    testDependencies: [],
+    resources: "Resources/**"
   )
 )
