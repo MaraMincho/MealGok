@@ -22,7 +22,7 @@ public extension Routing {
     let child = parentRouter?.childRouters.filter { self !== $0 }
     parentRouter?.childRouters = child ?? []
 
-    childRouters.forEach { router in
+    for router in childRouters {
       router.popRouter()
     }
     childRouters.removeAll()

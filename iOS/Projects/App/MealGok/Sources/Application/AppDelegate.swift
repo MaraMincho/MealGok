@@ -29,6 +29,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 private extension AppDelegate {
+  // MARK: - App의 정방향 측방향인 것을 Observe하고 있습니다. 
   func addAppDelegateObserver() {
     NotificationCenter.default.addObserver(forName: .portraitScreenMode, object: nil, queue: .main) { _ in
       self.changeOrientation = false
