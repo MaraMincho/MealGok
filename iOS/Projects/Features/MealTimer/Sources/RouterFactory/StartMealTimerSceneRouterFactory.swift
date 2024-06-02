@@ -40,11 +40,11 @@ final class StartMealTimerSceneRouterFactory: RouterFactoriable {
     let deleteRepository = PrevChallengeManagerRepository()
 
     // 실제 코드
-//    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
-//    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
+    let customStringFormatter = CustomTimeStringFormatter(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
+    let timerLocalNotificationUseCase = TimerLocalNotificationUseCase(minutes: targetTimeOfMinutes, seconds: targetTimeOfSeconds)
     // 테스트 코드
-    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
-    let timerLocalNotificationUseCase = isLocalNotificationNeed ? TimerLocalNotificationUseCase(minutes: 0, seconds: 10) : nil
+//    let customStringFormatter = CustomTimeStringFormatter(minutes: 0, seconds: 10)
+//    let timerLocalNotificationUseCase = isLocalNotificationNeed ? TimerLocalNotificationUseCase(minutes: 0, seconds: 10) : nil
     let timerUseCase = TimerUseCase(
       startTime: startTime,
       customStringFormatter: customStringFormatter,

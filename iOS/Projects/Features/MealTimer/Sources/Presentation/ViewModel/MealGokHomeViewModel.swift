@@ -72,12 +72,12 @@ extension MealGokHomeViewModel: MealTimerSceneViewModelRepresentable {
       .sink { [prevChallengeLoadUseCase, router] _ in
         let state = prevChallengeLoadUseCase.checkPrevChallenge()
         switch state {
-          // Router를 통한 화면 이동
+        // Router를 통한 화면 이동
         case let .timer(targetMinutes, startDate):
           // 아직 챌린지 기간 이내의 시간이라면 챌린지 화면으로 돌아갑니다.
           router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate, isLocalNotificationNeed: false)
-          
-          // 챌린지를 완성한 조건이라면, 채린지 완료 화면으로 Routing 합니다. 
+
+        // 챌린지를 완성한 조건이라면, 채린지 완료 화면으로 Routing 합니다.
         case let .successChallenge(targetMinutes, startDate):
           router?.startMealTimerScene(targetMinute: targetMinutes, startTime: startDate, isLocalNotificationNeed: false)
         case .idle:
