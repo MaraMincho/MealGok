@@ -55,7 +55,10 @@ extension Scheme {
         configuration: .debug,
         options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
       ),
-      runAction: .runAction(configuration: .debug),
+      runAction: .runAction(
+        configuration: .debug,
+        arguments: .init(environmentVariables: ["IDEPreferLogStreaming": "YES"])
+      ),
       archiveAction: .archiveAction(configuration: .release),
       profileAction: .profileAction(configuration: .debug),
       analyzeAction: .analyzeAction(configuration: .debug)
