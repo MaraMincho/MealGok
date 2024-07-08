@@ -1,5 +1,7 @@
 # MealGok (밀꼭)
 
+[<img src="https://img.shields.io/badge/App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white">](https://apps.apple.com/kr/app/%EB%B0%80%EA%BC%AD-%EC%B2%9C%EC%B2%9C%ED%9E%88-%EB%A8%B9%EA%B8%B0-%EC%8B%9D%EC%82%AC-%ED%83%80%EC%9D%B4%EB%A8%B8/id6477323777)
+
 <center>
 <img src="https://github.com/MaraMincho/MealGok/assets/103064352/f4e19336-f576-413d-9755-b8c6dec89b9a" width="350" >
 
