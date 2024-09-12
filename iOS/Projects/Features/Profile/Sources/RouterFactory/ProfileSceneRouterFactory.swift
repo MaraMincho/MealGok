@@ -32,7 +32,7 @@ public final class ProfileSceneRouterFactory: RouterFactoryBase {
       profileFetchUseCase: profileFetchUseCase,
       profileSceneRouterable: self
     )
-    let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date!
+    let initDate = DateComponents(calendar: Calendar(identifier: .gregorian), year: 2023, month: 1, day: 1).date
     let property: ProfileViewControllerProperty = .init(startDate: initDate, endDate: Date.now)
 
     let viewController = ProfileViewController(viewModel: viewModel, property: property)

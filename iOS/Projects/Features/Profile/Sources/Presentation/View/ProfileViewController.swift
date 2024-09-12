@@ -9,14 +9,15 @@
 import Combine
 import DesignSystem
 import MealGokCacher
+import OSLog
 import UIKit
 
 // MARK: - ProfileViewControllerProperty
 
 /// 선택 가능한 날짜를 보여주는 기능을 합니다.
 struct ProfileViewControllerProperty {
-  let startDate: Date
-  let endDate: Date
+  let startDate: Date?
+  let endDate: Date?
 }
 
 // MARK: - ProfileViewController
@@ -93,7 +94,10 @@ final class ProfileViewController: UIViewController {
     calendarView.fontDesign = .default
     calendarView.delegate = self
     calendarView.tintColor = DesignSystemColor.main01
-    calendarView.availableDateRange = .init(start: profileViewControllerProperty.startDate, end: profileViewControllerProperty.endDate)
+    if let startDate = profileViewControllerProperty.startDate, let endDate = profileViewControllerProperty.endDate {
+      calendarView.availableDateRange = .init(start: startDate, end: endDate)
+    }
+
     calendarView.wantsDateDecorations = true
     calendarView.selectionBehavior = calendarBehavior
     calendarView.backgroundColor = DesignSystemColor.secondaryBackground
@@ -309,17 +313,6 @@ private extension ProfileViewController {
 
   func updateDecoration(challengeDate: [Date]) {
     challengeDate.forEach { dateComponent in decorations.insert(dateComponent) }
-    let gregorian = Calendar(identifier: .gregorian)
-    let challengeDateComponents = challengeDate.map { date in
-
-      let year = gregorian.component(.year, from: date)
-      let month = gregorian.component(.month, from: date)
-      let day = gregorian.component(.day, from: date)
-
-      return DateComponents(calendar: gregorian, year: year, month: month, day: day)
-    }
-
-    calendarView.reloadDecorations(forDateComponents: challengeDateComponents, animated: true)
   }
 
   func updateProfile(name: String, profileImageURL: URL?, biography: String) {
