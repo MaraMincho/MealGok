@@ -61,8 +61,16 @@ extension SettingViewModel: SettingViewModelRepresentable {
 
     input
       .didTapCell
-      .sink { [router] _ in
-        router?.pushEditProfile()
+      .sink { [router] item in
+        guard let itemCase = SettingTableViewPropertyItem(rawValue: item.id) else {
+          return
+        }
+        switch itemCase {
+        case .settingProfile:
+          router?.pushEditProfile()
+        case .suggestions:
+          router?.pushSuggestion()
+        }
       }
       .store(in: &subscriptions)
 
