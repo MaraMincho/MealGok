@@ -182,6 +182,7 @@ final class ProfileViewController: UIViewController {
     super.init(nibName: nil, bundle: nil)
 
     // MARK: - init부분에서 bind() / requestMealGokHistory.send() 코드 작성 이유에 대해서
+
     // 원래는 ViewDidLoad에서 실행해야 하지만, 특수한 상황에 직면했음
     // 캘린더뷰를 그릴 때 초기 delegation set 을 통해서 decoration 날짜들이 이 업데이트 됨.
     // 이것이 viewDidLoad에서 일어날 경우 이미 캘린더뷰는 업데이트 되어서 다시 decoration을 부를 수 없는 경우가 생김.
