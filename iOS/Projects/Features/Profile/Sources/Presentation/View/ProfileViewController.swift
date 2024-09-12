@@ -180,6 +180,15 @@ final class ProfileViewController: UIViewController {
     self.viewModel = viewModel
     profileViewControllerProperty = property
     super.init(nibName: nil, bundle: nil)
+
+    // MARK: - init부분에서 bind() / requestMealGokHistory.send() 코드 작성 이유에 대해서
+    // 원래는 ViewDidLoad에서 실행해야 하지만, 특수한 상황에 직면했음
+    // 캘린더뷰를 그릴 때 초기 delegation set 을 통해서 decoration 날짜들이 이 업데이트 됨.
+    // 이것이 viewDidLoad에서 일어날 경우 이미 캘린더뷰는 업데이트 되어서 다시 decoration을 부를 수 없는 경우가 생김.
+    // 따라서 이를 해결하고자 bind를 init부분에서 부르고 데이터를 초기에 불러오는 방식으로 해결했음
+    // reference: https://developer.apple.com/documentation/uikit/uicalendarview
+    bind()
+    requestMealGokHistory.send()
   }
 
   @available(*, unavailable)
@@ -204,11 +213,9 @@ private extension ProfileViewController {
   func setup() {
     setupStyles()
     setupHierarchyAndConstraints()
-    bind()
     setupTableViewDataSource()
     selectToday()
 
-    requestMealGokHistory.send()
     updateProfileSubject.send()
   }
 
@@ -311,7 +318,7 @@ private extension ProfileViewController {
     present(vc, animated: true)
   }
 
-  func updateDecoration(challengeDate: [Date]) {
+  private func updateDecoration(challengeDate: [Date]) {
     challengeDate.forEach { dateComponent in decorations.insert(dateComponent) }
   }
 
