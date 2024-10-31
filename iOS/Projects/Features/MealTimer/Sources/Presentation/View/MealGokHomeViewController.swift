@@ -308,12 +308,12 @@ private extension MealGokHomeViewController {
   }
 
   func presentAlertAction() {
-    let alert = UIAlertController(title: "목표 시간", message: "목표하는 시간을 스와이프 해주세요", preferredStyle: .actionSheet)
+    let alert = UIAlertController(title: "목표 시간", message: "목표하는 시간을 스와이프 해주세요\n(5분 ~ 1시간)", preferredStyle: .actionSheet)
     let curVal = CurrentValueSubject<Int, Never>(10)
     let slider = UISlider()
     slider.layoutMargins = .init(top: 10, left: 10, bottom: 10, right: 10)
-    slider.maximumValue = 20
-    slider.minimumValue = 10
+    slider.maximumValue = 60
+    slider.minimumValue = 5
     slider.heightAnchor.constraint(equalToConstant: 120).isActive = true
     slider.value = Float(targetTime)
     slider.publisher(event: .valueChanged)

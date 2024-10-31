@@ -37,9 +37,9 @@ extension TargetTimeUseCase: TargetTimeUseCaseRepresentable {
   }
 
   private func checkTargetTime(_ targetTime: Int) -> Int {
-    if targetTime < 10 || targetTime > 20 {
-      return 10
-    }
+//    if targetTime < 10 || targetTime > 20 {
+//      return 10
+//    }
     return targetTime
   }
 }

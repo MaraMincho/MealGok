@@ -46,7 +46,7 @@ public extension Project {
 extension Scheme {
   /// Scheme을 만드는 메소드
   static func makeScheme(name: String) -> Scheme {
-    return Scheme(
+    return Scheme.scheme(
       name: name,
       shared: true,
       buildAction: .buildAction(targets: ["\(name)"]),
@@ -55,10 +55,7 @@ extension Scheme {
         configuration: .debug,
         options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
       ),
-      runAction: .runAction(
-        configuration: .debug,
-        arguments: .init(environmentVariables: ["IDEPreferLogStreaming": "YES"])
-      ),
+      runAction: .runAction(configuration: .debug),
       archiveAction: .archiveAction(configuration: .release),
       profileAction: .profileAction(configuration: .debug),
       analyzeAction: .analyzeAction(configuration: .debug)
