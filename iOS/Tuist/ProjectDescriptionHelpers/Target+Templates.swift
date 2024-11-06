@@ -70,12 +70,12 @@ public extension [Target] {
     }
 
     var targets: [Target] = [
-      Target(
+      Target.target(
         name: name,
-        platform: .iOS,
+        destinations: [.iPhone],
         product: .app,
         bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name.lowercased())",
-        deploymentTarget: ProjectEnvironment.default.deploymentTarget,
+        deploymentTargets: ProjectEnvironment.default.deploymentTarget,
         infoPlist: .extendingDefault(with: mergedInfoPlist),
         sources: "Sources/**",
         resources: "Resources/**",
@@ -88,9 +88,9 @@ public extension [Target] {
 
     if testingOptions.contains(.unitTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(name)Tests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name.lowercased())Tests",
           sources: "Tests/**",
@@ -101,9 +101,9 @@ public extension [Target] {
     }
     if testingOptions.contains(.uiTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(name)UITests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name.lowercased())UITests",
           sources: "UITests/**",
@@ -152,12 +152,12 @@ public extension [Target] {
     )
 
     var targets: [Target] = [
-      Target(
+      Target.target(
         name: "\(feature.targetName)Feature",
-        platform: .iOS,
+        destinations: [.iPhone],
         product: product,
         bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(feature.targetName)Feature",
-        deploymentTarget: ProjectEnvironment.default.deploymentTarget,
+        deploymentTargets: ProjectEnvironment.default.deploymentTarget,
         infoPlist: .extendingDefault(with: mergedInfoPlist),
         sources: "Sources/**",
         resources: resources,
@@ -169,9 +169,9 @@ public extension [Target] {
 
     if testingOptions.contains(.unitTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(feature.targetName)FeatureTests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(feature.targetName)FeatureTests",
           sources: "Tests/**",
@@ -183,9 +183,9 @@ public extension [Target] {
 
     if testingOptions.contains(.uiTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(feature.targetName)FeatureUITests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(feature.targetName)FeatureUITests",
           sources: "UITests/**",
@@ -223,12 +223,12 @@ public extension [Target] {
     }
 
     var targets: [Target] = [
-      Target(
+      Target.target(
         name: "\(name)",
-        platform: .iOS,
+        destinations: [.iPhone],
         product: product,
         bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)",
-        deploymentTarget: ProjectEnvironment.default.deploymentTarget,
+        deploymentTargets: ProjectEnvironment.default.deploymentTarget,
         infoPlist: .extendingDefault(with: mergedInfoPlist),
         sources: "Sources/**",
         resources: resources,
@@ -240,9 +240,9 @@ public extension [Target] {
 
     if testingOptions.contains(.unitTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(name)Tests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureTests",
           sources: "Tests/**",
@@ -254,9 +254,9 @@ public extension [Target] {
 
     if testingOptions.contains(.uiTest) {
       targets.append(
-        Target(
+        Target.target(
           name: "\(name)UITests",
-          platform: .iOS,
+          destinations: [.iPhone],
           product: .unitTests,
           bundleId: "\(ProjectEnvironment.default.prefixBundleID).\(name)FeatureUITests",
           sources: "UITests/**",

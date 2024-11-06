@@ -18,8 +18,8 @@ let project = Project.makeModule(
     infoPlist: [
       "NSCameraUsageDescription": "밀꼭이 사진 또는 카메라에 접근하여, 밀꼭 챌린지 기록 등 기능을 사용하기 위해 카메라에 접근하는 것을 허용합니다.",
       "BGTaskSchedulerPermittedIdentifiers": "com.maramincho.mealgok",
-      "CFBundleShortVersionString": "1.3.0",
-      "CFBundleVersion": "2024091213",
+      "CFBundleShortVersionString": "1.4.0",
+      "CFBundleVersion": "2024110114",
       "UIUserInterfaceStyle": "Light",
       "ITSAppUsesNonExemptEncryption": "No",
     ]

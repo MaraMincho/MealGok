@@ -7,11 +7,14 @@ let project = Project.makeModule(
     name: "ThirdParty",
     product: .framework,
     dependencies: [
-      .Realm,
-      .RealmSwift,
+      .external(name: "RealmSwift"),
+      .external(name: "Realm"),
       .MealGokCacher,
       .commonExtensions,
     ],
     resources: "Resources/**"
-  )
+  ),
+  packages: [
+    .package(url: "https://github.com/realm/realm-swift.git", from: "10.46.0"),
+  ]
 )
