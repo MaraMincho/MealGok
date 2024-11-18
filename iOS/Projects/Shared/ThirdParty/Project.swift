@@ -15,6 +15,6 @@ let project = Project.makeModule(
     resources: "Resources/**"
   ),
   packages: [
-    .package(url: "https://github.com/realm/realm-swift.git", from: "10.46.0"),
+    //    .package(url: "https://github.com/realm/realm-swift.git", from: "10.46.0"),
   ]
 )
