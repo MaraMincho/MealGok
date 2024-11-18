@@ -19,7 +19,8 @@ struct TargetTimeRepository: TargetTimeRepositoryRepresentable {
   ///
   /// 만약 targetTime의 key가 없다면, 0을 리턴합니다.
   func targetTime() -> Int {
-    return userDefaults.integer(forKey: UserDefaultsKey.targetTimeKey)
+    let initialTargetTime = userDefaults.integer(forKey: UserDefaultsKey.targetTimeKey)
+    return initialTargetTime == 0 ? 10 : initialTargetTime
   }
 
   private enum UserDefaultsKey {

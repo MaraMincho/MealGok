@@ -14,17 +14,25 @@ public extension Project {
     if isCI { [.debug(name: .debug)] }
     else { [.debug(name: .debug, xcconfig: Path.relativeToXCConfig("Server/Debug")),
             .release(name: .release, xcconfig: Path.relativeToXCConfig("Server/Release"))] }
-    
+
     let settings: Settings = .settings(
       base: [
         "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
         "SWIFT_EMIT_LOC_STRINGS": "YES",
+        "OTHER_LDFLAGS": [
+          "-ObjC",
+          "-lc++",  // Realm은 C++ 라이브러리를 필요로 함
+          "-lz",
+          "-framework Realm",
+          "-framework RealmSwift"
+        ]
+
       ],
       configurations: settingConfiguration
     )
-    
+
     let schemes: [Scheme] = [.makeScheme(name: name)]
-    
+
     return Project(
       name: name,
       organizationName: ProjectEnvironment.default.prefixBundleID,

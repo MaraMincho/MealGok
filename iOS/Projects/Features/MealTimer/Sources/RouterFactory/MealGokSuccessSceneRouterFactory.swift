@@ -61,6 +61,6 @@ final class MealGokSuccessSceneRouterFactory: RouterFactoriable {
 
 extension MealGokSuccessSceneRouterFactory: MealGokSuccessSceneRouter {
   func goHome() {
-    SharedPostNotification.goHomeAndReBuild()
+    SharedPostNotification.goHome()
   }
 }
